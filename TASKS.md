@@ -83,7 +83,7 @@
 - [x] Criar primeiro provedor real (DeepL).
 - [x] Criar endpoint backend protegido para o provedor remoto.
 - [x] Criar cliente da extensão para o endpoint backend.
-- [ ] Implementar glossário.
+- [x] Implementar glossário.
 - [x] Implementar agrupamento por contexto.
 - [ ] Implementar JSON estruturado.
 - [x] Implementar retry e timeout.

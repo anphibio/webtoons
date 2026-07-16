@@ -14,9 +14,13 @@ function Options() {
   const [settings, setSettings] = useState<ExtensionSettings>(DEFAULT_SETTINGS);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [glossaryText, setGlossaryText] = useState("{}");
 
   useEffect(() => {
-    void loadSettings(chromeStorage()).then(setSettings);
+    void loadSettings(chromeStorage()).then((loaded) => {
+      setSettings(loaded);
+      setGlossaryText(JSON.stringify(loaded.glossary, null, 2));
+    });
   }, []);
 
   async function save(): Promise<void> {
@@ -25,7 +29,16 @@ function Options() {
       setError("Confirme o consentimento antes de habilitar tradução remota.");
       return;
     }
-    await saveSettings(chromeStorage(), settings);
+    let glossary: unknown;
+    try {
+      glossary = JSON.parse(glossaryText) as unknown;
+    } catch {
+      setError("O glossário precisa ser um objeto JSON válido.");
+      return;
+    }
+    const savedSettings = await saveSettings(chromeStorage(), { ...settings, glossary });
+    setSettings(savedSettings);
+    setGlossaryText(JSON.stringify(savedSettings.glossary, null, 2));
     setSaved(true);
     window.setTimeout(() => setSaved(false), 1800);
   }
@@ -70,6 +83,10 @@ function Options() {
       <label>
         Opacidade: {Math.round(settings.opacity * 100)}%
         <input type="range" min="20" max="100" value={settings.opacity * 100} onChange={(event) => setSettings({ ...settings, opacity: Number(event.target.value) / 100 })} />
+      </label>
+      <label>
+        Glossário (JSON: termo original para termo preferido)
+        <textarea rows={7} value={glossaryText} onChange={(event) => setGlossaryText(event.target.value)} placeholder={'{\n  "Jimin": "Jimin-ssi"\n}'} />
       </label>
       <button type="button" onClick={() => void save()}>Salvar</button>
       {saved && <p role="status">Configurações salvas.</p>}

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { MockTranslationProvider } from "../packages/translation/src/mock-provider";
 import { translateWithControls } from "../packages/translation/src/service";
+import { applyGlossary } from "../packages/translation/src/glossary";
 import type { TranslationSegment } from "../packages/translation/src/types";
 
 const segments: TranslationSegment[] = [
@@ -9,6 +10,10 @@ const segments: TranslationSegment[] = [
 ];
 
 describe("contrato de tradução", () => {
+  it("preserva termos do glossário dentro da tradução", () => {
+    expect(applyGlossary("Olá, Jimin.", { Jimin: "Jimin-ssi" })).toBe("Olá, Jimin-ssi.");
+  });
+
   it("preserva IDs e traduz segmentos pelo provedor mock", async () => {
     const provider = new MockTranslationProvider({
       translations: { Hello: "Olá", Goodbye: "Tchau" },

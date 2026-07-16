@@ -4,6 +4,7 @@ import type {
   TranslationResult,
   TranslationSegment,
 } from "./types";
+import { applyGlossaryToResult } from "./glossary";
 
 export interface TranslationControlOptions {
   context: TranslationContext;
@@ -27,7 +28,7 @@ export async function translateWithControls(
         options.timeoutMs,
       );
       validateIds(segments, result);
-      return result;
+      return applyGlossaryToResult(result, options.context.glossary);
     } catch (error) {
       lastError = error;
     }

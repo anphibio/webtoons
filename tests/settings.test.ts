@@ -27,6 +27,7 @@ describe("configurações", () => {
       fontSize: 99,
       opacity: 0.7,
       maxConcurrent: 2,
+      glossary: { Jimin: "Jimin-ssi" },
     })).toEqual({
       ...DEFAULT_SETTINGS,
       sourceLanguage: "jpn",
@@ -36,6 +37,11 @@ describe("configurações", () => {
       fontSize: 32,
       opacity: 0.7,
       maxConcurrent: 2,
+      glossary: { Jimin: "Jimin-ssi" },
     });
+  });
+
+  it("limita o glossário salvo a termos curtos e válidos", () => {
+    expect(sanitizeSettings({ glossary: { Jimin: "Jimin-ssi", "": "x", ["x".repeat(200)]: "y", Broken: 42 } }).glossary).toEqual({ Jimin: "Jimin-ssi" });
   });
 });

@@ -176,6 +176,7 @@ async function processDiscoveredImages(): Promise<void> {
     overlay: overlayManager,
     sourceLanguage: settings.sourceLanguage,
     targetLanguage: settings.targetLanguage,
+    glossary: settings.glossary,
     timeoutMs: 120_000,
     loadTimeoutMs: 20_000,
     maxTranslationRetries: 1,

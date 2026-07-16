@@ -12,6 +12,7 @@ export interface ExtensionSettings {
   fontSize: number;
   opacity: number;
   maxConcurrent: number;
+  glossary: Record<string, string>;
 }
 
 export const DEFAULT_SETTINGS: ExtensionSettings = {
@@ -25,6 +26,7 @@ export const DEFAULT_SETTINGS: ExtensionSettings = {
   fontSize: 16,
   opacity: 0.82,
   maxConcurrent: 1,
+  glossary: {},
 };
 
 export interface SettingsStorage {
@@ -61,6 +63,7 @@ export function sanitizeSettings(value: unknown): ExtensionSettings {
     fontSize: clampNumber(value.fontSize, 10, 32, DEFAULT_SETTINGS.fontSize),
     opacity: clampNumber(value.opacity, 0.2, 1, DEFAULT_SETTINGS.opacity),
     maxConcurrent: Math.round(clampNumber(value.maxConcurrent, 1, 3, DEFAULT_SETTINGS.maxConcurrent)),
+    glossary: sanitizeGlossary(value.glossary),
   };
 }
 
@@ -78,6 +81,19 @@ function sanitizeBackendUrl(value: unknown): string {
 function clampNumber(value: unknown, minimum: number, maximum: number, fallback: number): number {
   if (typeof value !== "number" || !Number.isFinite(value)) return fallback;
   return Math.min(maximum, Math.max(minimum, value));
+}
+
+function sanitizeGlossary(value: unknown): Record<string, string> {
+  if (!isRecord(value)) return {};
+  const entries = Object.entries(value)
+    .filter((entry): entry is [string, string] => {
+      const [source, target] = entry;
+      return source.trim().length > 0 && source.trim().length <= 80 && typeof target === "string" && target.trim().length > 0 && target.trim().length <= 80;
+    })
+    .slice(0, 100)
+    .map(([source, target]) => [source.trim().slice(0, 80), target.trim().slice(0, 80)] as const)
+    .filter(([source, target]) => source.length > 0 && target.length > 0);
+  return Object.fromEntries(entries);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

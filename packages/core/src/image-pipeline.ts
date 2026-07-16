@@ -41,6 +41,7 @@ export interface ImagePipelineOptions {
   overlay: ImageOverlay;
   sourceLanguage: string;
   targetLanguage: string;
+  glossary?: Record<string, string>;
   timeoutMs: number;
   loadTimeoutMs?: number;
   maxTranslationRetries?: number;
@@ -121,6 +122,7 @@ export class ImagePipeline {
           this.options.sourceLanguage,
           this.options.targetLanguage,
           ...segments.map((segment) => `${segment.order}:${segment.text}`),
+          JSON.stringify(this.options.glossary ?? {}),
         );
         const cachedTranslation = await readCache<TranslationResult>(this.options.cache, "translation", translationKey);
         translated = cachedTranslation ?? await translateWithControls(
@@ -130,6 +132,7 @@ export class ImagePipeline {
             context: {
               sourceLanguage: this.options.sourceLanguage,
               targetLanguage: this.options.targetLanguage,
+              glossary: this.options.glossary,
             },
             signal: controller.signal,
             timeoutMs: this.options.timeoutMs,
