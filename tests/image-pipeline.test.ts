@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it, vi } from "vitest";
-import { ImagePipeline } from "../packages/core/src/image-pipeline";
+import { ImagePipeline, type PipelineCache } from "../packages/core/src/image-pipeline";
 import { countPipelineResult } from "../packages/core/src/processing-progress";
 import type { ImageCandidate } from "../packages/site-adapters/src/types";
 
@@ -71,6 +71,49 @@ describe("pipeline de imagem", () => {
     await expect(pipeline.process(candidate())).resolves.toEqual({ status: "empty", regionCount: 0 });
     expect(translate).not.toHaveBeenCalled();
     expect(render).not.toHaveBeenCalled();
+  });
+
+  it("reutiliza OCR e tradução do cache ao processar a mesma imagem", async () => {
+    const cache = new Map<string, unknown>();
+    const cacheStore: PipelineCache = {
+      async get<T>(kind: "ocr" | "translation", key: string): Promise<T | null> {
+        return (cache.get(`${kind}:${key}`) as T | undefined) ?? null;
+      },
+      async put<T>(kind: "ocr" | "translation", key: string, value: T, ttlMs: number): Promise<void> {
+        void ttlMs;
+        cache.set(`${kind}:${key}`, value);
+      },
+    };
+    const put = vi.spyOn(cacheStore, "put");
+    const recognize = vi.fn().mockResolvedValue({
+      regions: [{
+        id: "ocr-0",
+        text: "Hello",
+        confidence: 0.91,
+        bbox: { x: 10, y: 20, width: 100, height: 40 },
+        rotation: 0,
+      }],
+    });
+    const translate = vi.fn().mockResolvedValue({
+      segments: [{ id: "ocr-0", sourceText: "Hello", translatedText: "Olá" }],
+    });
+    const pipeline = new ImagePipeline({
+      load: { load: vi.fn().mockResolvedValue({ image: new Blob(["same-image"]), width: 1200, height: 1800 }) },
+      ocr: { recognize },
+      translation: { translate },
+      overlay: { render: vi.fn() },
+      cache: cacheStore,
+      sourceLanguage: "eng",
+      targetLanguage: "por",
+      timeoutMs: 5_000,
+    });
+
+    await pipeline.process(candidate());
+    await pipeline.process(candidate());
+
+    expect(recognize).toHaveBeenCalledTimes(1);
+    expect(translate).toHaveBeenCalledTimes(1);
+    expect(put).toHaveBeenCalledTimes(2);
   });
 
   it("não bloqueia a fila quando o carregamento da imagem fica pendente", async () => {

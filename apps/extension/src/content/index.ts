@@ -14,6 +14,7 @@ import { FallbackOcrProvider } from "../../../../packages/ocr/src/fallback-provi
 import { RetryingOcrProvider } from "../../../../packages/ocr/src/retrying-provider";
 import { OverlayManager } from "../../../../packages/overlay/src/overlay-manager";
 import { DEFAULT_SETTINGS, loadSettings, type SettingsStorage } from "../../../../packages/shared/src/settings";
+import { IndexedDbCacheStore } from "../../../../packages/shared/src/cache";
 import { GenericImageDetector } from "../../../../packages/site-adapters/src/generic-detector";
 import { ToonGodAdapter } from "../../../../packages/site-adapters/src/toongod-adapter";
 import {
@@ -39,6 +40,7 @@ const queuedCandidates = new Map<string, ImageCandidate>();
 let lastProcessingError: string | undefined;
 let progress = createProgress();
 const overlayManager = new OverlayManager(document);
+const cacheStore = new IndexedDbCacheStore();
 const ownsContentRuntime = claimRuntime(globalThis as unknown as Record<string, unknown>, "content-script");
 
 if (ownsContentRuntime) chrome.runtime.onMessage.addListener((rawMessage, _sender, sendResponse) => {
@@ -160,6 +162,7 @@ async function processDiscoveredImages(): Promise<void> {
       baseUrl: settings.backendUrl,
       accessToken: settings.backendAccessToken || undefined,
     }),
+    cache: cacheStore,
     overlay: overlayManager,
     sourceLanguage: settings.sourceLanguage,
     targetLanguage: settings.targetLanguage,

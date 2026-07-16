@@ -106,8 +106,8 @@
 - [x] Criar IndexedDB.
 - [x] Definir schemas.
 - [x] Gerar hash.
-- [ ] Cachear OCR.
-- [ ] Cachear tradução.
+- [x] Cachear OCR por versão, URL, dimensões e hash dos bytes da imagem.
+- [x] Cachear tradução por idioma e conteúdo reconhecido.
 - [ ] Implementar invalidação.
 - [ ] Implementar limpeza.
 

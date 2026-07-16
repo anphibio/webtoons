@@ -65,6 +65,15 @@ export function createCacheKey(...parts: string[]): string {
   return (hash >>> 0).toString(16);
 }
 
+export function createBytesKey(bytes: Uint8Array): string {
+  let hash = 2166136261;
+  for (const byte of bytes) {
+    hash ^= byte;
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(16);
+}
+
 function openDatabase(name: string): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const openRequest = indexedDB.open(name, 1);

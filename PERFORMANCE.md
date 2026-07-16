@@ -62,4 +62,6 @@ Registrar localmente:
 - erros;
 - tarefas canceladas.
 
+O cache local armazena apenas OCR, traduções e metadados estruturados. Imagens completas não são persistidas pelo cache.
+
 Não registrar conteúdo reconhecido por padrão.
