@@ -28,4 +28,14 @@ describe("cache local", () => {
     await store.clear();
     await expect(store.get("translation", "active")).resolves.toBeNull();
   });
+
+  it("remove entradas expiradas sem apagar as ainda válidas", async () => {
+    const store = new IndexedDbCacheStore(databaseName);
+    await store.put("ocr", "expired", { text: "old" }, -1);
+    await store.put("translation", "active", { text: "Olá" }, 60_000);
+
+    await expect(store.pruneExpired()).resolves.toBe(1);
+    await expect(store.get("ocr", "expired")).resolves.toBeNull();
+    await expect(store.get("translation", "active")).resolves.toEqual({ text: "Olá" });
+  });
 });

@@ -54,6 +54,20 @@ export class IndexedDbCacheStore {
     transaction.objectStore("entries").clear();
     await transactionComplete(transaction);
   }
+
+  async pruneExpired(now = Date.now()): Promise<number> {
+    const database = await this.databasePromise;
+    const readTransaction = database.transaction("entries", "readonly");
+    const entries = await request<CacheEntry[]>(readTransaction.objectStore("entries").getAll());
+    const expired = entries.filter((entry) => entry.expiresAt <= now);
+    if (expired.length === 0) return 0;
+
+    const transaction = database.transaction("entries", "readwrite");
+    const objectStore = transaction.objectStore("entries");
+    for (const entry of expired) objectStore.delete(entry.id);
+    await transactionComplete(transaction);
+    return expired.length;
+  }
 }
 
 export function createCacheKey(...parts: string[]): string {

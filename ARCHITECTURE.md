@@ -174,7 +174,7 @@ Metadados locais e preferências.
 - versão do algoritmo;
 - timestamps.
 
-O pipeline usa o IndexedDB para reutilizar OCR por versão, URL, dimensões e hash dos bytes da imagem. As traduções são reutilizadas por versão, idiomas e texto reconhecido. O OCR expira em sete dias e a tradução em trinta dias; falhas no cache são ignoradas para não interromper o processamento.
+O pipeline usa o IndexedDB para reutilizar OCR por versão, URL, dimensões e hash dos bytes da imagem. As traduções são reutilizadas por versão, idiomas e texto reconhecido. O OCR expira em sete dias e a tradução em trinta dias; entradas expiradas são removidas quando o content script inicia. Falhas no cache são ignoradas para não interromper o processamento.
 
 ## Política de processamento
 

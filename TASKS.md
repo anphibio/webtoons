@@ -108,8 +108,8 @@
 - [x] Gerar hash.
 - [x] Cachear OCR por versão, URL, dimensões e hash dos bytes da imagem.
 - [x] Cachear tradução por idioma e conteúdo reconhecido.
-- [ ] Implementar invalidação.
-- [ ] Implementar limpeza.
+- [x] Implementar invalidação.
+- [x] Implementar limpeza automática de entradas expiradas.
 
 ## Fase 6 — Segurança
 

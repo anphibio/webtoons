@@ -41,6 +41,9 @@ let lastProcessingError: string | undefined;
 let progress = createProgress();
 const overlayManager = new OverlayManager(document);
 const cacheStore = new IndexedDbCacheStore();
+void cacheStore.pruneExpired().catch((error: unknown) => {
+  logger.warn("Não foi possível limpar o cache expirado", { reason: error instanceof Error ? error.message : "desconhecido" });
+});
 const ownsContentRuntime = claimRuntime(globalThis as unknown as Record<string, unknown>, "content-script");
 
 if (ownsContentRuntime) chrome.runtime.onMessage.addListener((rawMessage, _sender, sendResponse) => {
