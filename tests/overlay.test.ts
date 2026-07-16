@@ -141,4 +141,24 @@ describe("overlay reversível", () => {
     expect(overlays).toHaveLength(1);
     expect(overlays[0]?.textContent).toBe("novo");
   });
+
+  it("altera visibilidade, opacidade e fonte sem recriar os overlays", () => {
+    const image = document.createElement("img");
+    image.width = 800;
+    image.height = 1200;
+    document.body.append(image);
+    const manager = new OverlayManager(document);
+    manager.render(image, [{ id: "r1", text: "Olá", bbox: { x: 0, y: 0, width: 20, height: 20 } }]);
+    const overlay = document.querySelector<HTMLElement>("[data-wtl-overlay]")!;
+    const region = overlay.querySelector<HTMLElement>("[data-wtl-region]")!;
+
+    manager.setVisible(false);
+    manager.setOpacity(0.5);
+    manager.setFontSize(24);
+
+    expect(overlay.hidden).toBe(true);
+    expect(region.style.background).toBe("rgba(255, 255, 255, 0.5)");
+    expect(region.style.fontSize).toBe("24px");
+    expect(manager.getPreferences()).toEqual({ visible: false, opacity: 0.5, fontSize: 24 });
+  });
 });

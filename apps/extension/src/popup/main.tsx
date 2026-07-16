@@ -1,6 +1,7 @@
 import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { ExtensionMessage } from "../../../../packages/shared/src/messaging";
+import { DEFAULT_SETTINGS, loadSettings, saveSettings, type ExtensionSettings, type SettingsStorage } from "../../../../packages/shared/src/settings";
 
 import "./styles.css";
 
@@ -9,19 +10,23 @@ function Popup() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [progress, setProgress] = useState<ProcessingProgress>();
+  const [settings, setSettings] = useState<ExtensionSettings>(DEFAULT_SETTINGS);
+  const [translationVisible, setTranslationVisible] = useState(true);
 
   useEffect(() => {
+    void loadSettings(chromeStorage()).then(setSettings);
     void send("GET_STATUS");
     const timer = window.setInterval(() => void send("GET_STATUS"), 1_000);
     return () => window.clearInterval(timer);
   }, []);
 
-  async function send(type: ExtensionMessage["type"]): Promise<void> {
-    const isAction = type !== "GET_STATUS";
+  async function send(message: ExtensionMessage["type"] | ExtensionMessage): Promise<void> {
+    const type = typeof message === "string" ? message : message.type;
+    const isAction = type === "TRANSLATION_START" || type === "TRANSLATION_CANCEL";
     if (isAction) setBusy(true);
     setError("");
     try {
-      const response = await chrome.runtime.sendMessage({ type });
+      const response = await chrome.runtime.sendMessage(typeof message === "string" ? { type: message } : message);
       if (response?.status) setStatus(response.status);
       if (response?.error) setError(response.error);
       if (response?.progress) setProgress(response.progress as ProcessingProgress);
@@ -30,6 +35,18 @@ function Popup() {
     } finally {
       if (isAction) setBusy(false);
     }
+  }
+
+  async function setVisibility(visible: boolean): Promise<void> {
+    setTranslationVisible(visible);
+    await send({ type: "TRANSLATION_SET_VISIBILITY", visible });
+  }
+
+  async function setOverlaySetting(key: "opacity" | "fontSize", value: number): Promise<void> {
+    const next = { ...settings, [key]: value };
+    setSettings(next);
+    await saveSettings(chromeStorage(), next);
+    await send(key === "opacity" ? { type: "TRANSLATION_SET_OPACITY", opacity: value } : { type: "TRANSLATION_SET_FONT_SIZE", fontSize: value });
   }
 
   return (
@@ -52,11 +69,36 @@ function Popup() {
       <button type="button" className="secondary" onClick={() => void send("TRANSLATION_CANCEL")} disabled={busy}>
         Cancelar
       </button>
+      <section className="controls" aria-label="Controles da tradução">
+        <button type="button" className="secondary" onClick={() => void setVisibility(!translationVisible)}>
+          {translationVisible ? "Comparar com original" : "Mostrar tradução"}
+        </button>
+        <label>
+          Opacidade: {Math.round(settings.opacity * 100)}%
+          <input type="range" min="20" max="100" value={settings.opacity * 100} onChange={(event) => void setOverlaySetting("opacity", Number(event.target.value) / 100)} />
+        </label>
+        <label>
+          Fonte: {settings.fontSize}px
+          <input type="range" min="10" max="32" value={settings.fontSize} onChange={(event) => void setOverlaySetting("fontSize", Number(event.target.value))} />
+        </label>
+      </section>
       <button type="button" className="link" onClick={() => void chrome.runtime.openOptionsPage()}>
         Configurações
       </button>
     </main>
   );
+}
+
+function chromeStorage(): SettingsStorage {
+  return {
+    async get() {
+      const result = await chrome.storage.local.get("settings");
+      return result.settings;
+    },
+    async set(value) {
+      await chrome.storage.local.set({ settings: value });
+    },
+  };
 }
 
 interface ProcessingProgress {

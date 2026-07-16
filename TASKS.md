@@ -96,9 +96,9 @@
 - [x] Adiar o overlay de imagens lazy até que possuam tamanho visual.
 - [x] Reavaliar overlays lazy pendentes durante scroll e resize mesmo sem novo evento `load`.
 - [x] Impedir duas instâncias simultâneas do content script e substituir overlays órfãos de uma versão anterior.
-- [ ] Ajustar fonte.
-- [ ] Criar controle de opacidade.
-- [ ] Criar comparação original/tradução.
+- [x] Ajustar fonte.
+- [x] Criar controle de opacidade.
+- [x] Criar comparação original/tradução.
 - [x] Restaurar conteúdo.
 
 ## Fase 5 — Cache

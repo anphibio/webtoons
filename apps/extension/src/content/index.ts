@@ -78,6 +78,10 @@ function handleMessage(message: ExtensionMessage): void {
     overlayManager.clear();
     stopDiscovery();
   }
+
+  if (message.type === "TRANSLATION_SET_VISIBILITY") overlayManager.setVisible(message.visible);
+  if (message.type === "TRANSLATION_SET_OPACITY") overlayManager.setOpacity(message.opacity);
+  if (message.type === "TRANSLATION_SET_FONT_SIZE") overlayManager.setFontSize(message.fontSize);
 }
 
 function discoverPage(): void {
@@ -135,6 +139,9 @@ function discoverPage(): void {
 
 async function processDiscoveredImages(): Promise<void> {
   const settings = await loadSettings(chromeSettingsStorage());
+  overlayManager.setOpacity(settings.opacity);
+  overlayManager.setFontSize(settings.fontSize);
+  overlayManager.setVisible(true);
   if (settings.translationProvider !== "remote" || !settings.remoteConsent) {
     logger.info("Processamento remoto não habilitado; mantendo descoberta local");
     state = { status: "ready" };

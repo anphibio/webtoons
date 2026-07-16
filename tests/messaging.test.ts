@@ -22,4 +22,11 @@ describe("mensagens da extensão", () => {
       proxyUrl: "http://127.0.0.1:8000",
     });
   });
+
+  it("valida comandos de apresentação da tradução", () => {
+    expect(parseMessage({ type: "TRANSLATION_SET_VISIBILITY", visible: false })).toEqual({ type: "TRANSLATION_SET_VISIBILITY", visible: false });
+    expect(parseMessage({ type: "TRANSLATION_SET_OPACITY", opacity: 0.6 })).toEqual({ type: "TRANSLATION_SET_OPACITY", opacity: 0.6 });
+    expect(parseMessage({ type: "TRANSLATION_SET_FONT_SIZE", fontSize: 22 })).toEqual({ type: "TRANSLATION_SET_FONT_SIZE", fontSize: 22 });
+    expect(() => parseMessage({ type: "TRANSLATION_SET_OPACITY", opacity: 0.1 })).toThrow("Mensagem inválida");
+  });
 });

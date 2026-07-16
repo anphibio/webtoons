@@ -11,12 +11,41 @@ export interface OverlayRegion {
   bbox: OverlayBoundingBox;
 }
 
+export interface OverlayPreferences {
+  visible: boolean;
+  opacity: number;
+  fontSize: number;
+}
+
+const DEFAULT_PREFERENCES: OverlayPreferences = { visible: true, opacity: 0.82, fontSize: 16 };
+
 export class OverlayManager {
   private readonly roots = new Set<HTMLElement>();
   private readonly images = new Map<HTMLElement, HTMLImageElement>();
   private readonly pending = new Map<HTMLImageElement, () => void>();
 
+  private preferences: OverlayPreferences = { ...DEFAULT_PREFERENCES };
+
   constructor(private readonly document: Document) {}
+
+  setVisible(visible: boolean): void {
+    this.preferences.visible = visible;
+    for (const root of this.roots) root.hidden = !visible;
+  }
+
+  setOpacity(opacity: number): void {
+    this.preferences.opacity = clamp(opacity, 0.2, 1);
+    this.applyPreferences();
+  }
+
+  setFontSize(fontSize: number): void {
+    this.preferences.fontSize = clamp(fontSize, 10, 32);
+    this.applyPreferences();
+  }
+
+  getPreferences(): OverlayPreferences {
+    return { ...this.preferences };
+  }
 
   render(
     image: HTMLImageElement,
@@ -59,8 +88,8 @@ export class OverlayManager {
         boxSizing: "border-box",
         padding: "4px",
         color: "#111",
-        background: "rgba(255, 255, 255, 0.82)",
-        font: "600 16px/1.2 system-ui, sans-serif",
+        background: `rgba(255, 255, 255, ${this.preferences.opacity})`,
+        font: `600 ${this.preferences.fontSize}px/1.2 system-ui, sans-serif`,
         textAlign: "center",
         overflowWrap: "anywhere",
       });
@@ -68,6 +97,7 @@ export class OverlayManager {
     }
 
     this.document.body.append(root);
+    root.hidden = !this.preferences.visible;
     this.roots.add(root);
     this.images.set(root, image);
   }
@@ -127,6 +157,16 @@ export class OverlayManager {
       overflow: "hidden",
     });
   }
+
+  private applyPreferences(): void {
+    for (const root of this.roots) {
+      root.hidden = !this.preferences.visible;
+      for (const region of root.querySelectorAll<HTMLElement>("[data-wtl-region]")) {
+        region.style.background = `rgba(255, 255, 255, ${this.preferences.opacity})`;
+        region.style.fontSize = `${this.preferences.fontSize}px`;
+      }
+    }
+  }
 }
 
 function hasRenderableSize(image: HTMLImageElement): boolean {
@@ -139,4 +179,8 @@ function imageSource(image: HTMLImageElement): string {
 
 function positiveDimension(value: number | undefined): number | undefined {
   return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : undefined;
+}
+
+function clamp(value: number, minimum: number, maximum: number): number {
+  return Math.min(maximum, Math.max(minimum, value));
 }
