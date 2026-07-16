@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "Webtoon Image Translator",
+  "version": "0.1.0",
+  "description": "Fundação para traduzir textos incorporados em imagens de webtoons, mangás e quadrinhos.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": [
+    "https://i.tngcdn.com/*",
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://*.toongod.org/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["ocr.html", "ocr/worker.min.js", "ocr/core/*", "ocr/lang/*"],
+      "matches": ["https://*.toongod.org/*"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Traduzir capítulo",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
+}

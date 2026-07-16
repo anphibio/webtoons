@@ -1,0 +1,541 @@
+{
+  "generatedAt": "2026-07-16T04:07:11.449Z",
+  "samplePolicy": "recortes com CER da linha de base >= 40%",
+  "variants": [
+    "sparse-text",
+    "single-block",
+    "auto"
+  ],
+  "summary": [
+    {
+      "variant": "single-block",
+      "samples": 17,
+      "averageCer": 0.5199449865580893,
+      "averageWer": 0.8712400344753286
+    },
+    {
+      "variant": "auto",
+      "samples": 17,
+      "averageCer": 0.5893119187483232,
+      "averageWer": 1.0173023055375996
+    },
+    {
+      "variant": "sparse-text",
+      "samples": 17,
+      "averageCer": 0.7080331455128414,
+      "averageWer": 1.0304262730733318
+    }
+  ],
+  "rows": [
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "05",
+      "regionId": "r1",
+      "reference": "I CAN DO ANYTHING OTHER THAN PUTTING IT INSIDE.",
+      "prediction": "D\n\n0 ANYTHING\n\n/\n\nOTHER THAN",
+      "cer": 0.5957446808510638,
+      "wer": 0.7777777777777778
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "05",
+      "regionId": "r2",
+      "reference": "PLEASE JUST DON'T CROSS THE LAST LINE...",
+      "prediction": "INSIDE.\n\nPLEASE dust\n\nDON’T CROSS THE\n\n]",
+      "cer": 0.55,
+      "wer": 0.7142857142857143
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "11",
+      "regionId": "r1",
+      "reference": "THANK YOU? FIRST TIME A MARRIED WOMAN THANKED ME FOR GETTING WITH HER.",
+      "prediction": "a\n\n7\n\nWOMAN THANKED ME ENE\n\nFIRST TIME A MARRIED",
+      "cer": 0.6857142857142857,
+      "wer": 0.7692307692307693
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "11",
+      "regionId": "r2",
+      "reference": "Though we didn't go all the way...",
+      "prediction": "LL Ard\n\nToughiwe didn’t",
+      "cer": 0.8235294117647058,
+      "wer": 1
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "14",
+      "regionId": "r1",
+      "reference": "WHAT IS IT...?",
+      "prediction": "TR\n\nNHAT 15 IT...2",
+      "cer": 0.5,
+      "wer": 1.3333333333333333
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "16",
+      "regionId": "r1",
+      "reference": "OKAY... BUT LET'S GO THERE...",
+      "prediction": "/\n\nBI LEE 50\n\nA\n\nTHERE...",
+      "cer": 0.5172413793103449,
+      "wer": 1
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "19",
+      "regionId": "r1",
+      "reference": "I-I'VE NEVER SEEN ANYTHING LIKE IT...",
+      "prediction": "“%//\n\n/\n\n/\n\n~.\n\nI-I'VE NEVER\n\nSEEN ANYTHING\n\na\n\nNN\n\n=\n\noN",
+      "cer": 0.5675675675675675,
+      "wer": 1.3333333333333333
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_02",
+      "imageId": "07",
+      "regionId": "r1",
+      "reference": "IS IT BECAUSE OF THE MENTAL SHOCK...?",
+      "prediction": "I$ IT BECAUSE",
+      "cer": 0.6756756756756757,
+      "wer": 0.7142857142857143
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_02",
+      "imageId": "09",
+      "regionId": "r1",
+      "reference": "MAYBE WE SHOULD...",
+      "prediction": "/\n\nMAYBE\n\nWE SHOULD...\n\nNL\n\nW-",
+      "cer": 0.4444444444444444,
+      "wer": 1
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_02",
+      "imageId": "18",
+      "regionId": "r1",
+      "reference": "...I'M NOT OVEREXAGGERATING. IT'S THE TRUTH.",
+      "prediction": "es\n\n7,\n\noveRBGCERATNG.\n\nDR",
+      "cer": 0.6363636363636364,
+      "wer": 1
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "02",
+      "regionId": "r1",
+      "reference": "PRESS ♥",
+      "prediction": "2)",
+      "cer": 1,
+      "wer": 1
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "05",
+      "regionId": "r1",
+      "reference": "OH, THERE YOU ARE. WHERE'S THE GYM TEACHER?",
+      "prediction": "WHERE'S THE GYM\n\nH, THERE YOU ARE\n\nTEACHER?",
+      "cer": 0.5581395348837209,
+      "wer": 0.875
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "11",
+      "regionId": "r1",
+      "reference": "WHAT?!",
+      "prediction": "",
+      "cer": 1,
+      "wer": 1
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "14",
+      "regionId": "r1",
+      "reference": "THE GYM TEACHER'S DEAD...",
+      "prediction": "",
+      "cer": 1,
+      "wer": 1
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "14",
+      "regionId": "r2",
+      "reference": "HOW MANY PEOPLE IS THAT ALREADY...?",
+      "prediction": "plelis)",
+      "cer": 0.8571428571428571,
+      "wer": 1
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "19",
+      "regionId": "r1",
+      "reference": "ALRIGHT.",
+      "prediction": "4\n\nN\\\n\nALRIGHT.",
+      "cer": 0.625,
+      "wer": 2
+    },
+    {
+      "variant": "sparse-text",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "20",
+      "regionId": "r2",
+      "reference": "WHY DO WE HAVE TO DO IT ALONE...?",
+      "prediction": "",
+      "cer": 1,
+      "wer": 1
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "05",
+      "regionId": "r1",
+      "reference": "I CAN DO ANYTHING OTHER THAN PUTTING IT INSIDE.",
+      "prediction": "I CAN\nDO ANYTHING\nOTHER THAN",
+      "cer": 0.40425531914893614,
+      "wer": 0.3333333333333333
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "05",
+      "regionId": "r2",
+      "reference": "PLEASE JUST DON'T CROSS THE LAST LINE...",
+      "prediction": "~    \"INSIDE.\nPLEASE JusT   )\nDON'T CROSS THE",
+      "cer": 0.65,
+      "wer": 0.7142857142857143
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "11",
+      "regionId": "r1",
+      "reference": "THANK YOU? FIRST TIME A MARRIED WOMAN THANKED ME FOR GETTING WITH HER.",
+      "prediction": "i                          Ee\nTHANK YOU?\nFIRST TME A MARRIED\nWOMAN THANKED ME ENE    BE",
+      "cer": 0.32857142857142857,
+      "wer": 0.5384615384615384
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "11",
+      "regionId": "r2",
+      "reference": "Though we didn't go all the way...",
+      "prediction": "foushiwe didn't",
+      "cer": 0.6470588235294118,
+      "wer": 0.8571428571428571
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "14",
+      "regionId": "r1",
+      "reference": "WHAT IS IT...?",
+      "prediction": ";                         N\nNHAT 15 IT...2",
+      "cer": 0.5714285714285714,
+      "wer": 1.6666666666666667
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "16",
+      "regionId": "r1",
+      "reference": "OKAY... BUT LET'S GO THERE...",
+      "prediction": "/                 N\nOKAY...\nBUT LET'S GO\nTHERE...\ny,",
+      "cer": 0.2413793103448276,
+      "wer": 0.6
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "19",
+      "regionId": "r1",
+      "reference": "I-I'VE NEVER SEEN ANYTHING LIKE IT...",
+      "prediction": "S I-IVE NEVER\nSEEN ANYTHING\n\n        LIKE IT...         |\n<7                     BR",
+      "cer": 0.2972972972972973,
+      "wer": 0.8333333333333334
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_02",
+      "imageId": "07",
+      "regionId": "r1",
+      "reference": "IS IT BECAUSE OF THE MENTAL SHOCK...?",
+      "prediction": "5 IT BECAUSE\nOF THE MENTAL\nSHOCK...?",
+      "cer": 0.05405405405405406,
+      "wer": 0.14285714285714285
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_02",
+      "imageId": "09",
+      "regionId": "r1",
+      "reference": "MAYBE WE SHOULD...",
+      "prediction": "/                            AN\nMAYBE\n\nWE SHOULD...\n\nNL         A",
+      "cer": 0.5555555555555556,
+      "wer": 1.3333333333333333
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_02",
+      "imageId": "18",
+      "regionId": "r1",
+      "reference": "...I'M NOT OVEREXAGGERATING. IT'S THE TRUTH.",
+      "prediction": "...IM NOT\nOVEREXAGGERATING.\nIT'S THE TRUTH.",
+      "cer": 0.022727272727272728,
+      "wer": 0.16666666666666666
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "02",
+      "regionId": "r1",
+      "reference": "PRESS ♥",
+      "prediction": "/\n2)\n/",
+      "cer": 0.8571428571428571,
+      "wer": 1.5
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "05",
+      "regionId": "r1",
+      "reference": "OH, THERE YOU ARE. WHERE'S THE GYM TEACHER?",
+      "prediction": "H, THERE YOU ARE.\nWHERE'S THE GYM\nTEACHER?\n;",
+      "cer": 0.06976744186046512,
+      "wer": 0.25
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "11",
+      "regionId": "r1",
+      "reference": "WHAT?!",
+      "prediction": "<<",
+      "cer": 1,
+      "wer": 1
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "14",
+      "regionId": "r1",
+      "reference": "THE GYM TEACHER'S DEAD...",
+      "prediction": "",
+      "cer": 1,
+      "wer": 1
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "14",
+      "regionId": "r2",
+      "reference": "HOW MANY PEOPLE IS THAT ALREADY...?",
+      "prediction": "SET",
+      "cer": 0.9428571428571428,
+      "wer": 1
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "19",
+      "regionId": "r1",
+      "reference": "ALRIGHT.",
+      "prediction": "3               \\\nALRIGHT.",
+      "cer": 0.5,
+      "wer": 2
+    },
+    {
+      "variant": "single-block",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "20",
+      "regionId": "r2",
+      "reference": "WHY DO WE HAVE TO DO IT ALONE...?",
+      "prediction": "Why dofivelhave",
+      "cer": 0.696969696969697,
+      "wer": 0.875
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "05",
+      "regionId": "r1",
+      "reference": "I CAN DO ANYTHING OTHER THAN PUTTING IT INSIDE.",
+      "prediction": "I CAN\nDO ANYTHING\nOTHER THAN",
+      "cer": 0.40425531914893614,
+      "wer": 0.3333333333333333
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "05",
+      "regionId": "r2",
+      "reference": "PLEASE JUST DON'T CROSS THE LAST LINE...",
+      "prediction": "~ INSIDE.\n\nPLEASE JUST   )\nDON’T CROSS THE",
+      "cer": 0.65,
+      "wer": 0.8571428571428571
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "11",
+      "regionId": "r1",
+      "reference": "THANK YOU? FIRST TIME A MARRIED WOMAN THANKED ME FOR GETTING WITH HER.",
+      "prediction": "THANK YOU?\nFIRST TIME A MARRIED\nIWAMAN THANKED ME END",
+      "cer": 0.3,
+      "wer": 0.38461538461538464
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "11",
+      "regionId": "r2",
+      "reference": "Though we didn't go all the way...",
+      "prediction": "",
+      "cer": 1,
+      "wer": 1
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "14",
+      "regionId": "r1",
+      "reference": "WHAT IS IT...?",
+      "prediction": ".        N\n\nNHAT 15 IT...2",
+      "cer": 0.5714285714285714,
+      "wer": 1.6666666666666667
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "16",
+      "regionId": "r1",
+      "reference": "OKAY... BUT LET'S GO THERE...",
+      "prediction": "/   N\n\nOKAY...\nBUT LET'S GO\nTHERE...\nA",
+      "cer": 0.20689655172413793,
+      "wer": 0.6
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_01",
+      "imageId": "19",
+      "regionId": "r1",
+      "reference": "I-I'VE NEVER SEEN ANYTHING LIKE IT...",
+      "prediction": "“SQ |    ~\n\nN\\\n\nSE\nVX\nTE\nWY\nS23\nSy\n\n7 ~ Wy\n\n7\n\n777 RN",
+      "cer": 1,
+      "wer": 2.6666666666666665
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_02",
+      "imageId": "07",
+      "regionId": "r1",
+      "reference": "IS IT BECAUSE OF THE MENTAL SHOCK...?",
+      "prediction": "I$ IT BECAUSE\nOF THE MENTAL\nSHOCK...Z2",
+      "cer": 0.08108108108108109,
+      "wer": 0.2857142857142857
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_02",
+      "imageId": "09",
+      "regionId": "r1",
+      "reference": "MAYBE WE SHOULD...",
+      "prediction": "/      N\n\nMAYBE\nWE SHOULD...\n\nNL  A",
+      "cer": 0.5,
+      "wer": 1.3333333333333333
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_02",
+      "imageId": "18",
+      "regionId": "r1",
+      "reference": "...I'M NOT OVEREXAGGERATING. IT'S THE TRUTH.",
+      "prediction": "M\n\npov          7\nOVEREXAGGERATING.\nITS THE TRUTH.",
+      "cer": 0.22727272727272727,
+      "wer": 0.6666666666666666
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "02",
+      "regionId": "r1",
+      "reference": "PRESS ♥",
+      "prediction": "/\n2)\n/",
+      "cer": 0.8571428571428571,
+      "wer": 1.5
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "05",
+      "regionId": "r1",
+      "reference": "OH, THERE YOU ARE. WHERE'S THE GYM TEACHER?",
+      "prediction": "H, THERE YOU ARE.\nWHERE'S THE GYM\nTEACHER?",
+      "cer": 0.023255813953488372,
+      "wer": 0.125
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "11",
+      "regionId": "r1",
+      "reference": "WHAT?!",
+      "prediction": "",
+      "cer": 1,
+      "wer": 1
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "14",
+      "regionId": "r1",
+      "reference": "THE GYM TEACHER'S DEAD...",
+      "prediction": "",
+      "cer": 1,
+      "wer": 1
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "14",
+      "regionId": "r2",
+      "reference": "HOW MANY PEOPLE IS THAT ALREADY...?",
+      "prediction": "",
+      "cer": 1,
+      "wer": 1
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "19",
+      "regionId": "r1",
+      "reference": "ALRIGHT.",
+      "prediction": "3      \\\n\nALRIGHT.",
+      "cer": 0.5,
+      "wer": 2
+    },
+    {
+      "variant": "auto",
+      "lot": "webtoon_training_lote_03",
+      "imageId": "20",
+      "regionId": "r2",
+      "reference": "WHY DO WE HAVE TO DO IT ALONE...?",
+      "prediction": "Why dofive]have)",
+      "cer": 0.696969696969697,
+      "wer": 0.875
+    }
+  ]
+}

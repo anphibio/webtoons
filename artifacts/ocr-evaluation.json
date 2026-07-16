@@ -1,0 +1,624 @@
+{
+  "generatedAt": "2026-07-16T04:01:47.997Z",
+  "metricDefinition": {
+    "cer": "distância de Levenshtein por caracteres após normalização de caixa e espaços",
+    "wer": "distância de Levenshtein por palavras após normalização de caixa e espaços"
+  },
+  "samples": 66,
+  "summary": [
+    {
+      "lot": "webtoon_training_lote_01",
+      "samples": 22,
+      "averageCer": 0.2543580372680915,
+      "averageWer": 0.46336510711510714
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "samples": 20,
+      "averageCer": 0.16625767278152984,
+      "averageWer": 0.31854964479964476
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "samples": 24,
+      "averageCer": 0.3399792072198027,
+      "averageWer": 0.526140873015873
+    }
+  ],
+  "rows": [
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "01",
+      "regionId": "r1",
+      "reference": "I FEEL SORRY FOR YOUR HUSBAND AND KID...",
+      "prediction": "I FEEL\n\nSORRY FOR\n\nYOUR HUSBAND\n\n/",
+      "cer": 0.25,
+      "wer": 0.25
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "02",
+      "regionId": "r1",
+      "reference": "BUT I CAN'T HOLD BACK ANYMORE.",
+      "prediction": "BUT\n\nI CAN'T\n\nHOLD BACK\n\nANYMORE.",
+      "cer": 0,
+      "wer": 0
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "03",
+      "regionId": "r1",
+      "reference": "...SORRY.",
+      "prediction": "...SORRY.",
+      "cer": 0,
+      "wer": 0
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "04",
+      "regionId": "r1",
+      "reference": "NOTHING MORE THAN THIS PLEASE...",
+      "prediction": "NOTHING\n\nMORE THAN\n\nTHIS PLEASE...",
+      "cer": 0,
+      "wer": 0
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "05",
+      "regionId": "r1",
+      "reference": "I CAN DO ANYTHING OTHER THAN PUTTING IT INSIDE.",
+      "prediction": "D\n\n0 ANYTHING\n\n/\n\nOTHER THAN",
+      "cer": 0.5957446808510638,
+      "wer": 0.7777777777777778
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "05",
+      "regionId": "r2",
+      "reference": "PLEASE JUST DON'T CROSS THE LAST LINE...",
+      "prediction": "INSIDE.\n\nPLEASE dust\n\nDON’T CROSS THE\n\n]",
+      "cer": 0.55,
+      "wer": 0.7142857142857143
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "06",
+      "regionId": "r1",
+      "reference": "SHE'S THE ONLY PERSON WHO WAS SOMEWHAT NICE TO ME.",
+      "prediction": "SHE'S THE ONLY PERSON WH:\n\nWAS SOMEWHAT NICE TO ME",
+      "cer": 0.04,
+      "wer": 0.2
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "07",
+      "regionId": "r1",
+      "reference": "I CAN FORCE MYSELF ON HER, BUT MAYBE I SHOULDN'T CROSS THE LINE FOR HER KINDNESS.",
+      "prediction": "I CAN FORCE\n\nMYSELF ON HER,\n\nUT MAYBE I SHOULDN'T\n\nCROSS THE LINE FOR\n\nHER KINDNESS.",
+      "cer": 0.012345679012345678,
+      "wer": 0.0625
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "08",
+      "regionId": "r1",
+      "reference": "I WON'T CROSS, BUT PLEASE HELP ME NEXT TIME TOO.",
+      "prediction": "I WON'T CROSS,\n\nBUT PLEASE HELP M\n\nNEXT TIME TOO.",
+      "cer": 0.020833333333333332,
+      "wer": 0.1
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "09",
+      "regionId": "r1",
+      "reference": "...OKAY!",
+      "prediction": "...OKAY!",
+      "cer": 0,
+      "wer": 0
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "10",
+      "regionId": "r1",
+      "reference": "THANK YOU SO MUCH!",
+      "prediction": "THANK YOU\n\n50 MUCH!",
+      "cer": 0.1111111111111111,
+      "wer": 0.25
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "11",
+      "regionId": "r1",
+      "reference": "THANK YOU? FIRST TIME A MARRIED WOMAN THANKED ME FOR GETTING WITH HER.",
+      "prediction": "a\n\n7\n\nWOMAN THANKED ME ENE\n\nFIRST TIME A MARRIED",
+      "cer": 0.6857142857142857,
+      "wer": 0.7692307692307693
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "11",
+      "regionId": "r2",
+      "reference": "Though we didn't go all the way...",
+      "prediction": "LL Ard\n\nToughiwe didn’t",
+      "cer": 0.8235294117647058,
+      "wer": 1
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "12",
+      "regionId": "r1",
+      "reference": "YEONJU-SSI, IN RETURN FOR NOT PUTTING IT IN...",
+      "prediction": "YEONJU-S5,\n\nN RETURN FOR NO\n\nPUTTING IT IN...",
+      "cer": 0.08695652173913043,
+      "wer": 0.375
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "13",
+      "regionId": "r1",
+      "reference": "THERE'S SOMETHING I WANNA TRY. CAN I?",
+      "prediction": "THERE'S SOMETHIN\n\nI WANNA TRY. CAN ]\n\n\\",
+      "cer": 0.10810810810810811,
+      "wer": 0.42857142857142855
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "14",
+      "regionId": "r1",
+      "reference": "WHAT IS IT...?",
+      "prediction": "TR\n\nNHAT 15 IT...2",
+      "cer": 0.5,
+      "wer": 1.3333333333333333
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "15",
+      "regionId": "r1",
+      "reference": "WELL, IT'S...",
+      "prediction": "WELL,\n\nIT'S",
+      "cer": 0.23076923076923078,
+      "wer": 0.5
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "16",
+      "regionId": "r1",
+      "reference": "OKAY... BUT LET'S GO THERE...",
+      "prediction": "/\n\nBI LEE 50\n\nA\n\nTHERE...",
+      "cer": 0.5172413793103449,
+      "wer": 1
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "17",
+      "regionId": "r1",
+      "reference": "THIS... SHOULD WORK.",
+      "prediction": "THIS...\n\nSHOULD\n\nWORK.",
+      "cer": 0,
+      "wer": 0
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "18",
+      "regionId": "r1",
+      "reference": "...! WHY IS HE SO BIG?!",
+      "prediction": "7\n\n\\\n\nY 5\n\nHE o BiG?!",
+      "cer": 0.391304347826087,
+      "wer": 0.8333333333333334
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "19",
+      "regionId": "r1",
+      "reference": "I-I'VE NEVER SEEN ANYTHING LIKE IT...",
+      "prediction": "“%//\n\n/\n\n/\n\n~.\n\nI-I'VE NEVER\n\nSEEN ANYTHING\n\na\n\nNN\n\n=\n\noN",
+      "cer": 0.5675675675675675,
+      "wer": 1.3333333333333333
+    },
+    {
+      "lot": "webtoon_training_lote_01",
+      "imageId": "20",
+      "regionId": "r1",
+      "reference": "I CAN'T BELIEVE I GET TO FUCK THE THIGHS OF THIS DELICIOUS VOLUPTUOUS MARRIED WOMAN...",
+      "prediction": "N\n\nBELIEVE I GET TO\n\nFUCK THE THIGHS OF THE\n\nDELIcIovs VOLUPTUOUS\n\nMARRIED WOMAN...",
+      "cer": 0.10465116279069768,
+      "wer": 0.26666666666666666
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "01",
+      "regionId": "r1",
+      "reference": "HOW DOES IT FEEL WHEN I BRACE MY THIGHS...?",
+      "prediction": "HOW DOES IT\n\nEEL WHEN I BRACE\n\nMY THIGHS...?",
+      "cer": 0.023255813953488372,
+      "wer": 0.1111111111111111
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "02",
+      "regionId": "r1",
+      "reference": "I'M GONNA CUM NOW...! MAKE SURE YOU TAKE IT THIS TIME TOO!",
+      "prediction": "I'M GONNA\n\nCUM NOW... MAKE\n\nSURE YOU TAKE IT\n\nTHIS TIME TOO!\n\n\\",
+      "cer": 0.05172413793103448,
+      "wer": 0.16666666666666666
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "03",
+      "regionId": "r1",
+      "reference": "MY FIRST DAY'S LOOT IS THE MARRIED FLIGHT ATTENDANT.",
+      "prediction": "AY FIRST DAY'S LOOT\n\n THE MARRIED FLIGH\n\nATTENDANT.",
+      "cer": 0.09615384615384616,
+      "wer": 0.3333333333333333
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "04",
+      "regionId": "r1",
+      "reference": "NOT BAD FOR THE FIRST DAY.",
+      "prediction": "NOT BAD FOR\n\n\"HE FIRST DAY",
+      "cer": 0.07692307692307693,
+      "wer": 0.3333333333333333
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "05",
+      "regionId": "r1",
+      "reference": "HONESTLY, THAT WAS A CRAZY THING TO DO.",
+      "prediction": "HONESTLY,\n\nHAT WAS A CRAZ\n\nTHING TO DOD",
+      "cer": 0.07692307692307693,
+      "wer": 0.375
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "06",
+      "regionId": "r1",
+      "reference": "DOING THAT STUFF WITH A CORPSE HERE?",
+      "prediction": "DOING\n\nTHAT STUFF\n\nWITH A CORPSE\n\nHERE?",
+      "cer": 0,
+      "wer": 0
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "07",
+      "regionId": "r1",
+      "reference": "IS IT BECAUSE OF THE MENTAL SHOCK...?",
+      "prediction": "I$ IT BECAUSE",
+      "cer": 0.6756756756756757,
+      "wer": 0.7142857142857143
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "08",
+      "regionId": "r1",
+      "reference": "STILL... IT REALLY CALMS ME DOWN.",
+      "prediction": "IT REALLY Caims\n\nME DOWN.",
+      "cer": 0.30303030303030304,
+      "wer": 0.3333333333333333
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "09",
+      "regionId": "r1",
+      "reference": "MAYBE WE SHOULD...",
+      "prediction": "/\n\nMAYBE\n\nWE SHOULD...\n\nNL\n\nW-",
+      "cer": 0.4444444444444444,
+      "wer": 1
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "10",
+      "regionId": "r1",
+      "reference": "...AS EXPECTED, SHE'S REACTING DIFFERENTLY NOW...",
+      "prediction": "...AS EXPECTED,\n\nSHE'S REACTING\n\nDIFFERENTLY\n\nNi",
+      "cer": 0.10204081632653061,
+      "wer": 0.16666666666666666
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "11",
+      "regionId": "r1",
+      "reference": "I'M GONNA NEED A PROPER LEASH ON HER.",
+      "prediction": "IM GONNA\n\nNEED A PROPER\n\nLEASH ON HER.",
+      "cer": 0.02702702702702703,
+      "wer": 0.125
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "12",
+      "regionId": "r1",
+      "reference": "YEONJU-SSI, YOU WANNA SAVE YOUR PEER WHO RAN AWAY EARLIER, RIGHT?",
+      "prediction": "YOU WANNA SAVE\n\nOUR PEER WHO RAN\n\nAWAY EARLIER,\n\nRIGHT?",
+      "cer": 0.2,
+      "wer": 0.18181818181818182
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "13",
+      "regionId": "r1",
+      "reference": "HUH? SAVE...?",
+      "prediction": "HUH?\n\n|  SAVE...?",
+      "cer": 0.15384615384615385,
+      "wer": 0.5
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "14",
+      "regionId": "r1",
+      "reference": "HONESTLY, HYUNJI-SSI PRACTICALLY KILLED OUR GYM TEACHER.",
+      "prediction": "HONESTLY, HYUNJI-55I\n\nPRACTICALLY KILLED\n\nOUR GYM TEACHER.",
+      "cer": 0.03571428571428571,
+      "wer": 0.14285714285714285
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "15",
+      "regionId": "r1",
+      "reference": "WHAT IF THE OTHERS FIND OUT SHE THREW A SNAKE AND RAN AWAY?",
+      "prediction": "\\\n\nWw\n\nIF THE OTHERS\n\n~IND OUT SHE THREW\n\nA SNAKE AND\n\nRAN AWAY?",
+      "cer": 0.0847457627118644,
+      "wer": 0.23076923076923078
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "16",
+      "regionId": "r1",
+      "reference": "THE OTHER KIDS MIGHT TAKE TURNS PUNISHING HER FOR IT.",
+      "prediction": "\\\n\nTHE OTHER\n\nKIDS MIGHT TAKE\n\nTURNS PUNISHING\n\nHER FOR IT.",
+      "cer": 0.03773584905660377,
+      "wer": 0.1
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "17",
+      "regionId": "r1",
+      "reference": "THEY DON'T SEE US AS HUMANS, YOU SEE.",
+      "prediction": "THEY DON'T\n\nSEE US AS HUMANS\n\nYOU SEE.\n\nRe: ad",
+      "cer": 0.21621621621621623,
+      "wer": 0.375
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "18",
+      "regionId": "r1",
+      "reference": "...I'M NOT OVEREXAGGERATING. IT'S THE TRUTH.",
+      "prediction": "es\n\n7,\n\noveRBGCERATNG.\n\nDR",
+      "cer": 0.6363636363636364,
+      "wer": 1
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "19",
+      "regionId": "r1",
+      "reference": "I'LL MAKE SURE TO COVER IT UP. I KNOW THEM WELL.",
+      "prediction": "/\n\nN\n\nI'LL MAKE\n\nSURE TO COVER\n\nIT UP. I KNOW\n\nTHEM WELL.",
+      "cer": 0.08333333333333333,
+      "wer": 0.18181818181818182
+    },
+    {
+      "lot": "webtoon_training_lote_02",
+      "imageId": "20",
+      "regionId": "r1",
+      "reference": "THAT WAY, YOU'LL BE SAFE TOO.",
+      "prediction": "THAT WAY,\n\nYOU'LL BE\n\nSAFE TOO.",
+      "cer": 0,
+      "wer": 0
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "01",
+      "regionId": "r1",
+      "reference": "...THANKS FOR HELPING ME...",
+      "prediction": "/\n\nAN\n\n...THANKS FOR\n\nHELPING ME...",
+      "cer": 0.18518518518518517,
+      "wer": 0.5
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "02",
+      "regionId": "r1",
+      "reference": "PRESS ♥",
+      "prediction": "2)",
+      "cer": 1,
+      "wer": 1
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "03",
+      "regionId": "r1",
+      "reference": "GOOD. SHE'S OBEDIENT NOW.",
+      "prediction": "GOOD. 5HE'S\n\nOBEDIENT NOW.",
+      "cer": 0.04,
+      "wer": 0.25
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "04",
+      "regionId": "r1",
+      "reference": "HERE, YEONJU-SSI. NOW OPEN YOUR MOUTH.",
+      "prediction": "/\n\nHERE,\n\nYEONJU-55I.\n\nNOW OPEN YOUR\n\n\\:",
+      "cer": 0.2631578947368421,
+      "wer": 0.5
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "05",
+      "regionId": "r1",
+      "reference": "OH, THERE YOU ARE. WHERE'S THE GYM TEACHER?",
+      "prediction": "WHERE'S THE GYM\n\nH, THERE YOU ARE\n\nTEACHER?",
+      "cer": 0.5581395348837209,
+      "wer": 0.875
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "06",
+      "regionId": "r1",
+      "reference": "SANG TAEHUN\nHEIR TO A HUGE ENTERTAINMENT CORPORATION\nSANG JAEJUN'S RELATIVE.",
+      "prediction": "SANG TAEHUN\n\nHEIR TO A HUGE\n\nENTERTAINMENT CORPORATION\n\nSANG JAEJUN'S RELATIVE.",
+      "cer": 0,
+      "wer": 0
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "07",
+      "regionId": "r1",
+      "reference": "HUH? SHE'S ALREADY HERE.",
+      "prediction": "HUHZ SHE'S\n\nALREADY HERE.",
+      "cer": 0.041666666666666664,
+      "wer": 0.25
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "08",
+      "regionId": "r1",
+      "reference": "...DIDN'T SHE TELL YOU THE WHOLE STORY?",
+      "prediction": "/\n\n...DIDN'T\n\nSHE TELL YOU\n\nTHE WHOLE\n\nSTORY?",
+      "cer": 0.05128205128205128,
+      "wer": 0.14285714285714285
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "09",
+      "regionId": "r1",
+      "reference": "I DON'T KNOW. SHE KEPT RAMBLING NONSENSE.",
+      "prediction": "/\n\nI DON'T KNOW.\n\nSHE KEPT RAMBLING\n\nNONSENSE:\n\n/",
+      "cer": 0.12195121951219512,
+      "wer": 0.42857142857142855
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "10",
+      "regionId": "r1",
+      "reference": "A SNAKE BIT THEM. THEY'RE DEAD.",
+      "prediction": "JOF\n\nA SNAKE BIT THEM.\n\nTHEY'RE DEAD.",
+      "cer": 0.12903225806451613,
+      "wer": 0.16666666666666666
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "11",
+      "regionId": "r1",
+      "reference": "WHAT?!",
+      "prediction": "",
+      "cer": 1,
+      "wer": 1
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "12",
+      "regionId": "r1",
+      "reference": "THERE ARE A LOT OF SNAKES ON THIS ISLAND.",
+      "prediction": "vil\n\nTHERE ARE A\n\nLOT OF SNAKES\n\nON THIS ISLAND.",
+      "cer": 0.0975609756097561,
+      "wer": 0.1111111111111111
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "13",
+      "regionId": "r1",
+      "reference": "WE'RE SCREWED. THERE ARE SNAKES ON WHITE SANDY BEACHES TOO?",
+      "prediction": "/\n\nWE'RE SCREWED.\n\nTHERE ARE SNAKES\n\nON WHITE SANDY\n\nBEACHES TOO?",
+      "cer": 0.03389830508474576,
+      "wer": 0.1
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "13",
+      "regionId": "r2",
+      "reference": "WHAT ABOUT THE CORPSE?",
+      "prediction": "A\n\nWHAT ABOUT\n\nTHE CORPSE?\n\n\\//\n\nJ",
+      "cer": 0.36363636363636365,
+      "wer": 0.75
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "14",
+      "regionId": "r1",
+      "reference": "THE GYM TEACHER'S DEAD...",
+      "prediction": "",
+      "cer": 1,
+      "wer": 1
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "14",
+      "regionId": "r2",
+      "reference": "HOW MANY PEOPLE IS THAT ALREADY...?",
+      "prediction": "plelis)",
+      "cer": 0.8571428571428571,
+      "wer": 1
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "15",
+      "regionId": "r1",
+      "reference": "WE LEFT IT THERE. WE COULDN'T DRAG IT HERE IN THIS HEAT.",
+      "prediction": "Va\n\nWE LEFT IT THERE.\n\nWE COULDN'T DRAG I\n\nHERE IN THIS HEAT.",
+      "cer": 0.07142857142857142,
+      "wer": 0.16666666666666666
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "16",
+      "regionId": "r1",
+      "reference": "HEY... SHOULDN'T WE STAND GUARD DURING THE NIGHT?",
+      "prediction": "SHOTLONT\n\nWE STAND GUARD\n\nDURING THE\n\nNIGHT?",
+      "cer": 0.20408163265306123,
+      "wer": 0.25
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "17",
+      "regionId": "r1",
+      "reference": "SO, THERE ARE FOUR TEACHERS AND THREE CREW STAFF REMAINING.",
+      "prediction": "7\n\n50, THERE ARE\n\nFOUR TEACHERS AND\n\nTHREE CREW STAFF\n\nPEMAININA",
+      "cer": 0.11864406779661017,
+      "wer": 0.3
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "17",
+      "regionId": "r2",
+      "reference": "TEAMS OF TWO CAN WATCH GUARD FOR THREE HOURS EACH.",
+      "prediction": "TEAMS OF\n\n‘WO CAN WATCH\n\nJARD FOR THREE\n\nHOURS EACH.\n\nyi\n\ny",
+      "cer": 0.16,
+      "wer": 0.4
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "18",
+      "regionId": "r1",
+      "reference": "GOOD. LET'S DECIDE ON THE TEAMS AND EAT THEN.",
+      "prediction": "BN\n\nA\n\nLET'S DECIDE\n\nON THE TEAMS\n\nAND EAT\n\nTHEN.",
+      "cer": 0.1111111111111111,
+      "wer": 0.2222222222222222
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "19",
+      "regionId": "r1",
+      "reference": "ALRIGHT.",
+      "prediction": "4\n\nN\\\n\nALRIGHT.",
+      "cer": 0.625,
+      "wer": 2
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "20",
+      "regionId": "r1",
+      "reference": "WE NEED ONE MORE PERSON. HOW ABOUT PUTTING IN THAT STUDENT? WOOJIN-SSI, WAS IT?",
+      "prediction": "WE NEED ONE\n\nMORE PERSON. HOW\n\nABOUT PUTTING IN THAT\n\nSTUDENT? WOOJIN-55I,",
+      "cer": 0.12658227848101267,
+      "wer": 0.21428571428571427
+    },
+    {
+      "lot": "webtoon_training_lote_03",
+      "imageId": "20",
+      "regionId": "r2",
+      "reference": "WHY DO WE HAVE TO DO IT ALONE...?",
+      "prediction": "",
+      "cer": 1,
+      "wer": 1
+    }
+  ]
+}

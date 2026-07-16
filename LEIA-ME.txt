@@ -1,0 +1,19 @@
+PACOTE WEBTOON IMAGE TRANSLATOR
+
+Conteúdo:
+- Documentação completa para orientar o Codex.
+- Projeto focado em extensão Chrome Manifest V3.
+- OCR de textos incorporados em imagens.
+- Tradução para português brasileiro.
+- Sobreposição reversível sobre webtoons, mangás e quadrinhos.
+
+Ordem recomendada de leitura:
+1. README.md
+2. AGENTS.md
+3. GOAL.md
+4. PRODUCT_REQUIREMENTS.md
+5. ARCHITECTURE.md
+6. TASKS.md
+
+Sugestão para iniciar no Codex:
+Use o prompt disponível em PROMPTS.md.

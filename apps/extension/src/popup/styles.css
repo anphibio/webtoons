@@ -1,0 +1,10 @@
+:root { font-family: system-ui, sans-serif; color: #172033; background: #f7f8fb; }
+body { margin: 0; min-width: 280px; }
+.panel { display: grid; gap: 12px; padding: 18px; }
+h1 { font-size: 18px; margin: 0; }
+.status { margin: 0; font-size: 13px; color: #566176; }
+.error { margin: 0; font-size: 13px; color: #b42318; }
+button { border: 0; border-radius: 8px; padding: 10px 12px; background: #315efb; color: white; cursor: pointer; }
+button:disabled { cursor: wait; opacity: .6; }
+.secondary { background: #e4e8f2; color: #172033; }
+.link { background: transparent; color: #315efb; padding: 4px; }
