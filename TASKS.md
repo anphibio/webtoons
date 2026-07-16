@@ -116,9 +116,9 @@
 - [ ] Revisar permissões.
 - [x] Implementar consentimento remoto.
 - [ ] Proteger credenciais.
-- [ ] Sanitizar mensagens.
+- [x] Sanitizar mensagens.
 - [x] Aplicar CSP compatível com o WebAssembly local do OCR.
-- [ ] Criar política de privacidade.
+- [x] Criar política de privacidade.
 
 ## Fase 7 — Qualidade
 

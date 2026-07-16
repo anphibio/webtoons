@@ -45,6 +45,10 @@ A solução será dividida em:
 8. Adaptadores por site.
 9. Backend opcional para modelos e serviços pesados.
 
+## Privacidade
+
+O OCR é local por padrão. A tradução remota só é habilitada após consentimento explícito; consulte a [política de privacidade](docs/PRIVACY.md) para os dados processados, armazenados e removidos.
+
 ## Uso com Codex
 
 Leia primeiro:
