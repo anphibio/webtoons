@@ -178,6 +178,8 @@ O pipeline usa o IndexedDB para reutilizar OCR por versão, URL, dimensões e ha
 
 O glossário é configurado localmente como um objeto JSON de termos de origem e preferências de tradução. Ele é aplicado após a resposta do provedor, incluído na chave do cache de tradução e limitado a termos curtos para evitar uso abusivo.
 
+O teste integrado do pipeline executa o fluxo completo em um documento simulado e verifica que a imagem original permanece intacta, a tradução é renderizada e a posição da região é preservada.
+
 ## Política de processamento
 
 - prioridade para elementos visíveis;

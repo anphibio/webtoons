@@ -123,6 +123,7 @@
 ## Fase 7 — Qualidade
 
 - [ ] Testes E2E.
+- [x] Teste integrado do fluxo imagem → OCR → tradução → overlay.
 - [x] Testes de adaptadores.
 - [ ] Regressão visual.
 - [x] Benchmark de capítulos longos.
