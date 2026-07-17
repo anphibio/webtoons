@@ -13,7 +13,7 @@ export function normalizeOcrResult(
   const regions = raw.regions
     .map((region) => {
       const text = sanitizeOcrText(region.text.trim());
-      if (!text || isKnownWatermark(text) || !isLikelyText(text, region.confidence)) return null;
+      if (!text || isKnownWatermark(text) || !isLikelyText(text, region.confidence, region.bbox)) return null;
 
       const bbox = normalizeShortTallBox(region.bbox, text, typicalHeight, abnormalHeightLimit);
 
@@ -71,7 +71,11 @@ function normalizeShortTallBox(
   return { ...box, y: box.y + Math.round((box.height - height) / 2), height };
 }
 
-function isLikelyText(text: string, confidence: number): boolean {
+function isLikelyText(
+  text: string,
+  confidence: number,
+  bbox: BoundingBox,
+): boolean {
   if (confidence < 0.5) return false;
   const compact = text.replace(/\s/g, "");
   if (compact.length < 3) return false;
@@ -80,7 +84,7 @@ function isLikelyText(text: string, confidence: number): boolean {
   if (letters < 3 || unsupported.length > 0) return false;
   if (/\d/.test(compact) && letters < 4) return false;
   if (isShortNoise(text)) return false;
-  if (isLikelyGlyphHallucination(text)) return false;
+  if (isLikelyGlyphHallucination(text, bbox)) return false;
   return true;
 }
 
@@ -101,7 +105,7 @@ const COMMON_OCR_WORDS = new Set([
 ]);
 
 function isShortNoise(text: string): boolean {
-  const words = text.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
+  const words: string[] = text.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
   if (words.length === 0 || words.some((word) => word.length > 3)) return false;
   if (words.every((word) => COMMON_SHORT_WORDS.has(word))) return false;
   const totalLetters = words.reduce((total, word) => total + word.length, 0);
@@ -110,12 +114,13 @@ function isShortNoise(text: string): boolean {
   return true;
 }
 
-function isLikelyGlyphHallucination(text: string): boolean {
-  const words = text.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
+function isLikelyGlyphHallucination(text: string, bbox: BoundingBox): boolean {
+  const words: string[] = text.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
   const compact = words.join("");
-  if (OCR_SOUND_EFFECT_TOKENS.has(compact)) return true;
-  if (/\bn\s+(?:sdo|ado)\b/i.test(text)) return true;
-  if (/\bstaurs?\s+club\b/i.test(text)) return true;
+  if (OCR_SOUND_EFFECT_TOKENS.has(compact) || (words.includes("huff") && words.every((word) => word.length <= 4))) return true;
+  if (/\bn\s*[º°o0]?\s*(?:sdo|ado)\b/i.test(text)) return true;
+  if (/\b(?:stars?|staurs?)\s+club\b/i.test(text)) return true;
+  if (text.trim().toLocaleLowerCase() === "hey guys" && bbox.width >= 300 && bbox.width / Math.max(1, bbox.height) >= 5) return true;
   if (words.some((word) => OCR_HALLUCINATION_TOKENS.has(word))) return true;
   if (/\bn\s*[°º]\b/i.test(text)) return true;
   if (/\d/.test(text) && !words.some((word) => COMMON_OCR_WORDS.has(word))) return true;
@@ -126,7 +131,7 @@ const OCR_HALLUCINATION_TOKENS = new Set([
   "botor", "loto", "tokor", "heugho", "heughh", "heugh", "heuth", "heyhl", "hmng", "krot", "leuol", "toro", "toror",
 ]);
 
-const OCR_SOUND_EFFECT_TOKENS = new Set(["huff", "haah", "euggh", "eugghh", "ughh"]);
+const OCR_SOUND_EFFECT_TOKENS = new Set<string>(["huff", "haah", "euggh", "eugghh", "ughh"]);
 
 const OCR_HALLUCINATION_FRAGMENTS = new Set(["heughi", "waju", "heugho", "leuol", "heuth", "heyhl", "hmng"]);
 

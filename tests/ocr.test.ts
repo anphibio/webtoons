@@ -150,8 +150,8 @@ describe("contrato de OCR", () => {
         makeRegion("Huff...", 0),
         makeRegion("Haah", 1),
         makeRegion("Eugghh", 2),
-        makeRegion("N sdo N ado a", 3),
-        makeRegion("Staurs CLUB", 4),
+        makeRegion("Nº sdo Nº ado a", 3),
+        makeRegion("Stars CLUB", 4),
         makeRegion("I had to do a bit of overtime...", 5),
       ],
     }, { width: 300, height: 400 });
@@ -205,12 +205,12 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["WAIT – –"]);
   });
 
-  it("preserva uma fala curta mesmo quando ocupa uma faixa larga", () => {
+  it("descarta texto de arte conhecido quando ocupa uma faixa larga", () => {
     const result = normalizeOcrResult({
       regions: [{ id: "art", text: "Hey guys", confidence: 0.9, bbox: { x: 0, y: 20, width: 444, height: 53 }, rotation: 0 }],
     }, { width: 720, height: 6915 });
 
-    expect(result.regions.map((region) => region.text)).toEqual(["Hey guys"]);
+    expect(result.regions).toEqual([]);
   });
 
   it("retorna progresso e respeita cancelamento", async () => {

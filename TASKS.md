@@ -145,6 +145,7 @@
 - [x] Invalidar novamente os caches de OCR e tradução para reprocessar o capítulo 12 sem resultados antigos.
 - [x] Deduplicar regiões OCR com o mesmo texto e sobreposição forte, preservando falas iguais em balões distintos.
 - [x] Invalidar o cache ao ampliar o filtro de efeitos sonoros e grafismos recorrentes.
+- [x] Rejeitar variações compostas de efeitos sonoros e falsos positivos de texto em faixas gráficas largas.
 - [ ] Tratamento de erros.
 - [x] Documentação de instalação.
 
