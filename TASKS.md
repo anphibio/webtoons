@@ -135,6 +135,7 @@
 - [x] Repetir OCR localmente em resultados de baixa cobertura, mesmo quando o detector retornar várias caixas de ruído, limitando o fallback a páginas com pouca evidência confiável.
 - [x] Invalidar o cache de OCR ao alterar a estratégia de recuperação de balões.
 - [x] Invalidar novamente o cache de OCR após corrigir o ambiente de execução local usado no teste.
+- [x] Invalidar o cache de tradução após detectar resultados antigos incompletos sendo reutilizados.
 - [x] Reprocessar uma vez imagens com falha transitória antes de contabilizar erro definitivo.
 - [x] Benchmark de capítulos longos.
 - [x] Auditoria de memória do OCR local.

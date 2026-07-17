@@ -118,7 +118,7 @@ export class ImagePipeline {
           order,
         }));
         const translationKey = createCacheKey(
-          "translation-v2",
+          "translation-v3",
           this.options.sourceLanguage,
           this.options.targetLanguage,
           ...segments.map((segment) => `${segment.order}:${segment.text}`),
