@@ -128,7 +128,7 @@ function isLikelyGlyphHallucination(text: string, bbox: BoundingBox): boolean {
 }
 
 const OCR_HALLUCINATION_TOKENS = new Set([
-  "botor", "loto", "tokor", "heugho", "heughh", "heugh", "heuth", "heyhl", "hmng", "krot", "leuol", "toro", "toror",
+  "botor", "loto", "tokor", "heugho", "heughh", "heugh", "heuth", "heyhl", "hmng", "hnng", "hng", "krot", "leuol", "pounds", "toro", "toror",
 ]);
 
 const OCR_SOUND_EFFECT_TOKENS = new Set<string>(["huff", "haah", "euggh", "eugghh", "ughh"]);

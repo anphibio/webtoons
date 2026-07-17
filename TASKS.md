@@ -146,6 +146,7 @@
 - [x] Deduplicar regiões OCR com o mesmo texto e sobreposição forte, preservando falas iguais em balões distintos.
 - [x] Invalidar o cache ao ampliar o filtro de efeitos sonoros e grafismos recorrentes.
 - [x] Rejeitar variações compostas de efeitos sonoros e falsos positivos de texto em faixas gráficas largas.
+- [x] Filtrar novas variantes isoladas de efeitos sonoros reconhecidas como palavras inglesas.
 - [ ] Tratamento de erros.
 - [x] Documentação de instalação.
 

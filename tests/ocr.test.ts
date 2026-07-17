@@ -152,7 +152,9 @@ describe("contrato de OCR", () => {
         makeRegion("Eugghh", 2),
         makeRegion("Nº sdo Nº ado a", 3),
         makeRegion("Stars CLUB", 4),
-        makeRegion("I had to do a bit of overtime...", 5),
+        makeRegion("Pounds", 5),
+        makeRegion("Hnng", 6),
+        makeRegion("I had to do a bit of overtime...", 7),
       ],
     }, { width: 300, height: 400 });
 
