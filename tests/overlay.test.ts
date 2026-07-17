@@ -95,6 +95,25 @@ describe("overlay reversível", () => {
     expect(Number.parseFloat(region.style.fontSize)).toBeLessThanOrEqual(16);
   });
 
+  it("mantém uma tradução longa ancorada no bounding box original", () => {
+    const image = document.createElement("img");
+    image.width = 800;
+    image.height = 1200;
+    document.body.append(image);
+    const manager = new OverlayManager(document);
+
+    manager.render(image, [{
+      id: "r1",
+      text: "Uma tradução muito longa que deve caber sem deslocar o balão para outra região",
+      bbox: { x: 100, y: 300, width: 300, height: 20 },
+    }]);
+
+    const region = document.querySelector<HTMLElement>("[data-wtl-region]")!;
+    expect(region.style.top).toBe("25%");
+    expect(region.style.height).toBe("1.6666666666666667%");
+    expect(Number.parseFloat(region.style.fontSize)).toBeGreaterThanOrEqual(10);
+  });
+
   it("aguarda uma imagem lazy ganhar tamanho antes de criar o overlay", () => {
     const image = document.createElement("img");
     image.setAttribute("data-src", "https://cdn.example/011_1.jpg");

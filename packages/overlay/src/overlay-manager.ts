@@ -80,19 +80,17 @@ export class OverlayManager {
       const boxWidth = (region.bbox.width / width) * displayWidth;
       const boxHeight = (region.bbox.height / height) * displayHeight;
       const layout = fitTextLayout(region.text, boxWidth, boxHeight, this.preferences.fontSize);
-      const expandedHeight = Math.min(displayHeight, Math.max(boxHeight, layout.height));
-      const centerY = ((region.bbox.y + region.bbox.height / 2) / height) * displayHeight;
-      const top = clamp(centerY - expandedHeight / 2, 0, Math.max(0, displayHeight - expandedHeight));
+      const top = clamp((region.bbox.y / height) * displayHeight, 0, Math.max(0, displayHeight - boxHeight));
       element.dataset.wtlBoxWidth = String(boxWidth);
-      element.dataset.wtlBoxHeight = String(expandedHeight);
+      element.dataset.wtlBoxHeight = String(boxHeight);
       Object.assign(element.style, {
         position: "absolute",
         left: `${(region.bbox.x / width) * 100}%`,
         top: `${(top / displayHeight) * 100}%`,
         width: `${(region.bbox.width / width) * 100}%`,
-        height: `${(expandedHeight / displayHeight) * 100}%`,
+        height: `${(boxHeight / displayHeight) * 100}%`,
         boxSizing: "border-box",
-        padding: "4px",
+        padding: "2px 4px",
         color: "#111",
         background: `rgba(255, 255, 255, ${this.preferences.opacity})`,
         display: "flex",
@@ -104,6 +102,7 @@ export class OverlayManager {
         fontFamily: "system-ui, sans-serif",
         textAlign: "center",
         overflowWrap: "break-word",
+        whiteSpace: "pre-wrap",
         wordBreak: "normal",
       });
       root.append(element);
@@ -206,16 +205,15 @@ function clamp(value: number, minimum: number, maximum: number): number {
 function fitTextLayout(text: string, width: number, height: number, preferred: number): { fontSize: number; height: number } {
   const safeWidth = Math.max(1, width - 8);
   const safeHeight = Math.max(1, height - 8);
-  const preferredSize = clamp(preferred, 12, 32);
-  for (let size = preferredSize; size >= 12; size -= 1) {
+  const preferredSize = clamp(preferred, 10, 32);
+  for (let size = preferredSize; size >= 10; size -= 1) {
     const charactersPerLine = Math.max(1, Math.floor(safeWidth / (size * 0.56)));
     const lineCount = Math.max(1, Math.ceil(text.length / charactersPerLine));
     const neededHeight = lineCount * size * 1.15 + 8;
-    if (neededHeight <= Math.max(safeHeight, size * 1.15 * 2.5)) return { fontSize: size, height: neededHeight };
+    if (neededHeight <= safeHeight) return { fontSize: size, height: neededHeight };
   }
-  const fontSize = 12;
-  const charactersPerLine = Math.max(1, Math.floor(safeWidth / (fontSize * 0.56)));
-  return { fontSize, height: Math.max(safeHeight, Math.ceil(text.length / charactersPerLine) * fontSize * 1.15 + 8) };
+  const fontSize = 10;
+  return { fontSize, height: safeHeight };
 }
 
 function fitFontSize(text: string, width: number, height: number, preferred: number): number {

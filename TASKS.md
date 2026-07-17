@@ -139,6 +139,7 @@
 - [x] Reprocessar uma vez imagens com falha transitória antes de contabilizar erro definitivo.
 - [x] Benchmark de capítulos longos.
 - [x] Auditoria de memória do OCR local.
+- [x] Manter overlays ancorados no bounding box original para evitar deslocamento entre balões e imagens.
 - [ ] Tratamento de erros.
 - [x] Documentação de instalação.
 
