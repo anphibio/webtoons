@@ -142,6 +142,7 @@
 - [x] Manter overlays ancorados no bounding box original para evitar deslocamento entre balões e imagens.
 - [x] Filtrar alucinações OCR recorrentes de efeitos sonoros sem descartar interjeições como “Haah”.
 - [x] Invalidar novamente os caches de OCR e tradução para reprocessar o capítulo 12 sem resultados antigos.
+- [x] Deduplicar regiões OCR com o mesmo texto e sobreposição forte, preservando falas iguais em balões distintos.
 - [ ] Tratamento de erros.
 - [x] Documentação de instalação.
 

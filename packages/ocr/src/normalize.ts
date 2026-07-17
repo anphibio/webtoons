@@ -27,7 +27,32 @@ export function normalizeOcrResult(
     })
     .filter((region): region is OcrRegion => region !== null);
 
-  return { regions, width: dimensions.width, height: dimensions.height };
+  return { regions: deduplicateRegions(regions), width: dimensions.width, height: dimensions.height };
+}
+
+function deduplicateRegions(regions: OcrRegion[]): OcrRegion[] {
+  const result: OcrRegion[] = [];
+  for (const region of regions) {
+    const duplicateIndex = result.findIndex((candidate) =>
+      candidate.text.toLocaleLowerCase() === region.text.toLocaleLowerCase()
+      && overlapRatio(candidate.bbox, region.bbox) >= 0.65,
+    );
+    if (duplicateIndex < 0) {
+      result.push(region);
+      continue;
+    }
+    const current = result[duplicateIndex]!;
+    if (region.confidence > current.confidence) result[duplicateIndex] = region;
+  }
+  return result;
+}
+
+function overlapRatio(left: BoundingBox, right: BoundingBox): number {
+  const x = Math.max(0, Math.min(left.x + left.width, right.x + right.width) - Math.max(left.x, right.x));
+  const y = Math.max(0, Math.min(left.y + left.height, right.y + right.height) - Math.max(left.y, right.y));
+  const intersection = x * y;
+  const smallerArea = Math.min(left.width * left.height, right.width * right.height);
+  return smallerArea > 0 ? intersection / smallerArea : 0;
 }
 
 function isAbnormallyTallShortRegion(text: string, height: number, limit: number): boolean {

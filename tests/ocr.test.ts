@@ -137,6 +137,18 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["Haah..."]);
   });
 
+  it("remove apenas detecções duplicadas que se sobrepõem", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "duplicate-a", text: "SO, CAN YOU HUG ME?", confidence: 0.82, bbox: { x: 100, y: 100, width: 220, height: 60 }, rotation: 0 },
+        { id: "duplicate-b", text: "SO, CAN YOU HUG ME?", confidence: 0.94, bbox: { x: 105, y: 103, width: 218, height: 61 }, rotation: 0 },
+        { id: "separate", text: "SO, CAN YOU HUG ME?", confidence: 0.9, bbox: { x: 100, y: 300, width: 220, height: 60 }, rotation: 0 },
+      ],
+    }, { width: 500, height: 500 });
+
+    expect(result.regions.map((region) => region.id)).toEqual(["duplicate-b", "separate"]);
+  });
+
   it("preserva frases válidas compostas por várias palavras curtas", () => {
     const texts = ["HOW FAR DID SHE GO?", "I'LL PAY YOU."];
     const result = normalizeOcrResult({
