@@ -13,7 +13,7 @@ export function normalizeOcrResult(
   const regions = raw.regions
     .map((region) => {
       const text = region.text.trim();
-      if (!text || !isLikelyText(text, region.confidence)) return null;
+      if (!text || isKnownWatermark(text) || !isLikelyText(text, region.confidence)) return null;
 
       const bbox = normalizeShortTallBox(region.bbox, text, typicalHeight, abnormalHeightLimit);
 
@@ -93,6 +93,10 @@ function isLikelyGlyphHallucination(text: string): boolean {
 }
 
 const OCR_HALLUCINATION_TOKENS = new Set(["botor", "tokor", "heugh", "krot"]);
+
+function isKnownWatermark(text: string): boolean {
+  return /\b(?:www\.)?omegascans\s*\.\s*org\b/i.test(text);
+}
 
 function clampBoundingBox(box: BoundingBox, imageWidth: number, imageHeight: number): BoundingBox {
   const x = clamp(box.x, 0, imageWidth);

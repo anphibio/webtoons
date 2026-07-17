@@ -139,6 +139,16 @@ class OcrServiceTests(unittest.TestCase):
 
         self.assertEqual([region.text for region in regions], ["MONDAYS.", "NAMWOO."])
 
+    def test_discards_known_watermark(self) -> None:
+        result = [SimpleNamespace(json={
+            "res": {"rec_texts": ["OMEGASCANS.ORG", "I DIDN'T SEE THAT COMING AT ALL."], "rec_scores": [0.9] * 2,
+                    "rec_boxes": [[0, 0, 240, 40], [0, 50, 240, 120]]},
+        })]
+
+        regions = parse_paddle_result(result)
+
+        self.assertEqual([region.text for region in regions], ["I DIDN'T SEE THAT COMING AT ALL."])
+
     def test_keeps_onomatopoeia_as_a_separate_region(self) -> None:
         lines = [
             OcrLine("A KID LIKE YOU", 0.98, 220, 500, 420, 34),

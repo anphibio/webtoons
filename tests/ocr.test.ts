@@ -139,6 +139,17 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(texts);
   });
 
+  it("remove marcas d'água conhecidas sem descartar falas", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "watermark", text: "OMEGASCANS.ORG", confidence: 0.99, bbox: { x: 0, y: 0, width: 300, height: 40 }, rotation: 0 },
+        { id: "dialogue", text: "I DIDN'T SEE THAT COMING AT ALL.", confidence: 0.9, bbox: { x: 0, y: 50, width: 300, height: 80 }, rotation: 0 },
+      ],
+    }, { width: 400, height: 200 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["I DIDN'T SEE THAT COMING AT ALL."]);
+  });
+
   it("retorna progresso e respeita cancelamento", async () => {
     const progress: number[] = [];
     const controller = new AbortController();

@@ -176,6 +176,10 @@ def _looks_like_isolated_glyph_hallucination(text: str) -> bool:
     return False
 
 
+def _is_known_watermark(text: str) -> bool:
+    return bool(re.search(r"\b(?:www\.)?omegascans\s*\.\s*org\b", text, re.IGNORECASE))
+
+
 def _line_quality(line: OcrLine) -> tuple[int, float]:
     return len(_comparison_text(line.text)), line.confidence
 
@@ -214,7 +218,13 @@ def parse_paddle_result(results: Iterable[Any]) -> List[OcrLine]:
         for text_value, score_value, box_value in zip(texts, scores, boxes):
             text = str(text_value).strip()
             box = _as_sequence(box_value)
-            if not text or len(box) != 4 or _looks_like_gibberish(text) or _looks_like_isolated_glyph_hallucination(text):
+            if (
+                not text
+                or len(box) != 4
+                or _looks_like_gibberish(text)
+                or _looks_like_isolated_glyph_hallucination(text)
+                or _is_known_watermark(text)
+            ):
                 continue
             try:
                 x_min, y_min, x_max, y_max = (int(round(float(value))) for value in box)
