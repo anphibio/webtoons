@@ -169,8 +169,8 @@ _COMMON_OCR_WORDS = {
 
 def _looks_like_isolated_glyph_hallucination(text: str) -> bool:
     words = re.findall(r"[A-Za-z]+", text.lower())
-    if len(words) == 1 and 4 <= len(words[0]) <= 8:
-        return words[0] not in _COMMON_OCR_WORDS
+    if any(word in {"botor", "tokor", "heugh", "krot"} for word in words):
+        return True
     if re.search(r"\d", text) and not any(word in _COMMON_OCR_WORDS for word in words):
         return True
     return False

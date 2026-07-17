@@ -129,6 +129,16 @@ class OcrServiceTests(unittest.TestCase):
 
         self.assertEqual([region.text for region in regions], ["OH... SOMIN."])
 
+    def test_keeps_valid_single_words_and_names(self) -> None:
+        result = [SimpleNamespace(json={
+            "res": {"rec_texts": ["MONDAYS.", "NAMWOO.", "botor"], "rec_scores": [0.9] * 3,
+                    "rec_boxes": [[0, 0, 100, 40], [0, 50, 100, 90], [0, 100, 100, 140]]},
+        })]
+
+        regions = parse_paddle_result(result)
+
+        self.assertEqual([region.text for region in regions], ["MONDAYS.", "NAMWOO."])
+
     def test_keeps_onomatopoeia_as_a_separate_region(self) -> None:
         lines = [
             OcrLine("A KID LIKE YOU", 0.98, 220, 500, 420, 34),

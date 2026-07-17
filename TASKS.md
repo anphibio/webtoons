@@ -47,6 +47,7 @@
 - [x] Preservar o til usado como pontuação expressiva em diálogos de quadrinhos.
 - [x] Preservar pontuação editorial de telas de sistema, créditos e caixas narrativas.
 - [x] Diferenciar frases válidas com várias palavras curtas de falsos positivos curtos.
+- [x] Preservar palavras únicas e nomes próprios ao filtrar alucinações de glifos estilizados.
 - [x] Implementar pré-processamento e segunda leitura invertida para imagens com áreas escuras.
 - [x] Reprocessar imagens longas em blocos verticais sobrepostos quando a leitura integral encontrar pouco texto.
 - [x] Aplicar leitura binarizada de alto contraste como recuperação para imagens com baixa cobertura OCR.

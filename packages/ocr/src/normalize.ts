@@ -87,12 +87,12 @@ function isShortNoise(text: string): boolean {
 
 function isLikelyGlyphHallucination(text: string): boolean {
   const words = text.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
-  if (words.length === 1 && words[0]!.length >= 4 && words[0]!.length <= 8) {
-    return !COMMON_OCR_WORDS.has(words[0]!);
-  }
+  if (words.some((word) => OCR_HALLUCINATION_TOKENS.has(word))) return true;
   if (/\d/.test(text) && !words.some((word) => COMMON_OCR_WORDS.has(word))) return true;
   return false;
 }
+
+const OCR_HALLUCINATION_TOKENS = new Set(["botor", "tokor", "heugh", "krot"]);
 
 function clampBoundingBox(box: BoundingBox, imageWidth: number, imageHeight: number): BoundingBox {
   const x = clamp(box.x, 0, imageWidth);
