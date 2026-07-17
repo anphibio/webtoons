@@ -92,6 +92,43 @@ class OcrServiceTests(unittest.TestCase):
         self.assertLess(dialogue.height, 200)
         self.assertGreater(dialogue.x, 200)
 
+    def test_discards_anomalously_tall_short_sound_effect_boxes(self) -> None:
+        lines = [
+            OcrLine("A KID LIKE YOU", 0.98, 220, 500, 420, 34),
+            OcrLine("WHO DID IT WITHOUT", 0.98, 240, 545, 380, 34),
+            OcrLine("Haah", 0.91, 700, 620, 160, 560),
+        ]
+
+        regions = group_ocr_lines(lines)
+
+        self.assertEqual(len(regions), 1)
+        self.assertEqual(regions[0].text, "A KID LIKE YOU WHO DID IT WITHOUT")
+
+    def test_rejects_gibberish_with_many_fragments_and_digits(self) -> None:
+        result = FakePaddleResult()
+        result.json = {
+            "res": {
+                "rec_texts": ["W toror n° sdo n° ado a 0"],
+                "rec_scores": [0.91],
+                "rec_boxes": [[20, 30, 300, 80]],
+            },
+        }
+
+        regions = parse_paddle_result([result])
+
+        self.assertEqual(regions, [])
+
+    def test_keeps_onomatopoeia_as_a_separate_region(self) -> None:
+        lines = [
+            OcrLine("A KID LIKE YOU", 0.98, 220, 500, 420, 34),
+            OcrLine("WHO DID IT WITHOUT", 0.98, 240, 545, 380, 34),
+            OcrLine("Haah...", 0.91, 500, 620, 120, 34),
+        ]
+
+        regions = group_ocr_lines(lines)
+
+        self.assertEqual([region.text for region in regions], ["A KID LIKE YOU WHO DID IT WITHOUT", "Haah..."])
+
     def test_processes_long_images_in_bounded_overlapping_tiles(self) -> None:
         image = FakeImageArray(height=450, width=100)
         engine = FakeEngine()

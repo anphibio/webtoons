@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from io import BytesIO
 import os
+import re
 from statistics import median
 from threading import Lock
 from typing import Any, Iterable, List, Mapping, Optional, Sequence
@@ -150,6 +151,13 @@ def _comparison_text(text: str) -> str:
     return "".join(character for character in text.upper() if character.isalnum())
 
 
+def _looks_like_gibberish(text: str) -> bool:
+    words = re.findall(r"[A-Za-z]+", text)
+    if len(words) < 5 or not re.search(r"\d", text):
+        return False
+    return sum(1 for word in words if len(word) <= 1) >= 3
+
+
 def _line_quality(line: OcrLine) -> tuple[int, float]:
     return len(_comparison_text(line.text)), line.confidence
 
@@ -188,7 +196,7 @@ def parse_paddle_result(results: Iterable[Any]) -> List[OcrLine]:
         for text_value, score_value, box_value in zip(texts, scores, boxes):
             text = str(text_value).strip()
             box = _as_sequence(box_value)
-            if not text or len(box) != 4:
+            if not text or len(box) != 4 or _looks_like_gibberish(text):
                 continue
             try:
                 x_min, y_min, x_max, y_max = (int(round(float(value))) for value in box)
@@ -212,6 +220,10 @@ def group_ocr_lines(lines: Iterable[OcrLine]) -> List[OcrLine]:
     ordered_lines = _reading_order(lines)
     typical_height = median(line.height for line in ordered_lines) if ordered_lines else 0
     max_grouping_height = max(160, typical_height * 4)
+    ordered_lines = [
+        line for line in ordered_lines
+        if not (line.height > max_grouping_height and len(_comparison_text(line.text)) < 40)
+    ]
     groups: List[List[OcrLine]] = []
     for line in ordered_lines:
         candidates = [
@@ -248,6 +260,8 @@ def _same_visual_row(left: OcrLine, right: OcrLine) -> bool:
 
 
 def _can_join(previous: OcrLine, current: OcrLine, max_grouping_height: float) -> bool:
+    if not _same_visual_row(previous, current) and (_is_onomatopoeia(previous.text) or _is_onomatopoeia(current.text)):
+        return False
     if previous.height > max_grouping_height or current.height > max_grouping_height:
         return False
     if _same_visual_row(previous, current):
@@ -272,6 +286,11 @@ def _can_join(previous: OcrLine, current: OcrLine, max_grouping_height: float) -
     previous_center = previous.x + previous.width / 2
     current_center = current.x + current.width / 2
     return abs(previous_center - current_center) <= max(previous.width, current.width) * 0.55
+
+
+def _is_onomatopoeia(text: str) -> bool:
+    normalized = re.sub(r"[^a-z]", "", text.lower())
+    return normalized in {"ah", "ahh", "haah", "hmm", "mmm", "oh"}
 
 
 def _merge_group(group: Sequence[OcrLine]) -> OcrLine:

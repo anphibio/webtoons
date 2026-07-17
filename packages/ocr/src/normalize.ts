@@ -4,7 +4,14 @@ export function normalizeOcrResult(
   raw: RawOcrResult,
   dimensions: { width: number; height: number } = { width: 0, height: 0 },
 ): OcrResult {
+  const heights = raw.regions
+    .map((region) => region.bbox.height)
+    .filter((height) => Number.isFinite(height) && height > 0)
+    .sort((left, right) => left - right);
+  const typicalHeight = heights.length > 0 ? heights[Math.floor((heights.length - 1) / 2)]! : 0;
+  const abnormalHeightLimit = Math.max(160, typicalHeight * 4);
   const regions = raw.regions
+    .filter((region) => !isAbnormallyTallShortRegion(region.text, region.bbox.height, abnormalHeightLimit))
     .map((region) => {
       const text = region.text.trim();
       if (!text || !isLikelyText(text, region.confidence)) return null;
@@ -20,6 +27,11 @@ export function normalizeOcrResult(
     .filter((region): region is OcrRegion => region !== null);
 
   return { regions, width: dimensions.width, height: dimensions.height };
+}
+
+function isAbnormallyTallShortRegion(text: string, height: number, limit: number): boolean {
+  const compact = text.replace(/\s/g, "");
+  return height > limit && compact.length < 40;
 }
 
 function isLikelyText(text: string, confidence: number): boolean {

@@ -162,8 +162,15 @@ function repairCommonGlyphConfusions(text: string): string {
 }
 
 function mergeAdjacentRegions(regions: MappedRegion[]): MappedRegion[] {
+  const heights = regions.map((region) => region.bbox.height).sort((left, right) => left - right);
+  const typicalHeight = heights.length > 0 ? heights[Math.floor((heights.length - 1) / 2)]! : 0;
+  const abnormalHeightLimit = Math.max(160, typicalHeight * 4);
+  const filtered = regions.filter((region) => {
+    const compact = region.text.replace(/\s/g, "");
+    return !(region.bbox.height > abnormalHeightLimit && compact.length < 40);
+  });
   const merged: MappedRegion[] = [];
-  for (const region of regions) {
+  for (const region of filtered) {
     const previous = merged[merged.length - 1];
     if (!previous || !shouldJoin(previous, region)) {
       merged.push({ ...region, id: `ocr-${merged.length}` });
@@ -182,6 +189,7 @@ function mergeAdjacentRegions(regions: MappedRegion[]): MappedRegion[] {
 }
 
 function shouldJoin(first: MappedRegion, second: MappedRegion): boolean {
+  if (isOnomatopoeia(first.text) || isOnomatopoeia(second.text)) return false;
   const firstRight = first.bbox.x + first.bbox.width;
   const secondRight = second.bbox.x + second.bbox.width;
   const horizontalOverlap = Math.max(0, Math.min(firstRight, secondRight) - Math.max(first.bbox.x, second.bbox.x));
@@ -189,6 +197,11 @@ function shouldJoin(first: MappedRegion, second: MappedRegion): boolean {
   const verticalGap = Math.max(0, second.bbox.y - (first.bbox.y + first.bbox.height));
   const allowedGap = Math.max(first.bbox.height, second.bbox.height) * 2.2;
   return overlapRatio >= 0.35 && verticalGap <= allowedGap;
+}
+
+function isOnomatopoeia(text: string): boolean {
+  const normalized = text.toLocaleLowerCase().replace(/[^a-z]/g, "");
+  return ["ah", "ahh", "haah", "hmm", "mmm", "oh"].includes(normalized);
 }
 
 function mapParagraph(

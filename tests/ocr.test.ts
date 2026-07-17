@@ -33,6 +33,31 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["SORRY."]);
   });
 
+  it("remove sequências sem sentido com fragmentos e números", () => {
+    const result = normalizeOcrResult({
+      regions: [{
+        id: "gibberish",
+        text: "W toror n° sdo n° ado a 0",
+        confidence: 0.91,
+        bbox: { x: 20, y: 30, width: 280, height: 50 },
+        rotation: 0,
+      }],
+    }, { width: 400, height: 400 });
+
+    expect(result.regions).toEqual([]);
+  });
+
+  it("remove caixas anormalmente altas quando o texto é curto", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "dialogue", text: "A KID LIKE YOU", confidence: 0.98, bbox: { x: 100, y: 500, width: 300, height: 34 }, rotation: 0 },
+        { id: "sound-effect", text: "Haah", confidence: 0.91, bbox: { x: 600, y: 620, width: 140, height: 560 }, rotation: 0 },
+      ],
+    }, { width: 800, height: 1200 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["A KID LIKE YOU"]);
+  });
+
   it("preserva o til usado como pontuação expressiva em diálogos", () => {
     const result = normalizeOcrResult({
       regions: [

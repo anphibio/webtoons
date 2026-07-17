@@ -67,4 +67,15 @@ describe("mapeamento do resultado Tesseract", () => {
 
     expect(result.regions.map((region) => region.text)).toEqual(["I FEEL SORRY FOR"]);
   });
+
+  it("mantém onomatopeias próximas como regiões independentes", () => {
+    const result = mapTesseractPage({
+      blocks: [
+        { text: "A KID LIKE YOU", confidence: 90, bbox: { x0: 100, y0: 100, x1: 300, y1: 130 } },
+        { text: "Haah...", confidence: 90, bbox: { x0: 260, y0: 160, x1: 360, y1: 190 } },
+      ],
+    }, { width: 400, height: 300 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["A KID LIKE YOU", "Haah..."]);
+  });
 });
