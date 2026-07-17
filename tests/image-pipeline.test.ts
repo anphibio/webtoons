@@ -117,6 +117,45 @@ describe("pipeline de imagem", () => {
     expect(put).toHaveBeenCalledTimes(2);
   });
 
+  it("ignora e não grava o cache quando a execução está em modo sem cache", async () => {
+    const cacheStore: PipelineCache = {
+      async get<T>(kind: "ocr" | "translation", key: string): Promise<T | null> { void kind; void key; return null; },
+      async put<T>(kind: "ocr" | "translation", key: string, value: T, ttlMs: number): Promise<void> { void kind; void key; void value; void ttlMs; },
+    };
+    const get = vi.spyOn(cacheStore, "get");
+    const put = vi.spyOn(cacheStore, "put");
+    const recognize = vi.fn().mockResolvedValue({
+      regions: [{
+        id: "ocr-0",
+        text: "Hello",
+        confidence: 0.91,
+        bbox: { x: 10, y: 20, width: 100, height: 40 },
+        rotation: 0,
+      }],
+    });
+    const pipeline = new ImagePipeline({
+      load: { load: vi.fn().mockResolvedValue({ image: new Blob(["fresh-image"]), width: 1200, height: 1800 }) },
+      ocr: { recognize },
+      translation: {
+        translate: vi.fn().mockResolvedValue({
+          segments: [{ id: "ocr-0", sourceText: "Hello", translatedText: "Olá" }],
+        }),
+      },
+      overlay: { render: vi.fn() },
+      cache: cacheStore,
+      useCache: false,
+      sourceLanguage: "eng",
+      targetLanguage: "por",
+      timeoutMs: 5_000,
+    });
+
+    await pipeline.process(candidate());
+
+    expect(recognize).toHaveBeenCalledTimes(1);
+    expect(get).not.toHaveBeenCalled();
+    expect(put).not.toHaveBeenCalled();
+  });
+
   it("não reutiliza OCR salvo pelo algoritmo anterior", async () => {
     const cache = new Map<string, unknown>();
     const imageBytes = new TextEncoder().encode("same-image");

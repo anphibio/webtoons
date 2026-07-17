@@ -49,6 +49,12 @@ function Popup() {
     await send(key === "opacity" ? { type: "TRANSLATION_SET_OPACITY", opacity: value } : { type: "TRANSLATION_SET_FONT_SIZE", fontSize: value });
   }
 
+  async function setUseCache(useCache: boolean): Promise<void> {
+    const next = { ...settings, useCache };
+    setSettings(next);
+    await saveSettings(chromeStorage(), next);
+  }
+
   return (
     <main className="panel">
       <h1>Tradutor de imagens</h1>
@@ -70,6 +76,10 @@ function Popup() {
         Cancelar
       </button>
       <section className="controls" aria-label="Controles da tradução">
+        <label className="checkbox">
+          <input type="checkbox" checked={!settings.useCache} onChange={(event) => void setUseCache(!event.target.checked)} />
+          Ignorar cache nesta tradução
+        </label>
         <button type="button" className="secondary" onClick={() => void setVisibility(!translationVisible)}>
           {translationVisible ? "Comparar com original" : "Mostrar tradução"}
         </button>

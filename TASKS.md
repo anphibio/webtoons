@@ -116,6 +116,7 @@
 - [x] Cachear tradução por idioma e conteúdo reconhecido.
 - [x] Implementar invalidação.
 - [x] Implementar limpeza automática de entradas expiradas.
+- [x] Permitir ignorar leitura e gravação do cache por preferência do usuário.
 
 ## Fase 6 — Segurança
 

@@ -20,6 +20,7 @@ Ações principais:
 - Mostrar original.
 - Mostrar tradução.
 - Abrir configurações.
+- Ignorar cache nesta tradução.
 
 ## Indicadores
 

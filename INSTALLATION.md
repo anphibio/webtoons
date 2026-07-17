@@ -46,4 +46,9 @@ A extensão deve ser empacotada sem:
 
 As chaves de tradução devem ser configuradas pela página de opções.
 
+Para testar novamente um capítulo sem reaproveitar resultados anteriores, marque
+“Ignorar cache nesta tradução” no popup antes de iniciar. A opção também pode ser
+mantida pela página de configurações; desmarque-a para voltar ao comportamento
+normal, com cache local.
+
 Nunca colocar chaves diretamente no repositório.

@@ -12,6 +12,7 @@ export interface ExtensionSettings {
   fontSize: number;
   opacity: number;
   maxConcurrent: number;
+  useCache: boolean;
   glossary: Record<string, string>;
 }
 
@@ -26,6 +27,7 @@ export const DEFAULT_SETTINGS: ExtensionSettings = {
   fontSize: 16,
   opacity: 0.82,
   maxConcurrent: 1,
+  useCache: true,
   glossary: {},
 };
 
@@ -63,6 +65,7 @@ export function sanitizeSettings(value: unknown): ExtensionSettings {
     fontSize: clampNumber(value.fontSize, 10, 32, DEFAULT_SETTINGS.fontSize),
     opacity: clampNumber(value.opacity, 0.2, 1, DEFAULT_SETTINGS.opacity),
     maxConcurrent: Math.round(clampNumber(value.maxConcurrent, 1, 3, DEFAULT_SETTINGS.maxConcurrent)),
+    useCache: typeof value.useCache === "boolean" ? value.useCache : DEFAULT_SETTINGS.useCache,
     glossary: sanitizeGlossary(value.glossary),
   };
 }

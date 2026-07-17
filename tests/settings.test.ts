@@ -41,6 +41,11 @@ describe("configurações", () => {
     });
   });
 
+  it("permite desativar o cache para a próxima tradução", () => {
+    expect(sanitizeSettings({ useCache: false }).useCache).toBe(false);
+    expect(sanitizeSettings({ useCache: "false" }).useCache).toBe(true);
+  });
+
   it("limita o glossário salvo a termos curtos e válidos", () => {
     expect(sanitizeSettings({ glossary: { Jimin: "Jimin-ssi", "": "x", ["x".repeat(200)]: "y", Broken: 42 } }).glossary).toEqual({ Jimin: "Jimin-ssi" });
   });

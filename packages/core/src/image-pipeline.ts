@@ -46,6 +46,7 @@ export interface ImagePipelineOptions {
   loadTimeoutMs?: number;
   maxTranslationRetries?: number;
   cache?: PipelineCache;
+  useCache?: boolean;
   ocrCacheTtlMs?: number;
   translationCacheTtlMs?: number;
   onStage?: (stage: ImagePipelineStage) => void;
@@ -86,7 +87,9 @@ export class ImagePipeline {
       let ocr: OcrResult;
       try {
         this.options.onStage?.("ocr");
-        const cachedOcr = await readCache<OcrResult>(this.options.cache, "ocr", imageKey);
+        const cachedOcr = this.options.useCache === false
+          ? null
+          : await readCache<OcrResult>(this.options.cache, "ocr", imageKey);
         ocr = cachedOcr ?? await recognizeWithControls(
           this.options.ocr,
           {
@@ -100,7 +103,7 @@ export class ImagePipeline {
             timeoutMs: this.options.timeoutMs,
           },
         );
-        if (!cachedOcr && imageKey && this.options.cache) {
+        if (this.options.useCache !== false && !cachedOcr && imageKey && this.options.cache) {
           await writeCache(this.options.cache, "ocr", imageKey, ocr, this.options.ocrCacheTtlMs ?? 7 * 24 * 60 * 60 * 1000);
         }
       } catch (error) {
@@ -124,7 +127,9 @@ export class ImagePipeline {
           ...segments.map((segment) => `${segment.order}:${segment.text}`),
           JSON.stringify(this.options.glossary ?? {}),
         );
-        const cachedTranslation = await readCache<TranslationResult>(this.options.cache, "translation", translationKey);
+        const cachedTranslation = this.options.useCache === false
+          ? null
+          : await readCache<TranslationResult>(this.options.cache, "translation", translationKey);
         translated = cachedTranslation ?? await translateWithControls(
           this.options.translation,
           segments,
@@ -139,7 +144,7 @@ export class ImagePipeline {
             maxRetries: this.options.maxTranslationRetries ?? 1,
           },
         );
-        if (!cachedTranslation) {
+        if (this.options.useCache !== false && !cachedTranslation) {
           await writeCache(this.options.cache, "translation", translationKey, translated, this.options.translationCacheTtlMs ?? 30 * 24 * 60 * 60 * 1000);
         }
       } catch (error) {

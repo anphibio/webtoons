@@ -175,6 +175,7 @@ async function processDiscoveredImages(root: Element, specificAdapter: ToonGodAd
       accessToken: settings.backendAccessToken || undefined,
     }),
     cache: cacheStore,
+    useCache: settings.useCache,
     overlay: overlayManager,
     sourceLanguage: settings.sourceLanguage,
     targetLanguage: settings.targetLanguage,

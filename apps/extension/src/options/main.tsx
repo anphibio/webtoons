@@ -84,6 +84,10 @@ function Options() {
         Opacidade: {Math.round(settings.opacity * 100)}%
         <input type="range" min="20" max="100" value={settings.opacity * 100} onChange={(event) => setSettings({ ...settings, opacity: Number(event.target.value) / 100 })} />
       </label>
+      <label className="checkbox">
+        <input type="checkbox" checked={!settings.useCache} onChange={(event) => setSettings({ ...settings, useCache: !event.target.checked })} />
+        Ignorar cache nas próximas traduções
+      </label>
       <label>
         Glossário (JSON: termo original para termo preferido)
         <textarea rows={7} value={glossaryText} onChange={(event) => setGlossaryText(event.target.value)} placeholder={'{\n  "Jimin": "Jimin-ssi"\n}'} />
