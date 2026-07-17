@@ -141,6 +141,7 @@
 - [x] Auditoria de memória do OCR local.
 - [x] Manter overlays ancorados no bounding box original para evitar deslocamento entre balões e imagens.
 - [x] Filtrar alucinações OCR recorrentes de efeitos sonoros sem descartar interjeições como “Haah”.
+- [x] Invalidar novamente os caches de OCR e tradução para reprocessar o capítulo 12 sem resultados antigos.
 - [ ] Tratamento de erros.
 - [x] Documentação de instalação.
 
