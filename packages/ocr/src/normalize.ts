@@ -13,7 +13,7 @@ export function normalizeOcrResult(
   const regions = raw.regions
     .map((region) => {
       const text = sanitizeOcrText(region.text.trim());
-      if (!text || isKnownWatermark(text) || isLikelyBannerArtifact(region, text, dimensions) || !isLikelyText(text, region.confidence)) return null;
+      if (!text || isKnownWatermark(text) || !isLikelyText(text, region.confidence)) return null;
 
       const bbox = normalizeShortTallBox(region.bbox, text, typicalHeight, abnormalHeightLimit);
 
@@ -106,15 +106,6 @@ function sanitizeOcrText(text: string): string {
     .join("")
     .replace(/\s+/g, " ")
     .trim();
-}
-
-function isLikelyBannerArtifact(region: OcrRegion, text: string, dimensions: { width: number; height: number }): boolean {
-  if (dimensions.width <= 0 || region.bbox.x > 1) return false;
-  const wide = region.bbox.width / dimensions.width >= 0.55;
-  const shallow = region.bbox.height <= Math.max(70, dimensions.height * 0.025);
-  const compact = text.replace(/\s/g, "").length <= 18;
-  const hasSentencePunctuation = /[.!?…]/.test(text);
-  return wide && shallow && compact && !hasSentencePunctuation;
 }
 
 function isKnownWatermark(text: string): boolean {

@@ -158,12 +158,12 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["WAIT – –"]);
   });
 
-  it("remove uma detecção larga e rasa que parece texto de arte", () => {
+  it("preserva uma fala curta mesmo quando ocupa uma faixa larga", () => {
     const result = normalizeOcrResult({
       regions: [{ id: "art", text: "Hey guys", confidence: 0.9, bbox: { x: 0, y: 20, width: 444, height: 53 }, rotation: 0 }],
     }, { width: 720, height: 6915 });
 
-    expect(result.regions).toEqual([]);
+    expect(result.regions.map((region) => region.text)).toEqual(["Hey guys"]);
   });
 
   it("retorna progresso e respeita cancelamento", async () => {

@@ -1,7 +1,7 @@
 import type { OcrRegion, RawOcrResult } from "./types";
 
 export function shouldAttemptSingleBlockFallback(result: RawOcrResult): boolean {
-  return result.regions.length <= 1;
+  return result.regions.length <= 3;
 }
 
 export function chooseOcrFallback(primary: RawOcrResult, fallback: RawOcrResult): RawOcrResult {

@@ -131,6 +131,7 @@
 - [x] Teste integrado do fluxo imagem → OCR → tradução → overlay.
 - [x] Testes de adaptadores.
 - [ ] Regressão visual.
+- [x] Repetir OCR localmente em resultados de baixa cobertura (até três regiões) para recuperar balões ausentes.
 - [x] Benchmark de capítulos longos.
 - [x] Auditoria de memória do OCR local.
 - [ ] Tratamento de erros.

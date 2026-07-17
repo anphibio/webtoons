@@ -10,6 +10,8 @@ describe("FallbackOcrProvider", () => {
     const primary = providerWith(vi.fn().mockResolvedValue({ regions: [
       { id: "p1", text: "Hello" },
       { id: "p2", text: "world" },
+      { id: "p3", text: "again" },
+      { id: "p4", text: "today" },
     ] }));
     const fallbackRecognize = vi.fn();
     const fallback = providerWith(fallbackRecognize);
@@ -30,6 +32,25 @@ describe("FallbackOcrProvider", () => {
     const result = await new FallbackOcrProvider(primary, fallback).recognize(input);
 
     expect(result.regions.map((region) => region.text)).toEqual(["Hello", "world"]);
+  });
+
+  it("consulta o OCR local quando o resultado principal tem baixa cobertura", async () => {
+    const primary = providerWith(vi.fn().mockResolvedValue({ regions: [
+      { id: "p1", text: "One", confidence: 0.8 },
+      { id: "p2", text: "Two", confidence: 0.8 },
+      { id: "p3", text: "Three", confidence: 0.8 },
+    ] }));
+    const fallback = providerWith(vi.fn().mockResolvedValue({ regions: [
+      { id: "f1", text: "One", confidence: 0.8 },
+      { id: "f2", text: "Two", confidence: 0.8 },
+      { id: "f3", text: "Three", confidence: 0.8 },
+      { id: "f4", text: "Four", confidence: 0.8 },
+      { id: "f5", text: "Five", confidence: 0.8 },
+    ] }));
+
+    const result = await new FallbackOcrProvider(primary, fallback).recognize(input);
+
+    expect(result.regions.map((region) => region.text)).toEqual(["One", "Two", "Three", "Four", "Five"]);
   });
 
   it("usa o Tesseract quando o OCR principal falha ou não encontra texto", async () => {

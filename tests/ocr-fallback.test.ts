@@ -11,10 +11,11 @@ const region = (text: string, confidence: number) => ({
 });
 
 describe("fallback single-block do OCR", () => {
-  it("só tenta single-block quando a leitura esparsa encontrou no máximo uma região", () => {
+  it("tenta recuperação local quando a leitura esparsa tem baixa cobertura", () => {
     expect(shouldAttemptSingleBlockFallback({ regions: [] })).toBe(true);
     expect(shouldAttemptSingleBlockFallback({ regions: [region("Hello", 0.8)] })).toBe(true);
-    expect(shouldAttemptSingleBlockFallback({ regions: [region("A", 0.8), region("B", 0.8)] })).toBe(false);
+    expect(shouldAttemptSingleBlockFallback({ regions: [region("A", 0.8), region("B", 0.8), region("C", 0.8)] })).toBe(true);
+    expect(shouldAttemptSingleBlockFallback({ regions: [region("A", 0.8), region("B", 0.8), region("C", 0.8), region("D", 0.8)] })).toBe(false);
   });
 
   it("escolhe o fallback quando ele fornece evidência claramente melhor", () => {
