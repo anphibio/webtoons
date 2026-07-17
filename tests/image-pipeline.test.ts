@@ -2,6 +2,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { ImagePipeline, type PipelineCache } from "../packages/core/src/image-pipeline";
 import { countPipelineResult } from "../packages/core/src/processing-progress";
+import { createBytesKey, createCacheKey } from "../packages/shared/src/cache";
 import type { ImageCandidate } from "../packages/site-adapters/src/types";
 
 function candidate(): ImageCandidate {
@@ -114,6 +115,43 @@ describe("pipeline de imagem", () => {
     expect(recognize).toHaveBeenCalledTimes(1);
     expect(translate).toHaveBeenCalledTimes(1);
     expect(put).toHaveBeenCalledTimes(2);
+  });
+
+  it("não reutiliza OCR salvo pelo algoritmo anterior", async () => {
+    const cache = new Map<string, unknown>();
+    const imageBytes = new TextEncoder().encode("same-image");
+    const oldKey = createCacheKey(
+      "ocr-v1",
+      "https://cdn.example/page-1.jpg",
+      "1200x1800",
+      createBytesKey(imageBytes),
+    );
+    cache.set(`ocr:${oldKey}`, {
+      regions: [{ id: "old", text: "ruído antigo", confidence: 0.2, bbox: { x: 0, y: 0, width: 900, height: 900 }, rotation: 0 }],
+      width: 1200,
+      height: 1800,
+    });
+    const recognize = vi.fn().mockResolvedValue({ regions: [] });
+    const pipeline = new ImagePipeline({
+      load: { load: vi.fn().mockResolvedValue({ image: new Blob([imageBytes]), width: 1200, height: 1800 }) },
+      ocr: { recognize },
+      translation: { translate: vi.fn() },
+      overlay: { render: vi.fn() },
+      cache: {
+        async get<T>(kind: "ocr" | "translation", key: string): Promise<T | null> {
+          return (cache.get(`${kind}:${key}`) as T | undefined) ?? null;
+        },
+        async put<T>(kind: "ocr" | "translation", key: string, value: T): Promise<void> {
+          cache.set(`${kind}:${key}`, value);
+        },
+      },
+      sourceLanguage: "eng",
+      targetLanguage: "por",
+      timeoutMs: 5_000,
+    });
+
+    await expect(pipeline.process(candidate())).resolves.toEqual({ status: "empty", regionCount: 0 });
+    expect(recognize).toHaveBeenCalledTimes(1);
   });
 
   it("não bloqueia a fila quando o carregamento da imagem fica pendente", async () => {
