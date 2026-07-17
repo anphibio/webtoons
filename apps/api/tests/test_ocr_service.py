@@ -1,4 +1,5 @@
 import unittest
+from types import SimpleNamespace
 
 from app.ocr_service import OcrLine, group_ocr_lines, parse_paddle_result, run_tiled_ocr
 
@@ -117,6 +118,16 @@ class OcrServiceTests(unittest.TestCase):
         regions = parse_paddle_result([result])
 
         self.assertEqual(regions, [])
+
+    def test_rejects_isolated_latin_hallucinations_from_stylized_glyphs(self) -> None:
+        result = [SimpleNamespace(json={
+            "res": {"rec_texts": ["botor", "tokor", "Krot 2 M", "OH... SOMIN."], "rec_scores": [0.9] * 4,
+                    "rec_boxes": [[0, 0, 100, 40], [0, 50, 100, 90], [0, 100, 100, 140], [0, 150, 160, 190]]},
+        })]
+
+        regions = parse_paddle_result(result)
+
+        self.assertEqual([region.text for region in regions], ["OH... SOMIN."])
 
     def test_keeps_onomatopoeia_as_a_separate_region(self) -> None:
         lines = [

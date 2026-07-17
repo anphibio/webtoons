@@ -55,14 +55,24 @@ function isLikelyText(text: string, confidence: number): boolean {
   if (letters < 3 || unsupported.length > 0) return false;
   if (/\d/.test(compact) && letters < 4) return false;
   if (isShortNoise(text)) return false;
+  if (isLikelyGlyphHallucination(text)) return false;
   return true;
 }
 
 const COMMON_SHORT_WORDS = new Set([
-  "a", "an", "and", "are", "as", "at", "be", "big", "but", "can", "did", "do", "for", "get", "has",
+  "a", "an", "and", "are", "as", "at", "be", "big", "but", "can", "did", "do", "for", "get", "has", "oh",
   "he", "her", "him", "his", "how", "huh", "i", "if", "in", "is", "it", "j", "let", "may", "me", "my",
   "no", "not", "now", "of", "on", "one", "or", "out", "por", "put", "que", "say", "she", "so", "the", "to", "up",
   "us", "was", "we", "why", "who", "yes", "you",
+]);
+
+const COMMON_OCR_WORDS = new Set([
+  ...COMMON_SHORT_WORDS,
+  "about", "after", "again", "been", "before", "believe", "clear", "come", "complete", "daily", "down", "haah", "hello",
+  "feel", "first", "from", "here", "how", "just", "like", "main", "more", "move", "never", "original",
+  "other", "please", "points", "quest", "really", "remaining", "reward", "save", "since", "still", "stop",
+  "that", "their", "there", "they", "this", "time", "turn", "want", "when", "where", "without", "world", "sorry",
+  "would",
 ]);
 
 function isShortNoise(text: string): boolean {
@@ -73,6 +83,15 @@ function isShortNoise(text: string): boolean {
   const hasKnownWord = words.some((word) => COMMON_SHORT_WORDS.has(word));
   if (words.length >= 2 && totalLetters >= 6 && hasKnownWord) return false;
   return true;
+}
+
+function isLikelyGlyphHallucination(text: string): boolean {
+  const words = text.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
+  if (words.length === 1 && words[0]!.length >= 4 && words[0]!.length <= 8) {
+    return !COMMON_OCR_WORDS.has(words[0]!);
+  }
+  if (/\d/.test(text) && !words.some((word) => COMMON_OCR_WORDS.has(word))) return true;
+  return false;
 }
 
 function clampBoundingBox(box: BoundingBox, imageWidth: number, imageHeight: number): BoundingBox {

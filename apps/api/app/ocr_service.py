@@ -158,6 +158,24 @@ def _looks_like_gibberish(text: str) -> bool:
     return sum(1 for word in words if len(word) <= 1) >= 3
 
 
+_COMMON_OCR_WORDS = {
+    "a", "an", "and", "are", "as", "at", "be", "big", "but", "can", "did", "do", "for", "get", "has", "oh", "valid", "line",
+    "about", "after", "again", "been", "before", "believe", "clear", "come", "complete", "daily", "down", "haah", "hello",
+    "feel", "first", "from", "here", "how", "just", "like", "main", "more", "move", "never", "original",
+    "other", "please", "points", "quest", "really", "remaining", "reward", "save", "since", "still", "stop",
+    "that", "their", "there", "they", "this", "time", "turn", "want", "when", "where", "without", "world", "sorry", "would",
+}
+
+
+def _looks_like_isolated_glyph_hallucination(text: str) -> bool:
+    words = re.findall(r"[A-Za-z]+", text.lower())
+    if len(words) == 1 and 4 <= len(words[0]) <= 8:
+        return words[0] not in _COMMON_OCR_WORDS
+    if re.search(r"\d", text) and not any(word in _COMMON_OCR_WORDS for word in words):
+        return True
+    return False
+
+
 def _line_quality(line: OcrLine) -> tuple[int, float]:
     return len(_comparison_text(line.text)), line.confidence
 
@@ -196,7 +214,7 @@ def parse_paddle_result(results: Iterable[Any]) -> List[OcrLine]:
         for text_value, score_value, box_value in zip(texts, scores, boxes):
             text = str(text_value).strip()
             box = _as_sequence(box_value)
-            if not text or len(box) != 4 or _looks_like_gibberish(text):
+            if not text or len(box) != 4 or _looks_like_gibberish(text) or _looks_like_isolated_glyph_hallucination(text):
                 continue
             try:
                 x_min, y_min, x_max, y_max = (int(round(float(value))) for value in box)

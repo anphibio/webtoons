@@ -184,6 +184,8 @@ Cada região de overlay usa alinhamento flexível centralizado e calcula um tama
 
 Antes da tradução, o OCR normaliza caixas anormalmente altas com pouco texto sem descartar automaticamente o conteúdo, rejeita sequências com fragmentos e números típicas de ruído e impede que onomatopeias curtas sejam agrupadas ao diálogo vizinho. Isso mantém efeitos como “Haah...” em uma região independente, evita retângulos que cobrem balões inteiros e preserva falas válidas detectadas em caixas com dimensões ruins.
 
+O normalizador também rejeita alucinações latinas isoladas produzidas quando o motor inglês tenta interpretar glifos coreanos ou efeitos visuais. Frases com contexto, como “OH... SOMIN.”, continuam elegíveis; tokens isolados sem vocabulário reconhecível, como “botor” ou “tokor”, são tratados como ruído.
+
 O overlay calcula uma área mínima para a tradução e permite uma expansão vertical moderada quando o texto traduzido precisa de mais linhas. A fonte não é reduzida abaixo de 12px, evitando legendas ilegíveis causadas por caixas OCR estreitas.
 
 ## Política de processamento

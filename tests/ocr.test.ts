@@ -110,6 +110,19 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["I CAN"]);
   });
 
+  it("remove alucinações latinas isoladas geradas por glifos estilizados", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "botor", text: "botor", confidence: 0.9, bbox: { x: 0, y: 0, width: 120, height: 40 }, rotation: 0 },
+        { id: "tokor", text: "tokor", confidence: 0.9, bbox: { x: 0, y: 50, width: 120, height: 40 }, rotation: 0 },
+        { id: "krot", text: "Krot 2 M", confidence: 0.9, bbox: { x: 0, y: 100, width: 120, height: 40 }, rotation: 0 },
+        { id: "name", text: "OH... SOMIN.", confidence: 0.9, bbox: { x: 0, y: 150, width: 180, height: 40 }, rotation: 0 },
+      ],
+    }, { width: 300, height: 300 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["OH... SOMIN."]);
+  });
+
   it("preserva frases válidas compostas por várias palavras curtas", () => {
     const texts = ["HOW FAR DID SHE GO?", "I'LL PAY YOU."];
     const result = normalizeOcrResult({
