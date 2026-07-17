@@ -162,15 +162,8 @@ function repairCommonGlyphConfusions(text: string): string {
 }
 
 function mergeAdjacentRegions(regions: MappedRegion[]): MappedRegion[] {
-  const heights = regions.map((region) => region.bbox.height).sort((left, right) => left - right);
-  const typicalHeight = heights.length > 0 ? heights[Math.floor((heights.length - 1) / 2)]! : 0;
-  const abnormalHeightLimit = Math.max(160, typicalHeight * 4);
-  const filtered = regions.filter((region) => {
-    const compact = region.text.replace(/\s/g, "");
-    return !(region.bbox.height > abnormalHeightLimit && compact.length < 40);
-  });
   const merged: MappedRegion[] = [];
-  for (const region of filtered) {
+  for (const region of regions) {
     const previous = merged[merged.length - 1];
     if (!previous || !shouldJoin(previous, region)) {
       merged.push({ ...region, id: `ocr-${merged.length}` });

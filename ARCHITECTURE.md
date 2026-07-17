@@ -182,7 +182,9 @@ O teste integrado do pipeline executa o fluxo completo em um documento simulado 
 
 Cada região de overlay usa alinhamento flexível centralizado e calcula um tamanho de fonte compatível com sua largura e altura visuais. O tamanho configurado continua sendo o limite superior, enquanto traduções mais longas podem reduzir a fonte para permanecer dentro da região.
 
-Antes da tradução, o OCR remove caixas anormalmente altas com pouco texto, rejeita sequências com fragmentos e números típicas de ruído e impede que onomatopeias curtas sejam agrupadas ao diálogo vizinho. Isso mantém efeitos como “Haah...” em uma região independente e evita retângulos que cobrem balões inteiros.
+Antes da tradução, o OCR normaliza caixas anormalmente altas com pouco texto sem descartar automaticamente o conteúdo, rejeita sequências com fragmentos e números típicas de ruído e impede que onomatopeias curtas sejam agrupadas ao diálogo vizinho. Isso mantém efeitos como “Haah...” em uma região independente, evita retângulos que cobrem balões inteiros e preserva falas válidas detectadas em caixas com dimensões ruins.
+
+O overlay calcula uma área mínima para a tradução e permite uma expansão vertical moderada quando o texto traduzido precisa de mais linhas. A fonte não é reduzida abaixo de 12px, evitando legendas ilegíveis causadas por caixas OCR estreitas.
 
 ## Política de processamento
 

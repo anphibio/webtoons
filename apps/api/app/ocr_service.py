@@ -221,8 +221,8 @@ def group_ocr_lines(lines: Iterable[OcrLine]) -> List[OcrLine]:
     typical_height = median(line.height for line in ordered_lines) if ordered_lines else 0
     max_grouping_height = max(160, typical_height * 4)
     ordered_lines = [
-        line for line in ordered_lines
-        if not (line.height > max_grouping_height and len(_comparison_text(line.text)) < 40)
+        _normalize_short_tall_line(line, typical_height, max_grouping_height)
+        for line in ordered_lines
     ]
     groups: List[List[OcrLine]] = []
     for line in ordered_lines:
@@ -291,6 +291,20 @@ def _can_join(previous: OcrLine, current: OcrLine, max_grouping_height: float) -
 def _is_onomatopoeia(text: str) -> bool:
     normalized = re.sub(r"[^a-z]", "", text.lower())
     return normalized in {"ah", "ahh", "haah", "hmm", "mmm", "oh"}
+
+
+def _normalize_short_tall_line(line: OcrLine, typical_height: float, limit: float) -> OcrLine:
+    if line.height <= limit or len(_comparison_text(line.text)) >= 40:
+        return line
+    height = max(24, round(typical_height * 1.8))
+    return OcrLine(
+        text=line.text,
+        confidence=line.confidence,
+        x=line.x,
+        y=line.y + round((line.height - height) / 2),
+        width=line.width,
+        height=height,
+    )
 
 
 def _merge_group(group: Sequence[OcrLine]) -> OcrLine:

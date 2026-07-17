@@ -77,20 +77,20 @@ export class OverlayManager {
       const element = this.document.createElement("span");
       element.dataset.wtlRegion = region.id;
       element.textContent = region.text;
-      const anchorToBottom = region.bbox.y + region.bbox.height / 2 > height / 2;
-      const verticalPosition = anchorToBottom
-        ? { bottom: `${((height - region.bbox.y - region.bbox.height) / height) * 100}%` }
-        : { top: `${(region.bbox.y / height) * 100}%` };
       const boxWidth = (region.bbox.width / width) * displayWidth;
       const boxHeight = (region.bbox.height / height) * displayHeight;
+      const layout = fitTextLayout(region.text, boxWidth, boxHeight, this.preferences.fontSize);
+      const expandedHeight = Math.min(displayHeight, Math.max(boxHeight, layout.height));
+      const centerY = ((region.bbox.y + region.bbox.height / 2) / height) * displayHeight;
+      const top = clamp(centerY - expandedHeight / 2, 0, Math.max(0, displayHeight - expandedHeight));
       element.dataset.wtlBoxWidth = String(boxWidth);
-      element.dataset.wtlBoxHeight = String(boxHeight);
+      element.dataset.wtlBoxHeight = String(expandedHeight);
       Object.assign(element.style, {
         position: "absolute",
         left: `${(region.bbox.x / width) * 100}%`,
-        ...verticalPosition,
+        top: `${(top / displayHeight) * 100}%`,
         width: `${(region.bbox.width / width) * 100}%`,
-        minHeight: `${(region.bbox.height / height) * 100}%`,
+        height: `${(expandedHeight / displayHeight) * 100}%`,
         boxSizing: "border-box",
         padding: "4px",
         color: "#111",
@@ -98,7 +98,7 @@ export class OverlayManager {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontSize: `${fitFontSize(region.text, boxWidth, boxHeight, this.preferences.fontSize)}px`,
+        fontSize: `${layout.fontSize}px`,
         fontWeight: "600",
         lineHeight: "1.15",
         fontFamily: "system-ui, sans-serif",
@@ -203,13 +203,21 @@ function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(maximum, Math.max(minimum, value));
 }
 
-function fitFontSize(text: string, width: number, height: number, preferred: number): number {
+function fitTextLayout(text: string, width: number, height: number, preferred: number): { fontSize: number; height: number } {
   const safeWidth = Math.max(1, width - 8);
   const safeHeight = Math.max(1, height - 8);
-  for (let size = clamp(preferred, 10, 32); size >= 10; size -= 1) {
+  const preferredSize = clamp(preferred, 12, 32);
+  for (let size = preferredSize; size >= 12; size -= 1) {
     const charactersPerLine = Math.max(1, Math.floor(safeWidth / (size * 0.56)));
     const lineCount = Math.max(1, Math.ceil(text.length / charactersPerLine));
-    if (lineCount * size * 1.15 <= safeHeight) return size;
+    const neededHeight = lineCount * size * 1.15 + 8;
+    if (neededHeight <= Math.max(safeHeight, size * 1.15 * 2.5)) return { fontSize: size, height: neededHeight };
   }
-  return 10;
+  const fontSize = 12;
+  const charactersPerLine = Math.max(1, Math.floor(safeWidth / (fontSize * 0.56)));
+  return { fontSize, height: Math.max(safeHeight, Math.ceil(text.length / charactersPerLine) * fontSize * 1.15 + 8) };
+}
+
+function fitFontSize(text: string, width: number, height: number, preferred: number): number {
+  return fitTextLayout(text, width, height, preferred).fontSize;
 }

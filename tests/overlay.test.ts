@@ -71,8 +71,8 @@ describe("overlay reversível", () => {
     const overlay = document.querySelector<HTMLElement>("[data-wtl-overlay]");
     const region = overlay?.querySelector<HTMLElement>("[data-wtl-region]");
     expect(overlay?.style.overflow).toBe("hidden");
-    expect(region?.style.top).toBe("");
-    expect(Number.parseFloat(region?.style.bottom ?? "NaN")).toBeCloseTo((1200 - 1180) / 1200 * 100);
+    expect(Number.parseFloat(region?.style.top ?? "NaN")).toBeGreaterThanOrEqual(0);
+    expect(region?.style.bottom).toBe("");
   });
 
   it("centraliza a tradução na região e adapta a fonte ao espaço disponível", () => {

@@ -11,16 +11,17 @@ export function normalizeOcrResult(
   const typicalHeight = heights.length > 0 ? heights[Math.floor((heights.length - 1) / 2)]! : 0;
   const abnormalHeightLimit = Math.max(160, typicalHeight * 4);
   const regions = raw.regions
-    .filter((region) => !isAbnormallyTallShortRegion(region.text, region.bbox.height, abnormalHeightLimit))
     .map((region) => {
       const text = region.text.trim();
       if (!text || !isLikelyText(text, region.confidence)) return null;
+
+      const bbox = normalizeShortTallBox(region.bbox, text, typicalHeight, abnormalHeightLimit);
 
       return {
         ...region,
         text,
         confidence: clamp(region.confidence, 0, 1),
-        bbox: clampBoundingBox(region.bbox, dimensions.width, dimensions.height),
+        bbox: clampBoundingBox(bbox, dimensions.width, dimensions.height),
         rotation: Number.isFinite(region.rotation) ? region.rotation : 0,
       };
     })
@@ -32,6 +33,17 @@ export function normalizeOcrResult(
 function isAbnormallyTallShortRegion(text: string, height: number, limit: number): boolean {
   const compact = text.replace(/\s/g, "");
   return height > limit && compact.length < 40;
+}
+
+function normalizeShortTallBox(
+  box: BoundingBox,
+  text: string,
+  typicalHeight: number,
+  limit: number,
+): BoundingBox {
+  if (!isAbnormallyTallShortRegion(text, box.height, limit)) return box;
+  const height = Math.max(24, Math.round(typicalHeight * 1.8));
+  return { ...box, y: box.y + Math.round((box.height - height) / 2), height };
 }
 
 function isLikelyText(text: string, confidence: number): boolean {

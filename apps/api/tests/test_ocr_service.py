@@ -92,7 +92,7 @@ class OcrServiceTests(unittest.TestCase):
         self.assertLess(dialogue.height, 200)
         self.assertGreater(dialogue.x, 200)
 
-    def test_discards_anomalously_tall_short_sound_effect_boxes(self) -> None:
+    def test_normalizes_anomalously_tall_short_sound_effect_boxes(self) -> None:
         lines = [
             OcrLine("A KID LIKE YOU", 0.98, 220, 500, 420, 34),
             OcrLine("WHO DID IT WITHOUT", 0.98, 240, 545, 380, 34),
@@ -101,8 +101,8 @@ class OcrServiceTests(unittest.TestCase):
 
         regions = group_ocr_lines(lines)
 
-        self.assertEqual(len(regions), 1)
-        self.assertEqual(regions[0].text, "A KID LIKE YOU WHO DID IT WITHOUT")
+        self.assertEqual([region.text for region in regions], ["A KID LIKE YOU WHO DID IT WITHOUT", "Haah"])
+        self.assertLess(regions[1].height, 560)
 
     def test_rejects_gibberish_with_many_fragments_and_digits(self) -> None:
         result = FakePaddleResult()

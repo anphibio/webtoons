@@ -47,7 +47,7 @@ describe("contrato de OCR", () => {
     expect(result.regions).toEqual([]);
   });
 
-  it("remove caixas anormalmente altas quando o texto é curto", () => {
+  it("normaliza caixas anormalmente altas sem perder texto curto válido", () => {
     const result = normalizeOcrResult({
       regions: [
         { id: "dialogue", text: "A KID LIKE YOU", confidence: 0.98, bbox: { x: 100, y: 500, width: 300, height: 34 }, rotation: 0 },
@@ -55,7 +55,8 @@ describe("contrato de OCR", () => {
       ],
     }, { width: 800, height: 1200 });
 
-    expect(result.regions.map((region) => region.text)).toEqual(["A KID LIKE YOU"]);
+    expect(result.regions.map((region) => region.text)).toEqual(["A KID LIKE YOU", "Haah"]);
+    expect(result.regions[1]?.bbox.height).toBeLessThan(560);
   });
 
   it("preserva o til usado como pontuação expressiva em diálogos", () => {
