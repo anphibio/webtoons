@@ -180,6 +180,8 @@ O glossário é configurado localmente como um objeto JSON de termos de origem e
 
 O teste integrado do pipeline executa o fluxo completo em um documento simulado e verifica que a imagem original permanece intacta, a tradução é renderizada e a posição da região é preservada.
 
+Cada região de overlay usa alinhamento flexível centralizado e calcula um tamanho de fonte compatível com sua largura e altura visuais. O tamanho configurado continua sendo o limite superior, enquanto traduções mais longas podem reduzir a fonte para permanecer dentro da região.
+
 ## Política de processamento
 
 - prioridade para elementos visíveis;

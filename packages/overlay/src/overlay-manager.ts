@@ -71,6 +71,8 @@ export class OverlayManager {
 
     const width = (positiveDimension(dimensions?.width) ?? image.naturalWidth) || image.width || image.clientWidth || 1;
     const height = (positiveDimension(dimensions?.height) ?? image.naturalHeight) || image.height || image.clientHeight || 1;
+    const displayWidth = image.clientWidth || image.width || width;
+    const displayHeight = image.clientHeight || image.height || height;
     for (const region of regions) {
       const element = this.document.createElement("span");
       element.dataset.wtlRegion = region.id;
@@ -79,6 +81,10 @@ export class OverlayManager {
       const verticalPosition = anchorToBottom
         ? { bottom: `${((height - region.bbox.y - region.bbox.height) / height) * 100}%` }
         : { top: `${(region.bbox.y / height) * 100}%` };
+      const boxWidth = (region.bbox.width / width) * displayWidth;
+      const boxHeight = (region.bbox.height / height) * displayHeight;
+      element.dataset.wtlBoxWidth = String(boxWidth);
+      element.dataset.wtlBoxHeight = String(boxHeight);
       Object.assign(element.style, {
         position: "absolute",
         left: `${(region.bbox.x / width) * 100}%`,
@@ -89,9 +95,16 @@ export class OverlayManager {
         padding: "4px",
         color: "#111",
         background: `rgba(255, 255, 255, ${this.preferences.opacity})`,
-        font: `600 ${this.preferences.fontSize}px/1.2 system-ui, sans-serif`,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: `${fitFontSize(region.text, boxWidth, boxHeight, this.preferences.fontSize)}px`,
+        fontWeight: "600",
+        lineHeight: "1.15",
+        fontFamily: "system-ui, sans-serif",
         textAlign: "center",
-        overflowWrap: "anywhere",
+        overflowWrap: "break-word",
+        wordBreak: "normal",
       });
       root.append(element);
     }
@@ -163,7 +176,12 @@ export class OverlayManager {
       root.hidden = !this.preferences.visible;
       for (const region of root.querySelectorAll<HTMLElement>("[data-wtl-region]")) {
         region.style.background = `rgba(255, 255, 255, ${this.preferences.opacity})`;
-        region.style.fontSize = `${this.preferences.fontSize}px`;
+        region.style.fontSize = `${fitFontSize(
+          region.textContent ?? "",
+          Number(region.dataset.wtlBoxWidth ?? 0),
+          Number(region.dataset.wtlBoxHeight ?? 0),
+          this.preferences.fontSize,
+        )}px`;
       }
     }
   }
@@ -183,4 +201,15 @@ function positiveDimension(value: number | undefined): number | undefined {
 
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(maximum, Math.max(minimum, value));
+}
+
+function fitFontSize(text: string, width: number, height: number, preferred: number): number {
+  const safeWidth = Math.max(1, width - 8);
+  const safeHeight = Math.max(1, height - 8);
+  for (let size = clamp(preferred, 10, 32); size >= 10; size -= 1) {
+    const charactersPerLine = Math.max(1, Math.floor(safeWidth / (size * 0.56)));
+    const lineCount = Math.max(1, Math.ceil(text.length / charactersPerLine));
+    if (lineCount * size * 1.15 <= safeHeight) return size;
+  }
+  return 10;
 }
