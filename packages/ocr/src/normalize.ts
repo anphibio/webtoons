@@ -94,7 +94,7 @@ function isLikelyGlyphHallucination(text: string): boolean {
 }
 
 const OCR_HALLUCINATION_TOKENS = new Set([
-  "botor", "loto", "tokor", "heugho", "heuth", "heyhl", "hmng", "krot", "leuol", "toro", "toror",
+  "botor", "loto", "tokor", "heugho", "heughh", "heugh", "heuth", "heyhl", "hmng", "krot", "leuol", "toro", "toror",
 ]);
 
 const OCR_HALLUCINATION_FRAGMENTS = new Set(["heughi", "waju", "heugho", "leuol", "heuth", "heyhl", "hmng"]);

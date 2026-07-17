@@ -124,6 +124,19 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["OH... SOMIN.", "MONDAYS."]);
   });
 
+  it("ignora efeitos sonoros corrompidos sem descartar interjeições reais", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "noise-1", text: "Heughh", confidence: 0.9, bbox: { x: 0, y: 0, width: 120, height: 40 }, rotation: 0 },
+        { id: "noise-2", text: "Heugh!", confidence: 0.9, bbox: { x: 0, y: 50, width: 120, height: 40 }, rotation: 0 },
+        { id: "noise-3", text: "Hmng", confidence: 0.9, bbox: { x: 0, y: 100, width: 120, height: 40 }, rotation: 0 },
+        { id: "valid", text: "Haah...", confidence: 0.9, bbox: { x: 0, y: 150, width: 120, height: 40 }, rotation: 0 },
+      ],
+    }, { width: 300, height: 300 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["Haah..."]);
+  });
+
   it("preserva frases válidas compostas por várias palavras curtas", () => {
     const texts = ["HOW FAR DID SHE GO?", "I'LL PAY YOU."];
     const result = normalizeOcrResult({

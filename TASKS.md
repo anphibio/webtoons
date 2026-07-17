@@ -140,6 +140,7 @@
 - [x] Benchmark de capítulos longos.
 - [x] Auditoria de memória do OCR local.
 - [x] Manter overlays ancorados no bounding box original para evitar deslocamento entre balões e imagens.
+- [x] Filtrar alucinações OCR recorrentes de efeitos sonoros sem descartar interjeições como “Haah”.
 - [ ] Tratamento de erros.
 - [x] Documentação de instalação.
 
