@@ -132,7 +132,8 @@
 - [x] Teste integrado do fluxo imagem → OCR → tradução → overlay.
 - [x] Testes de adaptadores.
 - [ ] Regressão visual.
-- [x] Repetir OCR localmente em resultados de baixa cobertura (até três regiões) para recuperar balões ausentes.
+- [x] Repetir OCR localmente em resultados de baixa cobertura, mesmo quando o detector retornar várias caixas de ruído, limitando o fallback a páginas com pouca evidência confiável.
+- [x] Invalidar o cache de OCR ao alterar a estratégia de recuperação de balões.
 - [x] Reprocessar uma vez imagens com falha transitória antes de contabilizar erro definitivo.
 - [x] Benchmark de capítulos longos.
 - [x] Auditoria de memória do OCR local.

@@ -31,4 +31,33 @@ describe("fallback single-block do OCR", () => {
 
     expect(chooseOcrFallback(primary, fallback)).toBe(primary);
   });
+
+  it("aciona o fallback quando o detector devolve várias caixas, mas pouca evidência útil", () => {
+    const noisy: RawOcrResult = {
+      regions: [
+        region("BMAA", 0.42),
+        region("UGHN...I UGHH..I", 0.88),
+        region("Fr", 0.3),
+        region("o", 0.35),
+        region("o H", 0.51),
+        region("(", 0.44),
+        region("M", 0.3),
+      ],
+    };
+
+    expect(shouldAttemptSingleBlockFallback(noisy)).toBe(true);
+  });
+
+  it("não aciona o fallback quando há várias regiões com texto confiável", () => {
+    const covered: RawOcrResult = {
+      regions: [
+        region("Hello there", 0.9),
+        region("I am here", 0.9),
+        region("Please wait", 0.9),
+        region("Come quickly", 0.9),
+      ],
+    };
+
+    expect(shouldAttemptSingleBlockFallback(covered)).toBe(false);
+  });
 });
