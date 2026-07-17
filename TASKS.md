@@ -147,6 +147,7 @@
 - [x] Invalidar o cache ao ampliar o filtro de efeitos sonoros e grafismos recorrentes.
 - [x] Rejeitar variações compostas de efeitos sonoros e falsos positivos de texto em faixas gráficas largas.
 - [x] Filtrar novas variantes isoladas de efeitos sonoros reconhecidas como palavras inglesas.
+- [x] Invalidar automaticamente o cache OCR após ampliar novamente o filtro de ruídos.
 - [ ] Tratamento de erros.
 - [x] Documentação de instalação.
 
