@@ -27,5 +27,5 @@ function isPlausibleRegion(region: OcrRegion): boolean {
 }
 
 const OCR_HALLUCINATION_TOKENS = new Set([
-  "botor", "tokor", "heugh", "heugho", "heuth", "heyhl", "hmng", "krot", "leuol", "toro", "toror",
+  "botor", "loto", "tokor", "heughi", "waju", "heugho", "heuth", "heyhl", "hmng", "krot", "leuol", "toro", "toror",
 ]);

@@ -150,6 +150,22 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["I DIDN'T SEE THAT COMING AT ALL."]);
   });
 
+  it("limpa fragmentos corrompidos sem perder a palavra válida do balão", () => {
+    const result = normalizeOcrResult({
+      regions: [{ id: "mixed", text: "HEUGHI WAIT – WAJU –", confidence: 0.9, bbox: { x: 100, y: 20, width: 220, height: 70 }, rotation: 0 }],
+    }, { width: 400, height: 200 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["WAIT – –"]);
+  });
+
+  it("remove uma detecção larga e rasa que parece texto de arte", () => {
+    const result = normalizeOcrResult({
+      regions: [{ id: "art", text: "Hey guys", confidence: 0.9, bbox: { x: 0, y: 20, width: 444, height: 53 }, rotation: 0 }],
+    }, { width: 720, height: 6915 });
+
+    expect(result.regions).toEqual([]);
+  });
+
   it("retorna progresso e respeita cancelamento", async () => {
     const progress: number[] = [];
     const controller = new AbortController();

@@ -51,6 +51,7 @@
 - [x] Reexecutar OCR local quando a leitura principal retorna somente uma região.
 - [x] Ignorar a marca d’água conhecida do site durante o OCR.
 - [x] Evitar que regiões extras de baixa qualidade substituam uma leitura OCR principal válida.
+- [x] Remover fragmentos corrompidos de linhas OCR sem descartar palavras válidas do mesmo balão.
 - [x] Implementar pré-processamento e segunda leitura invertida para imagens com áreas escuras.
 - [x] Reprocessar imagens longas em blocos verticais sobrepostos quando a leitura integral encontrar pouco texto.
 - [x] Aplicar leitura binarizada de alto contraste como recuperação para imagens com baixa cobertura OCR.

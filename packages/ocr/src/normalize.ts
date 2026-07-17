@@ -12,8 +12,8 @@ export function normalizeOcrResult(
   const abnormalHeightLimit = Math.max(160, typicalHeight * 4);
   const regions = raw.regions
     .map((region) => {
-      const text = region.text.trim();
-      if (!text || isKnownWatermark(text) || !isLikelyText(text, region.confidence)) return null;
+      const text = sanitizeOcrText(region.text.trim());
+      if (!text || isKnownWatermark(text) || isLikelyBannerArtifact(region, text, dimensions) || !isLikelyText(text, region.confidence)) return null;
 
       const bbox = normalizeShortTallBox(region.bbox, text, typicalHeight, abnormalHeightLimit);
 
@@ -51,7 +51,7 @@ function isLikelyText(text: string, confidence: number): boolean {
   const compact = text.replace(/\s/g, "");
   if (compact.length < 3) return false;
   const letters = (compact.match(/[\p{L}]/gu) ?? []).length;
-  const unsupported = compact.replace(/[\p{L}\p{N}.,:;!?…'’"()\u005B\u005D\u002F+&•~-]/gu, "");
+  const unsupported = compact.replace(/[\p{L}\p{N}.,:;!?…'’"()\u005B\u005D\u002F+&•~\-–—]/gu, "");
   if (letters < 3 || unsupported.length > 0) return false;
   if (/\d/.test(compact) && letters < 4) return false;
   if (isShortNoise(text)) return false;
@@ -94,8 +94,28 @@ function isLikelyGlyphHallucination(text: string): boolean {
 }
 
 const OCR_HALLUCINATION_TOKENS = new Set([
-  "botor", "tokor", "heugh", "heugho", "heuth", "heyhl", "hmng", "krot", "leuol", "toro", "toror",
+  "botor", "loto", "tokor", "heugho", "heuth", "heyhl", "hmng", "krot", "leuol", "toro", "toror",
 ]);
+
+const OCR_HALLUCINATION_FRAGMENTS = new Set(["heughi", "waju", "heugho", "leuol", "heuth", "heyhl", "hmng"]);
+
+function sanitizeOcrText(text: string): string {
+  return text
+    .split(/(\s+)/)
+    .filter((part) => !OCR_HALLUCINATION_FRAGMENTS.has(part.toLocaleLowerCase().replace(/[^a-z]/g, "")))
+    .join("")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isLikelyBannerArtifact(region: OcrRegion, text: string, dimensions: { width: number; height: number }): boolean {
+  if (dimensions.width <= 0 || region.bbox.x > 1) return false;
+  const wide = region.bbox.width / dimensions.width >= 0.55;
+  const shallow = region.bbox.height <= Math.max(70, dimensions.height * 0.025);
+  const compact = text.replace(/\s/g, "").length <= 18;
+  const hasSentencePunctuation = /[.!?…]/.test(text);
+  return wide && shallow && compact && !hasSentencePunctuation;
+}
 
 function isKnownWatermark(text: string): boolean {
   return /\b(?:www\.)?omegascans\s*\.\s*org\b/i.test(text);
