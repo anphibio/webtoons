@@ -24,6 +24,7 @@
 - [x] Usar as dimensões reais do backend quando a imagem lazy ainda não possui tamanho no DOM.
 - [x] Enfileirar todas as páginas do capítulo, priorizando as visíveis sem abandonar as distantes.
 - [x] Drenar fila incremental sem descartar imagens durante OCR concorrente.
+- [x] Processar também imagens distantes adicionadas pelo lazy-load após a descoberta inicial.
 - [x] Impedir que uma requisição de imagem pendente bloqueie o restante da fila.
 - [x] Acionar o proxy local quando o acesso direto ao CDN falhar ou expirar.
 - [x] Revalidar imagens próximas com posição de scroll como fallback do IntersectionObserver.

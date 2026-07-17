@@ -194,6 +194,7 @@ Imagens que falham durante carregamento, OCR ou tradução não são marcadas co
 
 - prioridade para elementos visíveis;
 - pré-carregamento moderado;
+- imagens adicionadas posteriormente pelo lazy-load entram na fila mesmo quando ainda estão distantes;
 - concorrência configurável;
 - cancelamento ao mudar de página;
 - debounce do MutationObserver;

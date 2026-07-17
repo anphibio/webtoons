@@ -9,6 +9,13 @@ export function shouldRetryImage(attempts: number, maxAttempts = 2): boolean {
   return Number.isFinite(attempts) && attempts >= 0 && attempts < maxAttempts;
 }
 
+export function shouldQueueImage(
+  priority: "visible" | "nearby" | "distant",
+  includeDistant: boolean,
+): boolean {
+  return includeDistant || priority !== "distant";
+}
+
 export function countPipelineResult(
   summary: ProcessingSummary,
   result: ImagePipelineResult,

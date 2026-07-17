@@ -3,7 +3,7 @@ import { createLogger } from "../../../../packages/shared/src/logger";
 import { transition, type TranslationState } from "../../../../packages/core/src/translation-state";
 import { ImagePipeline } from "../../../../packages/core/src/image-pipeline";
 import type { ImagePipelineStage } from "../../../../packages/core/src/image-pipeline";
-import { countPipelineResult, shouldRetryImage } from "../../../../packages/core/src/processing-progress";
+import { countPipelineResult, shouldQueueImage, shouldRetryImage } from "../../../../packages/core/src/processing-progress";
 import { claimRuntime } from "../../../../packages/core/src/runtime-singleton";
 import { prioritizeImageCandidates } from "../../../../packages/core/src/candidate-queue";
 import { RuntimeImageLoader } from "../../../../packages/core/src/image-loader";
@@ -114,6 +114,7 @@ function discoverPage(): void {
       .filter((candidate) => images.includes(candidate.element));
     for (const candidate of dynamicCandidates) candidates.set(candidate.id, candidate);
     if (dynamicCandidates.length > 0) {
+      progress = { ...progress, total: candidates.size };
       stopVisibilityObserver?.();
       stopVisibilityObserver = observeImageVisibility(
         [...candidates.values()].map((candidate) => candidate.element),
@@ -126,7 +127,7 @@ function discoverPage(): void {
         },
       );
     }
-    if (activePipeline && dynamicCandidates.length > 0) void processCandidates(dynamicCandidates);
+    if (activePipeline && dynamicCandidates.length > 0) void processCandidates(dynamicCandidates, true);
   });
   stopScrollObserver = observeScrollPosition();
   stopRouteObserver = observeRouteChanges(() => {
@@ -138,10 +139,10 @@ function discoverPage(): void {
   });
 
   logger.info("Imagens de capítulo descobertas", { count: candidates.size });
-  void processDiscoveredImages();
+  void processDiscoveredImages(root, specificAdapter);
 }
 
-async function processDiscoveredImages(): Promise<void> {
+async function processDiscoveredImages(root: Element, specificAdapter: ToonGodAdapter | undefined): Promise<void> {
   const settings = await loadSettings(chromeSettingsStorage());
   overlayManager.setOpacity(settings.opacity);
   overlayManager.setFontSize(settings.fontSize);
@@ -186,6 +187,9 @@ async function processDiscoveredImages(): Promise<void> {
     },
   });
 
+  const refreshedImages = specificAdapter?.findPageImages(root) ?? new GenericImageDetector().findPageImages(root);
+  for (const candidate of refreshedImages) candidates.set(candidate.id, candidate);
+  progress = { ...progress, total: candidates.size };
   await processCandidates(prioritizeImageCandidates(candidates.values()), true);
 }
 
@@ -193,7 +197,7 @@ async function processCandidates(items: ImageCandidate[], includeDistant = false
   if (!activePipeline || !processingController) return;
   items.filter((candidate) => {
     const key = `${candidate.id}:${candidate.sourceUrl}`;
-    return !processedCandidates.has(key) && (includeDistant || candidate.priority !== "distant" || items.length === 1);
+    return !processedCandidates.has(key) && shouldQueueImage(candidate.priority, includeDistant || items.length === 1);
   }).forEach((candidate) => queuedCandidates.set(`${candidate.id}:${candidate.sourceUrl}`, candidate));
 
   if (processingPromise) return processingPromise;
