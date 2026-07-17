@@ -5,6 +5,10 @@ export interface ProcessingSummary {
   empty: number;
 }
 
+export function shouldRetryImage(attempts: number, maxAttempts = 2): boolean {
+  return Number.isFinite(attempts) && attempts >= 0 && attempts < maxAttempts;
+}
+
 export function countPipelineResult(
   summary: ProcessingSummary,
   result: ImagePipelineResult,

@@ -188,6 +188,8 @@ O normalizador também rejeita padrões conhecidos de alucinação latina produz
 
 O overlay calcula uma área mínima para a tradução e permite uma expansão vertical moderada quando o texto traduzido precisa de mais linhas. A fonte não é reduzida abaixo de 12px, evitando legendas ilegíveis causadas por caixas OCR estreitas.
 
+Imagens que falham durante carregamento, OCR ou tradução não são marcadas como concluídas antes do fim da tentativa. Elas podem ser reprocessadas uma vez pelo ciclo da fila; somente depois da segunda falha entram no total definitivo de erros. Isso permite recuperar imagens lazy que ainda não estavam prontas sem criar repetição infinita.
+
 ## Política de processamento
 
 - prioridade para elementos visíveis;

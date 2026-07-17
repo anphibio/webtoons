@@ -3,7 +3,7 @@ import { createLogger } from "../../../../packages/shared/src/logger";
 import { transition, type TranslationState } from "../../../../packages/core/src/translation-state";
 import { ImagePipeline } from "../../../../packages/core/src/image-pipeline";
 import type { ImagePipelineStage } from "../../../../packages/core/src/image-pipeline";
-import { countPipelineResult } from "../../../../packages/core/src/processing-progress";
+import { countPipelineResult, shouldRetryImage } from "../../../../packages/core/src/processing-progress";
 import { claimRuntime } from "../../../../packages/core/src/runtime-singleton";
 import { prioritizeImageCandidates } from "../../../../packages/core/src/candidate-queue";
 import { RuntimeImageLoader } from "../../../../packages/core/src/image-loader";
@@ -37,6 +37,7 @@ let activePipeline: ImagePipeline | undefined;
 let processingPromise: Promise<void> | undefined;
 const processedCandidates = new Set<string>();
 const queuedCandidates = new Map<string, ImageCandidate>();
+const candidateAttempts = new Map<string, number>();
 let lastProcessingError: string | undefined;
 let progress = createProgress();
 const overlayManager = new OverlayManager(document);
@@ -207,7 +208,6 @@ async function processCandidates(items: ImageCandidate[], includeDistant = false
       for (const candidate of pending) {
         if (signal.aborted) return;
         const key = `${candidate.id}:${candidate.sourceUrl}`;
-        processedCandidates.add(key);
         progress = {
           ...progress,
           currentPage: pageName(candidate.sourceUrl),
@@ -216,14 +216,20 @@ async function processCandidates(items: ImageCandidate[], includeDistant = false
         try {
           const result = await activePipeline?.process(candidate, signal);
           if (result) progress = { ...progress, ...countPipelineResult(progress, result) };
+          processedCandidates.add(key);
+          progress = { ...progress, completed: progress.completed + 1 };
         } catch (error) {
-          failures += 1;
-          progress = { ...progress, failed: progress.failed + 1 };
+          const attempts = (candidateAttempts.get(key) ?? 0) + 1;
+          candidateAttempts.set(key, attempts);
+          const retry = shouldRetryImage(attempts);
+          if (retry) queuedCandidates.set(key, candidate);
+          else {
+            failures += 1;
+            progress = { ...progress, failed: progress.failed + 1, completed: progress.completed + 1 };
+          }
           const reason = error instanceof Error ? error.message : String(error);
           lastProcessingError ??= reason;
           logger.warn("Falha ao processar imagem", { id: candidate.id, reason });
-        } finally {
-          progress = { ...progress, completed: progress.completed + 1 };
         }
       }
     }
@@ -283,6 +289,7 @@ function stopDiscovery(): void {
   activePipeline = undefined;
   processedCandidates.clear();
   queuedCandidates.clear();
+  candidateAttempts.clear();
 }
 
 function observeScrollPosition(): () => void {
