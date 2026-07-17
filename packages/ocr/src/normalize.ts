@@ -112,6 +112,10 @@ function isShortNoise(text: string): boolean {
 
 function isLikelyGlyphHallucination(text: string): boolean {
   const words = text.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
+  const compact = words.join("");
+  if (OCR_SOUND_EFFECT_TOKENS.has(compact)) return true;
+  if (/\bn\s+(?:sdo|ado)\b/i.test(text)) return true;
+  if (/\bstaurs?\s+club\b/i.test(text)) return true;
   if (words.some((word) => OCR_HALLUCINATION_TOKENS.has(word))) return true;
   if (/\bn\s*[°º]\b/i.test(text)) return true;
   if (/\d/.test(text) && !words.some((word) => COMMON_OCR_WORDS.has(word))) return true;
@@ -121,6 +125,8 @@ function isLikelyGlyphHallucination(text: string): boolean {
 const OCR_HALLUCINATION_TOKENS = new Set([
   "botor", "loto", "tokor", "heugho", "heughh", "heugh", "heuth", "heyhl", "hmng", "krot", "leuol", "toro", "toror",
 ]);
+
+const OCR_SOUND_EFFECT_TOKENS = new Set(["huff", "haah", "euggh", "eugghh", "ughh"]);
 
 const OCR_HALLUCINATION_FRAGMENTS = new Set(["heughi", "waju", "heugho", "leuol", "heuth", "heyhl", "hmng"]);
 

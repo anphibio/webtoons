@@ -68,7 +68,7 @@ describe("mapeamento do resultado Tesseract", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["I FEEL SORRY FOR"]);
   });
 
-  it("mantém onomatopeias próximas como regiões independentes", () => {
+  it("descarta onomatopeias recorrentes próximas sem afetar a fala principal", () => {
     const result = mapTesseractPage({
       blocks: [
         { text: "A KID LIKE YOU", confidence: 90, bbox: { x0: 100, y0: 100, x1: 300, y1: 130 } },
@@ -76,6 +76,6 @@ describe("mapeamento do resultado Tesseract", () => {
       ],
     }, { width: 400, height: 300 });
 
-    expect(result.regions.map((region) => region.text)).toEqual(["A KID LIKE YOU", "Haah..."]);
+    expect(result.regions.map((region) => region.text)).toEqual(["A KID LIKE YOU"]);
   });
 });

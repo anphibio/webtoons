@@ -121,7 +121,7 @@ export class ImagePipeline {
           order,
         }));
         const translationKey = createCacheKey(
-          "translation-v4",
+          "translation-v5",
           this.options.sourceLanguage,
           this.options.targetLanguage,
           ...segments.map((segment) => `${segment.order}:${segment.text}`),
@@ -177,7 +177,7 @@ async function createImageCacheKey(
   height: number,
 ): Promise<string> {
   const bytes = await imageBytes(image);
-  return createCacheKey("ocr-v14", candidate.sourceUrl, `${width}x${height}`, createBytesKey(bytes));
+  return createCacheKey("ocr-v15", candidate.sourceUrl, `${width}x${height}`, createBytesKey(bytes));
 }
 
 async function imageBytes(image: LoadedImage["image"]): Promise<Uint8Array> {

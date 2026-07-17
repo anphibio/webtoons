@@ -144,6 +144,7 @@
 - [x] Filtrar alucinações OCR recorrentes de efeitos sonoros sem descartar interjeições como “Haah”.
 - [x] Invalidar novamente os caches de OCR e tradução para reprocessar o capítulo 12 sem resultados antigos.
 - [x] Deduplicar regiões OCR com o mesmo texto e sobreposição forte, preservando falas iguais em balões distintos.
+- [x] Invalidar o cache ao ampliar o filtro de efeitos sonoros e grafismos recorrentes.
 - [ ] Tratamento de erros.
 - [x] Documentação de instalação.
 

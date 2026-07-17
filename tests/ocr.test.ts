@@ -51,11 +51,11 @@ describe("contrato de OCR", () => {
     const result = normalizeOcrResult({
       regions: [
         { id: "dialogue", text: "A KID LIKE YOU", confidence: 0.98, bbox: { x: 100, y: 500, width: 300, height: 34 }, rotation: 0 },
-        { id: "sound-effect", text: "Haah", confidence: 0.91, bbox: { x: 600, y: 620, width: 140, height: 560 }, rotation: 0 },
+        { id: "short-dialogue", text: "OH... SOMIN.", confidence: 0.91, bbox: { x: 600, y: 620, width: 140, height: 560 }, rotation: 0 },
       ],
     }, { width: 800, height: 1200 });
 
-    expect(result.regions.map((region) => region.text)).toEqual(["A KID LIKE YOU", "Haah"]);
+    expect(result.regions.map((region) => region.text)).toEqual(["A KID LIKE YOU", "OH... SOMIN."]);
     expect(result.regions[1]?.bbox.height).toBeLessThan(560);
   });
 
@@ -124,17 +124,39 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["OH... SOMIN.", "MONDAYS."]);
   });
 
-  it("ignora efeitos sonoros corrompidos sem descartar interjeições reais", () => {
+  it("ignora efeitos sonoros corrompidos sem descartar falas reais", () => {
     const result = normalizeOcrResult({
       regions: [
         { id: "noise-1", text: "Heughh", confidence: 0.9, bbox: { x: 0, y: 0, width: 120, height: 40 }, rotation: 0 },
         { id: "noise-2", text: "Heugh!", confidence: 0.9, bbox: { x: 0, y: 50, width: 120, height: 40 }, rotation: 0 },
         { id: "noise-3", text: "Hmng", confidence: 0.9, bbox: { x: 0, y: 100, width: 120, height: 40 }, rotation: 0 },
-        { id: "valid", text: "Haah...", confidence: 0.9, bbox: { x: 0, y: 150, width: 120, height: 40 }, rotation: 0 },
+        { id: "valid", text: "OH... SOMIN.", confidence: 0.9, bbox: { x: 0, y: 150, width: 180, height: 40 }, rotation: 0 },
       ],
     }, { width: 300, height: 300 });
 
-    expect(result.regions.map((region) => region.text)).toEqual(["Haah..."]);
+    expect(result.regions.map((region) => region.text)).toEqual(["OH... SOMIN."]);
+  });
+
+  it("ignora efeitos sonoros e grafismos recorrentes do capítulo sem remover falas", () => {
+    const makeRegion = (text: string, index: number) => ({
+      id: `noise-${index}`,
+      text,
+      confidence: 0.9,
+      bbox: { x: 0, y: index * 50, width: 180, height: 40 },
+      rotation: 0,
+    });
+    const result = normalizeOcrResult({
+      regions: [
+        makeRegion("Huff...", 0),
+        makeRegion("Haah", 1),
+        makeRegion("Eugghh", 2),
+        makeRegion("N sdo N ado a", 3),
+        makeRegion("Staurs CLUB", 4),
+        makeRegion("I had to do a bit of overtime...", 5),
+      ],
+    }, { width: 300, height: 400 });
+
+    expect(result.regions.map((item) => item.text)).toEqual(["I had to do a bit of overtime..."]);
   });
 
   it("remove apenas detecções duplicadas que se sobrepõem", () => {
