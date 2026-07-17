@@ -23,4 +23,11 @@ describe("fallback single-block do OCR", () => {
 
     expect(chooseOcrFallback(primary, fallback)).toBe(fallback);
   });
+
+  it("não escolhe o fallback quando as regiões extras são ruído", () => {
+    const primary: RawOcrResult = { regions: [region("OVERTIME...", 0.9)] };
+    const fallback: RawOcrResult = { regions: [region("Hmng", 0.95), region("Heugho Leuol", 0.95)] };
+
+    expect(chooseOcrFallback(primary, fallback)).toBe(primary);
+  });
 });

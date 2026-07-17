@@ -50,6 +50,7 @@
 - [x] Preservar palavras únicas e nomes próprios ao filtrar alucinações de glifos estilizados.
 - [x] Reexecutar OCR local quando a leitura principal retorna somente uma região.
 - [x] Ignorar a marca d’água conhecida do site durante o OCR.
+- [x] Evitar que regiões extras de baixa qualidade substituam uma leitura OCR principal válida.
 - [x] Implementar pré-processamento e segunda leitura invertida para imagens com áreas escuras.
 - [x] Reprocessar imagens longas em blocos verticais sobrepostos quando a leitura integral encontrar pouco texto.
 - [x] Aplicar leitura binarizada de alto contraste como recuperação para imagens com baixa cobertura OCR.

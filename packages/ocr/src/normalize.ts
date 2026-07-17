@@ -88,11 +88,14 @@ function isShortNoise(text: string): boolean {
 function isLikelyGlyphHallucination(text: string): boolean {
   const words = text.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
   if (words.some((word) => OCR_HALLUCINATION_TOKENS.has(word))) return true;
+  if (/\bn\s*[°º]\b/i.test(text)) return true;
   if (/\d/.test(text) && !words.some((word) => COMMON_OCR_WORDS.has(word))) return true;
   return false;
 }
 
-const OCR_HALLUCINATION_TOKENS = new Set(["botor", "tokor", "heugh", "krot"]);
+const OCR_HALLUCINATION_TOKENS = new Set([
+  "botor", "tokor", "heugh", "heugho", "heuth", "heyhl", "hmng", "krot", "leuol", "toro", "toror",
+]);
 
 function isKnownWatermark(text: string): boolean {
   return /\b(?:www\.)?omegascans\s*\.\s*org\b/i.test(text);
