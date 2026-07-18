@@ -93,7 +93,7 @@
 - [x] Criar cliente da extensão para o endpoint backend.
 - [x] Implementar glossário.
 - [x] Implementar agrupamento por contexto.
-- [ ] Implementar JSON estruturado.
+- [x] Implementar JSON estruturado.
 - [x] Implementar retry e timeout.
 
 ## Fase 4 — Overlay
@@ -124,7 +124,7 @@
 
 - [x] Revisar permissões.
 - [x] Implementar consentimento remoto.
-- [ ] Proteger credenciais.
+- [x] Proteger credenciais.
 - [x] Sanitizar mensagens.
 - [x] Aplicar CSP compatível com o WebAssembly local do OCR.
 - [x] Criar política de privacidade.
