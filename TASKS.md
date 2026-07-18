@@ -145,6 +145,7 @@
 - [x] Manter overlays ancorados no bounding box original para evitar deslocamento entre balões e imagens.
 - [x] Recortar caixas OCR que ultrapassam os limites da imagem antes de renderizar o overlay.
 - [x] Separar efeitos sonoros curtos detectados junto ao diálogo para evitar caixas OCR artificialmente altas.
+- [x] Cobrir no fluxo integrado o caso de ruído fora do balão sem criar overlay deslocado.
 - [x] Filtrar alucinações OCR recorrentes de efeitos sonoros sem descartar interjeições como “Haah”.
 - [x] Invalidar novamente os caches de OCR e tradução para reprocessar o capítulo 12 sem resultados antigos.
 - [x] Deduplicar regiões OCR com o mesmo texto e sobreposição forte, preservando falas iguais em balões distintos.
