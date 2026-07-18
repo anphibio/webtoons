@@ -8,12 +8,12 @@ const input: OcrInput = { image: new Uint8Array([1]), width: 1, height: 1, langu
 describe("FallbackOcrProvider", () => {
   it("usa o resultado do OCR principal quando há texto", async () => {
     const primary = providerWith(vi.fn().mockResolvedValue({ regions: [
-      { id: "p1", text: "Hello" },
-      { id: "p2", text: "world" },
-      { id: "p3", text: "again" },
-      { id: "p4", text: "today" },
+      { id: "p1", text: "Hello", bbox: { x: 0, y: 0, width: 10, height: 10 } },
+      { id: "p2", text: "world", bbox: { x: 20, y: 0, width: 10, height: 10 } },
+      { id: "p3", text: "again", bbox: { x: 40, y: 0, width: 10, height: 10 } },
+      { id: "p4", text: "today", bbox: { x: 60, y: 0, width: 10, height: 10 } },
     ] }));
-    const fallbackRecognize = vi.fn();
+    const fallbackRecognize = vi.fn().mockResolvedValue({ regions: [] });
     const fallback = providerWith(fallbackRecognize);
 
     const result = await new FallbackOcrProvider(primary, fallback).recognize(input);
@@ -51,6 +51,24 @@ describe("FallbackOcrProvider", () => {
     const result = await new FallbackOcrProvider(primary, fallback).recognize(input);
 
     expect(result.regions.map((region) => region.text)).toEqual(["One", "Two", "Three", "Four", "Five"]);
+  });
+
+  it("preserva o texto principal ao recuperar regiões adicionais", async () => {
+    const primary = providerWith(vi.fn().mockResolvedValue({ regions: [
+      { id: "p1", text: "One", confidence: 0.8, bbox: { x: 0, y: 0, width: 10, height: 10 } },
+      { id: "p2", text: "Two", confidence: 0.8, bbox: { x: 20, y: 0, width: 10, height: 10 } },
+      { id: "p3", text: "Three", confidence: 0.8, bbox: { x: 40, y: 0, width: 10, height: 10 } },
+      { id: "p4", text: "Four", confidence: 0.8, bbox: { x: 60, y: 0, width: 10, height: 10 } },
+      { id: "p5", text: "Five", confidence: 0.8, bbox: { x: 80, y: 0, width: 10, height: 10 } },
+    ] }));
+    const fallback = providerWith(vi.fn().mockResolvedValue({ regions: [
+      { id: "f1", text: "Recovered", confidence: 0.8, bbox: { x: 50, y: 50, width: 10, height: 10 } },
+    ] }));
+
+    const result = await new FallbackOcrProvider(primary, fallback).recognize(input);
+
+    expect(result.regions.map((region) => region.text)).toContain("Recovered");
+    expect(result.regions.map((region) => region.text)).toContain("One");
   });
 
   it("usa o Tesseract quando o OCR principal falha ou não encontra texto", async () => {

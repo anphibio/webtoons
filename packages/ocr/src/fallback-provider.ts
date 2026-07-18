@@ -1,5 +1,5 @@
 import type { OcrInput, OcrProgressCallback, OcrProvider, RawOcrResult } from "./types";
-import { chooseOcrFallback, shouldAttemptSingleBlockFallback } from "./fallback";
+import { mergeOcrResults, shouldAttemptSingleBlockFallback } from "./fallback";
 
 export class FallbackOcrProvider implements OcrProvider {
   constructor(
@@ -14,7 +14,7 @@ export class FallbackOcrProvider implements OcrProvider {
       if (result.regions.length > 0 && !shouldAttemptSingleBlockFallback(result)) return result;
       if (result.regions.length > 0) {
         const fallbackResult = await this.fallback.recognize(input, signal, onProgress);
-        return fallbackResult.regions.length > 0 ? chooseOcrFallback(result, fallbackResult) : result;
+        return fallbackResult.regions.length > 0 ? mergeOcrResults(result, fallbackResult) : result;
       }
     } catch (error) {
       if (signal?.aborted) throw error;

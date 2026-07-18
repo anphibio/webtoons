@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { chooseOcrFallback, shouldAttemptSingleBlockFallback } from "../packages/ocr/src/fallback";
+import { chooseOcrFallback, mergeOcrResults, shouldAttemptSingleBlockFallback } from "../packages/ocr/src/fallback";
 import type { RawOcrResult } from "../packages/ocr/src/types";
 
 const region = (text: string, confidence: number) => ({
@@ -15,7 +15,7 @@ describe("fallback single-block do OCR", () => {
     expect(shouldAttemptSingleBlockFallback({ regions: [] })).toBe(true);
     expect(shouldAttemptSingleBlockFallback({ regions: [region("Hello", 0.8)] })).toBe(true);
     expect(shouldAttemptSingleBlockFallback({ regions: [region("A", 0.8), region("B", 0.8), region("C", 0.8)] })).toBe(true);
-    expect(shouldAttemptSingleBlockFallback({ regions: [region("A", 0.8), region("B", 0.8), region("C", 0.8), region("D", 0.8)] })).toBe(false);
+    expect(shouldAttemptSingleBlockFallback({ regions: [region("Hello there", 0.8), region("I am here", 0.8), region("Please wait", 0.8), region("Come quickly", 0.8)] })).toBe(false);
   });
 
   it("escolhe o fallback quando ele fornece evidência claramente melhor", () => {
@@ -48,7 +48,7 @@ describe("fallback single-block do OCR", () => {
     expect(shouldAttemptSingleBlockFallback(noisy)).toBe(true);
   });
 
-  it("não aciona o fallback quando há várias regiões com texto confiável", () => {
+  it("não aciona recuperação em uma imagem já bem reconhecida", () => {
     const covered: RawOcrResult = {
       regions: [
         region("Hello there", 0.9),
@@ -59,5 +59,26 @@ describe("fallback single-block do OCR", () => {
     };
 
     expect(shouldAttemptSingleBlockFallback(covered)).toBe(false);
+  });
+
+  it("aciona recuperação quando uma das poucas detecções é fraca", () => {
+    const partial = [
+      region("One", 0.9),
+      region("Two", 0.9),
+      region("Three", 0.9),
+      region("Four", 0.9),
+      region("Maybe", 0.55),
+    ];
+    expect(shouldAttemptSingleBlockFallback({ regions: partial })).toBe(true);
+  });
+
+  it("mescla regiões do fallback sem descartar regiões válidas do OCR principal", () => {
+    const primary = { regions: [{ ...region("Primary", 0.9), bbox: { x: 0, y: 0, width: 20, height: 20 } }] };
+    const fallback = { regions: [
+      { ...region("Primary", 0.8), bbox: { x: 1, y: 1, width: 20, height: 20 } },
+      { ...region("Recovered", 0.8), bbox: { x: 60, y: 60, width: 20, height: 20 } },
+    ] };
+
+    expect(mergeOcrResults(primary, fallback).regions.map((item) => item.text)).toEqual(["Primary", "Recovered"]);
   });
 });
