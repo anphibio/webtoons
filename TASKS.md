@@ -164,6 +164,7 @@
 - [x] Documentação de instalação.
 - [x] Checklist de teste E2E manual para página local.
 - [x] Gerar pacote distribuível da extensão sem credenciais ou dados de teste.
+- [x] Preparar instalador do backend como serviço automático do macOS.
 
 ## Fase 8 — Evolução
 

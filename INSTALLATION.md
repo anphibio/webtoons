@@ -42,6 +42,22 @@ A extensão deve ser empacotada sem:
 - fixtures;
 - dependências não utilizadas.
 
+### Backend automático no macOS
+
+Para não abrir um terminal em cada uso, instale o backend como serviço do
+usuário:
+
+```text
+./scripts/macos-backend/install.sh
+```
+
+Na primeira execução, preencha `DEEPL_API_KEY` no arquivo criado em
+`~/Library/Application Support/WebtoonImageTranslator/backend.env` e execute o
+instalador novamente. O serviço será iniciado automaticamente nas próximas
+sessões do macOS. Consulte
+[`scripts/macos-backend/README.md`](scripts/macos-backend/README.md) para
+remover o serviço ou consultar os logs.
+
 ## Configuração
 
 As chaves de tradução devem ser configuradas pela página de opções.
