@@ -2,6 +2,7 @@ import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { ExtensionMessage } from "../../../../packages/shared/src/messaging";
 import { DEFAULT_SETTINGS, loadSettings, saveSettings, type ExtensionSettings, type SettingsStorage } from "../../../../packages/shared/src/settings";
+import { formatProcessingError } from "../../../../packages/shared/src/user-facing-errors";
 
 import "./styles.css";
 
@@ -28,10 +29,10 @@ function Popup() {
     try {
       const response = await chrome.runtime.sendMessage(typeof message === "string" ? { type: message } : message);
       if (response?.status) setStatus(response.status);
-      if (response?.error) setError(response.error);
+      if (response?.error) setError(formatProcessingError(response.error));
       if (response?.progress) setProgress(response.progress as ProcessingProgress);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Não foi possível comunicar com a página");
+      setError(cause instanceof Error ? formatProcessingError(cause.message) : "Não foi possível comunicar com a página.");
     } finally {
       if (isAction) setBusy(false);
     }
