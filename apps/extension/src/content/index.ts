@@ -1,6 +1,7 @@
 import { parseMessage, type ExtensionMessage } from "../../../../packages/shared/src/messaging";
 import { createLogger } from "../../../../packages/shared/src/logger";
 import { transition, type TranslationState } from "../../../../packages/core/src/translation-state";
+import { buildProcessingReport, type ProcessingFailure } from "../../../../packages/core/src/processing-report";
 import { ImagePipeline } from "../../../../packages/core/src/image-pipeline";
 import type { ImagePipelineStage } from "../../../../packages/core/src/image-pipeline";
 import { completionStatus, countPipelineResult, normalizeProgress, shouldQueueImage, shouldRetryImage } from "../../../../packages/core/src/processing-progress";
@@ -39,6 +40,7 @@ const processedCandidates = new Set<string>();
 const queuedCandidates = new Map<string, ImageCandidate>();
 const candidateAttempts = new Map<string, number>();
 let lastProcessingError: string | undefined;
+let processingFailures: ProcessingFailure[] = [];
 let progress = createProgress();
 const overlayManager = new OverlayManager(document);
 const cacheStore = new IndexedDbCacheStore();
@@ -51,7 +53,14 @@ if (ownsContentRuntime) chrome.runtime.onMessage.addListener((rawMessage, _sende
   try {
     const message = parseMessage(rawMessage);
     handleMessage(message);
-    sendResponse({ ok: true, status: state.status, error: lastProcessingError, progress: normalizeProgress(progress) });
+    const normalizedProgress = normalizeProgress(progress);
+    sendResponse({
+      ok: true,
+      status: state.status,
+      error: lastProcessingError,
+      progress: normalizedProgress,
+      report: buildProcessingReport(state.status, normalizedProgress, processingFailures),
+    });
   } catch (error) {
     logger.warn("Mensagem rejeitada", { reason: error instanceof Error ? error.message : "desconhecido" });
     sendResponse({ ok: false, error: "Mensagem inválida" });
@@ -155,6 +164,7 @@ async function processDiscoveredImages(root: Element, specificAdapter: ToonGodAd
 
   state = transition(state, { type: "DISCOVERY_COMPLETE" });
   lastProcessingError = undefined;
+  processingFailures = [];
   processingController?.abort();
   processingController = new AbortController();
   ocrProvider = new IframeOcrProvider(chrome.runtime.getURL("ocr.html"));
@@ -232,6 +242,7 @@ async function processCandidates(items: ImageCandidate[], includeDistant = false
           }
           const reason = error instanceof Error ? error.message : String(error);
           lastProcessingError ??= reason;
+          processingFailures.push({ page: candidate.sourceUrl, reason });
           logger.warn("Falha ao processar imagem", { id: candidate.id, reason });
         }
       }
