@@ -161,11 +161,29 @@ const ISOLATED_SOUND_EFFECT_TOKENS = new Set<string>([
 const OCR_HALLUCINATION_FRAGMENTS = new Set(["heughi", "waju", "heugho", "leuol", "heuth", "heyhl", "hmng", "hnng", "hng"]);
 
 function sanitizeOcrText(text: string): string {
-  return text
+  const withoutFragments = text
     .split(/(\s+)/)
     .filter((part) => !OCR_HALLUCINATION_FRAGMENTS.has(part.toLocaleLowerCase().replace(/[^a-z]/g, "")))
     .join("")
     .replace(/\s+/g, " ")
+    .trim();
+  return removeMixedSoundEffects(withoutFragments);
+}
+
+const MIXED_SOUND_EFFECT_MARKERS = new Set([
+  "fondle", "plump", "slurp", "slurpr", "splat", "splater", "splatri", "squelch", "sqvelch",
+  "swish", "toss", "squirt", "isquirt", "lsquirt", "lick", "treble", "tremble", "tremer", "trembue",
+]);
+
+function removeMixedSoundEffects(text: string): string {
+  const words = text.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
+  if (!words.some((word) => MIXED_SOUND_EFFECT_MARKERS.has(word))) return text;
+
+  return text
+    .replace(/\b(?:fondle|plump|slurpr?|splat(?:ter|ri)?|squelch|sqvelch|swish|toss|twitch|twich|(?:i|l)squirt|lick|treble|tremble|tremer|trembue|haa+|nngh?)\b/gi, " ")
+    .replace(/\s+([,.!?…])/g, "$1")
+    .replace(/^[,;:.!?…\s]+/, "")
+    .replace(/\s{2,}/g, " ")
     .trim();
 }
 

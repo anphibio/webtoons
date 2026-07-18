@@ -171,6 +171,18 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["I HEARD A TWITCH IN THE DARK."]);
   });
 
+  it("remove efeitos sonoros misturados sem apagar o diálogo restante", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "noise-only", text: "TWITCH FONDLE", confidence: 0.92, bbox: { x: 0, y: 0, width: 180, height: 40 }, rotation: 0 },
+        { id: "mixed", text: "SWISH, STOP THAT... TWITCH", confidence: 0.92, bbox: { x: 0, y: 50, width: 300, height: 50 }, rotation: 0 },
+        { id: "mixed-noise", text: "SLURP HAA... I CAN'T STOP TWITCHING", confidence: 0.92, bbox: { x: 0, y: 110, width: 300, height: 50 }, rotation: 0 },
+      ],
+    }, { width: 400, height: 300 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["STOP THAT...", "I CAN'T STOP TWITCHING"]);
+  });
+
   it("descarta regiões sem área antes de traduzir ou renderizar", () => {
     const result = normalizeOcrResult({
       regions: [

@@ -172,6 +172,26 @@ _ISOLATED_SOUND_EFFECTS = {
     "twitch", "twich",
 }
 
+_MIXED_SOUND_EFFECT_MARKERS = {
+    "fondle", "plump", "slurp", "slurpr", "splat", "splater", "splatri", "squelch", "sqvelch",
+    "swish", "toss", "squirt", "isquirt", "lsquirt", "lick", "treble", "tremble", "tremer", "trembue",
+}
+
+
+def _remove_mixed_sound_effects(text: str) -> str:
+    words = re.findall(r"[A-Za-z]+", text.lower())
+    if not any(word in _MIXED_SOUND_EFFECT_MARKERS for word in words):
+        return text
+    cleaned = re.sub(
+        r"\b(?:fondle|plump|slurpr?|splat(?:ter|ri)?|squelch|sqvelch|swish|toss|twitch|twich|(?:i|l)squirt|lick|treble|tremble|tremer|trembue|haa+|nngh?)\b",
+        " ",
+        text,
+        flags=re.IGNORECASE,
+    )
+    cleaned = re.sub(r"\s+([,.!?…])", r"\1", cleaned)
+    cleaned = re.sub(r"\s{2,}", " ", cleaned)
+    return re.sub(r"^[,;:.!?…\s]+", "", cleaned).strip()
+
 
 def _looks_like_isolated_glyph_hallucination(text: str) -> bool:
     words = re.findall(r"[A-Za-z]+", text.lower())
@@ -238,7 +258,7 @@ def parse_paddle_result(results: Iterable[Any]) -> List[OcrLine]:
         scores = _as_sequence(payload.get("rec_scores"))
         boxes = _as_sequence(payload.get("rec_boxes"))
         for text_value, score_value, box_value in zip(texts, scores, boxes):
-            text = str(text_value).strip()
+            text = _remove_mixed_sound_effects(str(text_value).strip())
             box = _as_sequence(box_value)
             if (
                 not text

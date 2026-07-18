@@ -161,6 +161,19 @@ class OcrServiceTests(unittest.TestCase):
 
         self.assertEqual([region.text for region in regions], ["A VALID DIALOGUE"])
 
+    def test_removes_mixed_sound_effects_without_losing_dialogue(self) -> None:
+        result = [SimpleNamespace(json={
+            "res": {
+                "rec_texts": ["TWITCH FONDLE", "SWISH, STOP THAT... TWITCH", "SLURP HAA... I CAN'T STOP TWITCHING"],
+                "rec_scores": [0.9] * 3,
+                "rec_boxes": [[0, 0, 120, 40], [0, 50, 300, 100], [0, 110, 300, 160]],
+            },
+        })]
+
+        regions = parse_paddle_result(result)
+
+        self.assertEqual([region.text for region in regions], ["STOP THAT...", "I CAN'T STOP TWITCHING"])
+
     def test_removes_short_overlapping_false_positive_from_dialogue(self) -> None:
         lines = [
             OcrLine("NUNCA TE DISSE PARA", 0.96, 100, 300, 300, 70),
