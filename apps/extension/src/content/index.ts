@@ -3,7 +3,7 @@ import { createLogger } from "../../../../packages/shared/src/logger";
 import { transition, type TranslationState } from "../../../../packages/core/src/translation-state";
 import { ImagePipeline } from "../../../../packages/core/src/image-pipeline";
 import type { ImagePipelineStage } from "../../../../packages/core/src/image-pipeline";
-import { completionStatus, countPipelineResult, shouldQueueImage, shouldRetryImage } from "../../../../packages/core/src/processing-progress";
+import { completionStatus, countPipelineResult, normalizeProgress, shouldQueueImage, shouldRetryImage } from "../../../../packages/core/src/processing-progress";
 import { claimRuntime } from "../../../../packages/core/src/runtime-singleton";
 import { prioritizeImageCandidates } from "../../../../packages/core/src/candidate-queue";
 import { RuntimeImageLoader } from "../../../../packages/core/src/image-loader";
@@ -51,7 +51,7 @@ if (ownsContentRuntime) chrome.runtime.onMessage.addListener((rawMessage, _sende
   try {
     const message = parseMessage(rawMessage);
     handleMessage(message);
-    sendResponse({ ok: true, status: state.status, error: lastProcessingError, progress });
+    sendResponse({ ok: true, status: state.status, error: lastProcessingError, progress: normalizeProgress(progress) });
   } catch (error) {
     logger.warn("Mensagem rejeitada", { reason: error instanceof Error ? error.message : "desconhecido" });
     sendResponse({ ok: false, error: "Mensagem inválida" });

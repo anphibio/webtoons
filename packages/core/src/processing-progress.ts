@@ -10,6 +10,19 @@ export interface ProcessingFailures {
   empty: number;
 }
 
+export interface ProgressCounters {
+  total: number;
+  completed: number;
+  failed: number;
+  rendered: number;
+  empty: number;
+}
+
+export function normalizeProgress<T extends ProgressCounters>(progress: T): T {
+  const minimumTotal = Math.max(progress.completed, progress.rendered + progress.empty, progress.failed);
+  return progress.total >= minimumTotal ? progress : { ...progress, total: minimumTotal };
+}
+
 export function completionStatus(summary: ProcessingFailures): "completed" | "completed-with-errors" {
   return summary.failed === 0 && summary.empty === 0 ? "completed" : "completed-with-errors";
 }

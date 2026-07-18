@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { completionStatus, shouldQueueImage, shouldRetryImage } from "../packages/core/src/processing-progress";
+import { completionStatus, normalizeProgress, shouldQueueImage, shouldRetryImage } from "../packages/core/src/processing-progress";
 
 describe("retry de processamento de imagem", () => {
   it("permite uma segunda tentativa, mas não um loop infinito", () => {
@@ -23,5 +23,12 @@ describe("estado final acumulado", () => {
     expect(completionStatus({ failed: 1, empty: 0 })).toBe("completed-with-errors");
     expect(completionStatus({ failed: 0, empty: 1 })).toBe("completed-with-errors");
     expect(completionStatus({ failed: 0, empty: 0 })).toBe("completed");
+  });
+});
+
+describe("resumo exibido", () => {
+  it("não exibe progresso concluído maior que o total conhecido", () => {
+    expect(normalizeProgress({ total: 20, completed: 23, failed: 0, rendered: 23, empty: 0 }))
+      .toMatchObject({ total: 23, completed: 23 });
   });
 });
