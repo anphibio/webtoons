@@ -162,6 +162,8 @@
 - [x] Acionar recuperação OCR local em detecções escassas ou fracas e mesclar regiões sem perder resultados válidos.
 - [x] Tratamento de erros com mensagens amigáveis no popup e diagnóstico técnico preservado nos logs.
 - [x] Documentação de instalação.
+- [x] Checklist de teste E2E manual para página local.
+- [x] Gerar pacote distribuível da extensão sem credenciais ou dados de teste.
 
 ## Fase 8 — Evolução
 

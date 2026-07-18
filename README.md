@@ -60,3 +60,11 @@ Leia primeiro:
 5. `TASKS.md`
 
 O Codex deve seguir as regras desses arquivos antes de criar ou alterar código.
+
+## Distribuição local
+
+Para gerar a versão instalável, execute `npm run build` e depois compacte a
+pasta `dist/`. O procedimento completo está em
+[`docs/RELEASE.md`](docs/RELEASE.md). A extensão continua sendo instalada no
+Chrome pelo modo de desenvolvedor; a publicação na Chrome Web Store não faz
+parte desta etapa.
