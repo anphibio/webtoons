@@ -174,7 +174,7 @@ _ISOLATED_SOUND_EFFECTS = {
 
 _MIXED_SOUND_EFFECT_MARKERS = {
     "fondle", "plump", "slurp", "slurpr", "splat", "splater", "splatri", "squelch", "sqvelch",
-    "swish", "toss", "squirt", "isquirt", "lsquirt", "lick", "rub", "surp", "haa", "treble", "tremble", "tremer", "trembue",
+    "swish", "swoosh", "toss", "squirt", "isquirt", "lsquirt", "lick", "lurp", "flinch", "rub", "surp", "haa", "nngh", "hnngh", "treble", "tremble", "tremer", "trembue",
 }
 
 
@@ -189,7 +189,7 @@ def _remove_mixed_sound_effects(text: str) -> str:
     if not any(word in _MIXED_SOUND_EFFECT_MARKERS for word in words) and not has_twitch_noise:
         return text
     cleaned = re.sub(
-        r"\b(?:fondle|plump|slurpr?|splat(?:er|ter|ri)?|squelch|sqvelch|swish|toss|twitch|twich|(?:i|l)squirt|lick|rub|surp|wich|treble|tremble|tremer|trembue|haa+|hn+gh+|nngh?)\b",
+        r"\b(?:lurp\s+o|fondle|plump|slurpr?|splat(?:er|ter|ri)?|squelch|sqvelch|swish|swoosh|toss|twitch|twich|(?:i|l)squirt|lick|lurp|flinch|rub|surp|wich|treble|tremble|tremer|trembue|haa+|hn+gh+|nngh?|st\s+m\s+i)\b",
         " ",
         text,
         flags=re.IGNORECASE,

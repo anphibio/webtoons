@@ -197,6 +197,20 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["STOP... STOP THAT...!!!", "I HEARD A TWITCH IN THE DARK."]);
   });
 
+  it("remove efeitos residuais e mantém a fala ao redor", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "flinch", text: "FLINCH", confidence: 0.92, bbox: { x: 0, y: 0, width: 180, height: 40 }, rotation: 0 },
+        { id: "swoosh", text: "SWOOSH", confidence: 0.92, bbox: { x: 0, y: 50, width: 180, height: 40 }, rotation: 0 },
+        { id: "lurp", text: "LURP o", confidence: 0.92, bbox: { x: 0, y: 100, width: 180, height: 40 }, rotation: 0 },
+        { id: "garbled", text: "NNGH... St M I", confidence: 0.92, bbox: { x: 0, y: 150, width: 220, height: 50 }, rotation: 0 },
+        { id: "dialogue", text: "I CAN'T BELIEVE IT... HNNGH?!", confidence: 0.92, bbox: { x: 0, y: 220, width: 300, height: 60 }, rotation: 0 },
+      ],
+    }, { width: 400, height: 300 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["I CAN'T BELIEVE IT...?!"]);
+  });
+
   it("descarta regiões sem área antes de traduzir ou renderizar", () => {
     const result = normalizeOcrResult({
       regions: [

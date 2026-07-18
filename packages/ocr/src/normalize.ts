@@ -172,7 +172,7 @@ function sanitizeOcrText(text: string): string {
 
 const MIXED_SOUND_EFFECT_MARKERS = new Set([
   "fondle", "plump", "slurp", "slurpr", "splat", "splater", "splatri", "squelch", "sqvelch",
-  "swish", "toss", "squirt", "isquirt", "lsquirt", "lick", "rub", "surp", "haa", "treble", "tremble", "tremer", "trembue",
+  "swish", "swoosh", "toss", "squirt", "isquirt", "lsquirt", "lick", "lurp", "flinch", "rub", "surp", "haa", "nngh", "hnngh", "treble", "tremble", "tremer", "trembue",
 ]);
 
 function removeMixedSoundEffects(text: string): string {
@@ -184,7 +184,7 @@ function removeMixedSoundEffects(text: string): string {
   if (!words.some((word) => MIXED_SOUND_EFFECT_MARKERS.has(word)) && !hasTwitchNoise) return text;
 
   return text
-    .replace(/\b(?:fondle|plump|slurpr?|splat(?:er|ter|ri)?|squelch|sqvelch|swish|toss|twitch|twich|(?:i|l)squirt|lick|rub|surp|wich|treble|tremble|tremer|trembue|haa+|hn+gh+|nngh?)\b/gi, " ")
+    .replace(/\b(?:lurp\s+o|fondle|plump|slurpr?|splat(?:er|ter|ri)?|squelch|sqvelch|swish|swoosh|toss|twitch|twich|(?:i|l)squirt|lick|lurp|flinch|rub|surp|wich|treble|tremble|tremer|trembue|haa+|hn+gh+|nngh?|st\s+m\s+i)\b/gi, " ")
     .replace(/\s+([,.!?…])/g, "$1")
     .replace(/([.!?…])\s*,\s*/g, "$1 ")
     .replace(/^[,;:.!?…\s]+/, "")
