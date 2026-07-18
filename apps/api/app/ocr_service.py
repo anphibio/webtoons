@@ -169,13 +169,25 @@ _COMMON_OCR_WORDS = {
 
 def _looks_like_isolated_glyph_hallucination(text: str) -> bool:
     words = re.findall(r"[A-Za-z]+", text.lower())
-    if any(word in {"botor", "loto", "tokor", "heughi", "waju", "heugho", "heuth", "heyhl", "hmng", "krot", "leuol", "toro", "toror"} for word in words):
+    if _is_known_ocr_false_positive(text):
         return True
     if re.search(r"\bn\s*[°º]\b", text, re.IGNORECASE):
         return True
     if re.search(r"\d", text) and not any(word in _COMMON_OCR_WORDS for word in words):
         return True
     return False
+
+
+def _is_known_ocr_false_positive(text: str) -> bool:
+    normalized = re.sub(r"[^a-z0-9 ]", "", text.lower()).strip()
+    if normalized in {
+        "btop", "btor", "bror", "de de", "nunca sw", "rilh",
+    }:
+        return True
+    return any(word in {
+        "botor", "loto", "tokor", "heughi", "waju", "heugho", "heuth",
+        "heyhl", "hmng", "krot", "leuol", "toro", "toror",
+    } for word in normalized.split())
 
 
 def _is_known_watermark(text: str) -> bool:
@@ -247,7 +259,7 @@ def parse_paddle_result(results: Iterable[Any]) -> List[OcrLine]:
 
 
 def group_ocr_lines(lines: Iterable[OcrLine]) -> List[OcrLine]:
-    ordered_lines = _reading_order(lines)
+    ordered_lines = [line for line in _reading_order(lines) if not _is_known_ocr_false_positive(line.text)]
     typical_height = median(line.height for line in ordered_lines) if ordered_lines else 0
     max_grouping_height = max(160, typical_height * 4)
     ordered_lines = [
@@ -266,7 +278,49 @@ def group_ocr_lines(lines: Iterable[OcrLine]) -> List[OcrLine]:
         closest = min(candidates, key=lambda group: abs(line.y - (group[-1].y + group[-1].height)))
         closest.append(line)
 
-    return [_merge_group(group) for group in groups]
+    return _deduplicate_overlapping_regions([_merge_group(group) for group in groups])
+
+
+def _deduplicate_overlapping_regions(regions: List[OcrLine]) -> List[OcrLine]:
+    result: List[OcrLine] = []
+    for region in regions:
+        duplicate_index = next(
+            (
+                index for index, existing in enumerate(result)
+                if _overlap_ratio(existing, region) >= 0.5
+                and _is_short_overlapping_noise(existing, region)
+            ),
+            None,
+        )
+        if duplicate_index is None:
+            result.append(region)
+            continue
+
+        existing = result[duplicate_index]
+        if len(_comparison_text(region.text)) > len(_comparison_text(existing.text)):
+            result[duplicate_index] = region
+    return result
+
+
+def _is_short_overlapping_noise(left: OcrLine, right: OcrLine) -> bool:
+    shorter, longer = sorted((left, right), key=lambda item: len(_comparison_text(item.text)))
+    short_text = _comparison_text(shorter.text)
+    long_text = _comparison_text(longer.text)
+    return _is_known_ocr_false_positive(shorter.text) or len(short_text) <= max(8, round(len(long_text) * 0.55))
+
+
+def _overlap_ratio(left: OcrLine, right: OcrLine) -> float:
+    horizontal = max(
+        0,
+        min(left.x + left.width, right.x + right.width) - max(left.x, right.x),
+    )
+    vertical = max(
+        0,
+        min(left.y + left.height, right.y + right.height) - max(left.y, right.y),
+    )
+    intersection = horizontal * vertical
+    smaller_area = min(left.width * left.height, right.width * right.height)
+    return intersection / max(1, smaller_area)
 
 
 def _reading_order(lines: Iterable[OcrLine]) -> List[OcrLine]:

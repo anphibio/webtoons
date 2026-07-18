@@ -129,6 +129,32 @@ class OcrServiceTests(unittest.TestCase):
 
         self.assertEqual([region.text for region in regions], ["OH... SOMIN."])
 
+    def test_rejects_known_false_positives_seen_in_shelter_chapter(self) -> None:
+        result = [SimpleNamespace(json={
+            "res": {
+                "rec_texts": ["NUNCA SW.", "btop", "btor", "bror", "de de", "NUNCA TE DISSE PARA"],
+                "rec_scores": [0.9] * 6,
+                "rec_boxes": [
+                    [0, 0, 160, 40], [0, 50, 120, 90], [0, 100, 120, 140],
+                    [0, 150, 120, 190], [0, 200, 120, 240], [0, 250, 220, 290],
+                ],
+            },
+        })]
+
+        regions = parse_paddle_result(result)
+
+        self.assertEqual([region.text for region in regions], ["NUNCA TE DISSE PARA"])
+
+    def test_removes_short_overlapping_false_positive_from_dialogue(self) -> None:
+        lines = [
+            OcrLine("NUNCA TE DISSE PARA", 0.96, 100, 300, 300, 70),
+            OcrLine("NUNCA SW.", 0.91, 130, 325, 150, 45),
+        ]
+
+        regions = group_ocr_lines(lines)
+
+        self.assertEqual([region.text for region in regions], ["NUNCA TE DISSE PARA"])
+
     def test_keeps_valid_single_words_and_names(self) -> None:
         result = [SimpleNamespace(json={
             "res": {"rec_texts": ["MONDAYS.", "NAMWOO.", "botor"], "rec_scores": [0.9] * 3,
