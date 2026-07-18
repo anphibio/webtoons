@@ -124,6 +124,31 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["OH... SOMIN.", "MONDAYS."]);
   });
 
+  it("remove falsos positivos de efeitos sonoros estilizados sem remover uma fala válida", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "kroh", text: "KROH", confidence: 0.92, bbox: { x: 0, y: 0, width: 338, height: 130 }, rotation: 0 },
+        { id: "ssin", text: "SSIN", confidence: 0.92, bbox: { x: 0, y: 0, width: 165, height: 259 }, rotation: 0 },
+        { id: "btok", text: "btok OTof", confidence: 0.92, bbox: { x: 200, y: 500, width: 306, height: 260 }, rotation: 0 },
+        { id: "brop", text: "brop", confidence: 0.92, bbox: { x: 0, y: 600, width: 306, height: 227 }, rotation: 0 },
+        { id: "valid", text: "I DIDN'T SEE THAT COMING AT ALL.", confidence: 0.92, bbox: { x: 100, y: 900, width: 300, height: 100 }, rotation: 0 },
+      ],
+    }, { width: 720, height: 1200 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["I DIDN'T SEE THAT COMING AT ALL."]);
+  });
+
+  it("descarta regiões sem área antes de traduzir ou renderizar", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "stale", text: "CONTINUA", confidence: 0.99, bbox: { x: 0, y: 0, width: 0, height: 0 }, rotation: 0 },
+        { id: "valid", text: "CONTINUA", confidence: 0.99, bbox: { x: 120, y: 240, width: 180, height: 48 }, rotation: 0 },
+      ],
+    }, { width: 720, height: 1200 });
+
+    expect(result.regions.map((region) => region.id)).toEqual(["valid"]);
+  });
+
   it("ignora efeitos sonoros corrompidos sem descartar falas reais", () => {
     const result = normalizeOcrResult({
       regions: [

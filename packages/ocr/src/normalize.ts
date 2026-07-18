@@ -12,6 +12,7 @@ export function normalizeOcrResult(
   const abnormalHeightLimit = Math.max(160, typicalHeight * 4);
   const regions = raw.regions
     .map((region) => {
+      if (!hasPositiveArea(region.bbox)) return null;
       const text = sanitizeOcrText(region.text.trim());
       if (!text || isKnownWatermark(text) || !isLikelyText(text, region.confidence, region.bbox)) return null;
 
@@ -58,6 +59,15 @@ function overlapRatio(left: BoundingBox, right: BoundingBox): number {
 function isAbnormallyTallShortRegion(text: string, height: number, limit: number): boolean {
   const compact = text.replace(/\s/g, "");
   return height > limit && compact.length < 40;
+}
+
+function hasPositiveArea(box: BoundingBox): boolean {
+  return Number.isFinite(box.x)
+    && Number.isFinite(box.y)
+    && Number.isFinite(box.width)
+    && Number.isFinite(box.height)
+    && box.width > 0
+    && box.height > 0;
 }
 
 function normalizeShortTallBox(
@@ -128,10 +138,10 @@ function isLikelyGlyphHallucination(text: string, bbox: BoundingBox): boolean {
 }
 
 const OCR_HALLUCINATION_TOKENS = new Set([
-  "botor", "loto", "tokor", "steips", "wighs", "heugho", "heughh", "heugh", "heuth", "heyhl", "hmng", "hnng", "hng", "krot", "leuol", "pounds", "toro", "toror",
+  "botor", "btok", "loto", "otof", "tokor", "steips", "wighs", "heugho", "heughh", "heugh", "heuth", "heyhl", "hmng", "hnng", "hng", "krot", "kroh", "leuol", "pounds", "ssin", "toro", "toror",
 ]);
 
-const OCR_SOUND_EFFECT_TOKENS = new Set<string>(["huff", "haah", "euggh", "eugghh", "ughh"]);
+const OCR_SOUND_EFFECT_TOKENS = new Set<string>(["huff", "haah", "euggh", "eugghh", "ughh", "brop", "btok", "otof"]);
 
 const OCR_HALLUCINATION_FRAGMENTS = new Set(["heughi", "waju", "heugho", "leuol", "heuth", "heyhl", "hmng", "hnng", "hng"]);
 

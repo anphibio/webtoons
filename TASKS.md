@@ -160,6 +160,7 @@
 - [x] Filtrar variantes com pontuação e grafismos `Steips`/`Wighs` identificados no ToonGod20.
 - [x] Invalidar o cache OCR após corrigir variantes adicionais de ruído.
 - [x] Acionar recuperação OCR local em detecções escassas ou fracas e mesclar regiões sem perder resultados válidos.
+- [x] Rejeitar regiões OCR sem área e novas variantes de grafismos (`KROH`, `SSIN`, `btok OTof`, `brop`) antes da tradução.
 - [x] Tratamento de erros com mensagens amigáveis no popup e diagnóstico técnico preservado nos logs.
 - [x] Documentação de instalação.
 - [x] Checklist de teste E2E manual para página local.
