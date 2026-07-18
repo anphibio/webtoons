@@ -140,6 +140,7 @@
 - [x] Invalidar novamente o cache de OCR após corrigir o ambiente de execução local usado no teste.
 - [x] Invalidar o cache de tradução após detectar resultados antigos incompletos sendo reutilizados.
 - [x] Reprocessar uma vez imagens com falha transitória antes de contabilizar erro definitivo.
+- [x] Manter o estado `completed-with-errors` quando uma falha ocorrer em lote anterior de imagens.
 - [x] Benchmark de capítulos longos.
 - [x] Auditoria de memória do OCR local.
 - [x] Manter overlays ancorados no bounding box original para evitar deslocamento entre balões e imagens.

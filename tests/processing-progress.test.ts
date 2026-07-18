@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { shouldQueueImage, shouldRetryImage } from "../packages/core/src/processing-progress";
+import { completionStatus, shouldQueueImage, shouldRetryImage } from "../packages/core/src/processing-progress";
 
 describe("retry de processamento de imagem", () => {
   it("permite uma segunda tentativa, mas não um loop infinito", () => {
@@ -15,5 +15,13 @@ describe("fila de imagens", () => {
     expect(shouldQueueImage("distant", true)).toBe(true);
     expect(shouldQueueImage("distant", false)).toBe(false);
     expect(shouldQueueImage("nearby", false)).toBe(true);
+  });
+});
+
+describe("estado final acumulado", () => {
+  it("mantém erro quando uma falha ocorreu em lote anterior", () => {
+    expect(completionStatus({ failed: 1, empty: 0 })).toBe("completed-with-errors");
+    expect(completionStatus({ failed: 0, empty: 1 })).toBe("completed-with-errors");
+    expect(completionStatus({ failed: 0, empty: 0 })).toBe("completed");
   });
 });

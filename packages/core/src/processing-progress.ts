@@ -5,6 +5,15 @@ export interface ProcessingSummary {
   empty: number;
 }
 
+export interface ProcessingFailures {
+  failed: number;
+  empty: number;
+}
+
+export function completionStatus(summary: ProcessingFailures): "completed" | "completed-with-errors" {
+  return summary.failed === 0 && summary.empty === 0 ? "completed" : "completed-with-errors";
+}
+
 export function shouldRetryImage(attempts: number, maxAttempts = 2): boolean {
   return Number.isFinite(attempts) && attempts >= 0 && attempts < maxAttempts;
 }

@@ -3,7 +3,7 @@ import { createLogger } from "../../../../packages/shared/src/logger";
 import { transition, type TranslationState } from "../../../../packages/core/src/translation-state";
 import { ImagePipeline } from "../../../../packages/core/src/image-pipeline";
 import type { ImagePipelineStage } from "../../../../packages/core/src/image-pipeline";
-import { countPipelineResult, shouldQueueImage, shouldRetryImage } from "../../../../packages/core/src/processing-progress";
+import { completionStatus, countPipelineResult, shouldQueueImage, shouldRetryImage } from "../../../../packages/core/src/processing-progress";
 import { claimRuntime } from "../../../../packages/core/src/runtime-singleton";
 import { prioritizeImageCandidates } from "../../../../packages/core/src/candidate-queue";
 import { RuntimeImageLoader } from "../../../../packages/core/src/image-loader";
@@ -206,7 +206,6 @@ async function processCandidates(items: ImageCandidate[], includeDistant = false
   if (queuedCandidates.size === 0) return;
 
   processingPromise = (async () => {
-    let failures = 0;
     while (queuedCandidates.size > 0) {
       const pending = [...queuedCandidates.values()];
       queuedCandidates.clear();
@@ -229,7 +228,6 @@ async function processCandidates(items: ImageCandidate[], includeDistant = false
           const retry = shouldRetryImage(attempts);
           if (retry) queuedCandidates.set(key, candidate);
           else {
-            failures += 1;
             progress = { ...progress, failed: progress.failed + 1, completed: progress.completed + 1 };
           }
           const reason = error instanceof Error ? error.message : String(error);
@@ -239,9 +237,7 @@ async function processCandidates(items: ImageCandidate[], includeDistant = false
       }
     }
     if (progress.empty > 0) lastProcessingError ??= `${progress.empty} imagens terminaram sem texto detectado`;
-    state = failures === 0 && progress.empty === 0
-      ? { status: "completed" }
-      : { status: "completed-with-errors" };
+    state = { status: completionStatus(progress) };
     progress = { ...progress, currentPage: "", stage: "done" };
   })().finally(() => {
     processingPromise = undefined;
