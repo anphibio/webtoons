@@ -67,6 +67,7 @@
 - [x] Detectar regiões de texto com PaddleOCR antes do reconhecimento.
 - [x] Criar endpoint local de OCR com validação de MIME, tamanho e token opcional.
 - [x] Integrar PaddleOCR local como motor principal com fallback para Tesseract.js.
+- [x] Preservar o OCR principal quando o fallback Tesseract falhar dentro do WASM.
 - [x] Repetir uma vez falhas transitórias do PaddleOCR e impedir que fallback vazio oculte a falha principal.
 - [x] Exibir separadamente imagens traduzidas, sem texto e com falha no progresso do capítulo.
 - [x] Medir PP-OCRv5 nos 66 recortes revisados do conjunto `Treinamento`.

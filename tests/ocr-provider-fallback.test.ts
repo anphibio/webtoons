@@ -71,6 +71,16 @@ describe("FallbackOcrProvider", () => {
     expect(result.regions.map((region) => region.text)).toContain("One");
   });
 
+  it("preserva o resultado principal quando o fallback local falha", async () => {
+    const primaryResult = { regions: [{ id: "p", text: "Texto válido", confidence: 0.8 }] };
+    const fallback = providerWith(vi.fn().mockRejectedValue(new Error("falha no Tesseract WASM")));
+
+    await expect(new FallbackOcrProvider(
+      providerWith(vi.fn().mockResolvedValue(primaryResult)),
+      fallback,
+    ).recognize(input)).resolves.toEqual(primaryResult);
+  });
+
   it("usa o Tesseract quando o OCR principal falha ou não encontra texto", async () => {
     const expected = { regions: [{ id: "f", text: "Fallback" }] };
     const fallbackRecognize = vi.fn().mockResolvedValue(expected);

@@ -13,7 +13,13 @@ export class FallbackOcrProvider implements OcrProvider {
       const result = await this.primary.recognize(input, signal, onProgress);
       if (result.regions.length > 0 && !shouldAttemptSingleBlockFallback(result)) return result;
       if (result.regions.length > 0) {
-        const fallbackResult = await this.fallback.recognize(input, signal, onProgress);
+        let fallbackResult: RawOcrResult;
+        try {
+          fallbackResult = await this.fallback.recognize(input, signal, onProgress);
+        } catch (error) {
+          if (signal?.aborted) throw error;
+          return result;
+        }
         return fallbackResult.regions.length > 0 ? mergeOcrResults(result, fallbackResult) : result;
       }
     } catch (error) {
