@@ -103,6 +103,15 @@ class ApiTests(unittest.TestCase):
             )
         self.assertEqual(response.status_code, 401)
 
+    def test_rejects_wrong_access_token(self) -> None:
+        with patch.dict(os.environ, {"API_ACCESS_TOKEN": "secret"}):
+            response = self.client.post(
+                "/v1/translate",
+                headers={"X-Extension-Token": "wrong"},
+                json={"segments": [{"id": "a", "text": "Hello", "order": 0}], "sourceLanguage": "eng", "targetLanguage": "pt-BR"},
+            )
+        self.assertEqual(response.status_code, 401)
+
 
 if __name__ == "__main__":
     unittest.main()

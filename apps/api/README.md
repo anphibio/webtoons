@@ -25,6 +25,7 @@ export OCR_DETECTION_MODEL=PP-OCRv5_mobile_det
 O detector `PP-OCRv5_server_det` não é recomendado para capítulos longos em CPU: nos testes do projeto, ele ultrapassou 9 GB de memória residente.
 
 Opcionalmente, defina `API_ACCESS_TOKEN` para exigir o cabeçalho `X-Extension-Token`.
+Quando definido, o token é comparado de forma resistente a ataques de tempo; a credencial nunca é devolvida pela API.
 
 Por padrão, o backend aceita requisições do Toongod (`toongod.org` e `www.toongod.org`). Para alterar essa lista, defina `CORS_ALLOW_ORIGINS` como uma lista separada por vírgulas.
 

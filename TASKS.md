@@ -143,6 +143,7 @@
 - [x] Manter o estado `completed-with-errors` quando uma falha ocorrer em lote anterior de imagens.
 - [x] Normalizar o resumo exibido para impedir progresso concluído maior que o total conhecido.
 - [x] Implementar relatório JSON estruturado de processamento, com progresso e falhas sanitizadas.
+- [x] Comparar o token opcional do backend sem revelar a credencial em respostas ou logs.
 - [x] Benchmark de capítulos longos.
 - [x] Auditoria de memória do OCR local.
 - [x] Manter overlays ancorados no bounding box original para evitar deslocamento entre balões e imagens.

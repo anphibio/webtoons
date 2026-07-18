@@ -1,4 +1,5 @@
 import os
+import hmac
 from typing import Annotated, Optional
 
 import httpx
@@ -158,7 +159,7 @@ def recognize_image(image: bytes) -> OcrResponse:
 
 def require_access_token(extension_token: Optional[str]) -> None:
     expected_token = os.getenv("API_ACCESS_TOKEN")
-    if expected_token and extension_token != expected_token:
+    if expected_token and not hmac.compare_digest(extension_token or "", expected_token):
         raise HTTPException(status_code=401, detail="Token de acesso inválido")
 
 
