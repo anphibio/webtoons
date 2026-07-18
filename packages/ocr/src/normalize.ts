@@ -133,7 +133,7 @@ const OCR_HALLUCINATION_TOKENS = new Set([
 
 const OCR_SOUND_EFFECT_TOKENS = new Set<string>(["huff", "haah", "euggh", "eugghh", "ughh"]);
 
-const OCR_HALLUCINATION_FRAGMENTS = new Set(["heughi", "waju", "heugho", "leuol", "heuth", "heyhl", "hmng"]);
+const OCR_HALLUCINATION_FRAGMENTS = new Set(["heughi", "waju", "heugho", "leuol", "heuth", "heyhl", "hmng", "hnng", "hng"]);
 
 function sanitizeOcrText(text: string): string {
   return text

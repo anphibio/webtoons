@@ -210,6 +210,22 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["WAIT – –"]);
   });
 
+  it("remove ruído no início sem descartar a frase válida do balão", () => {
+    const result = normalizeOcrResult({
+      regions: [{ id: "mixed-sound", text: "Hmng... This is it...", confidence: 0.9, bbox: { x: 100, y: 20, width: 220, height: 70 }, rotation: 0 }],
+    }, { width: 400, height: 200 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["This is it..."]);
+  });
+
+  it("descarta uma região composta somente por interjeições e ruído", () => {
+    const result = normalizeOcrResult({
+      regions: [{ id: "interjection-noise", text: "Ugh... eu... ugh... eu...", confidence: 0.9, bbox: { x: 100, y: 20, width: 220, height: 70 }, rotation: 0 }],
+    }, { width: 400, height: 200 });
+
+    expect(result.regions).toEqual([]);
+  });
+
   it("descarta texto de arte conhecido quando ocupa uma faixa larga", () => {
     const result = normalizeOcrResult({
       regions: [{ id: "art", text: "Hey guys", confidence: 0.9, bbox: { x: 0, y: 20, width: 444, height: 53 }, rotation: 0 }],

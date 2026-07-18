@@ -48,6 +48,7 @@
 - [x] Preservar o til usado como pontuação expressiva em diálogos de quadrinhos.
 - [x] Preservar pontuação editorial de telas de sistema, créditos e caixas narrativas.
 - [x] Diferenciar frases válidas com várias palavras curtas de falsos positivos curtos.
+- [x] Remover interjeições/efeitos sonoros corrompidos sem apagar frases válidas contaminadas por OCR, ampliar a recuperação local de imagens longas e invalidar o cache OCR anterior.
 - [x] Preservar palavras únicas e nomes próprios ao filtrar alucinações de glifos estilizados.
 - [x] Reexecutar OCR local quando a leitura principal retorna somente uma região.
 - [x] Ignorar a marca d’água conhecida do site durante o OCR.

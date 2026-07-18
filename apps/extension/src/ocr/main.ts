@@ -92,7 +92,10 @@ async function recognizeLongImage(
   input: OcrInput,
   primary: RawOcrResult,
 ): Promise<RawOcrResult> {
-  if (!(input.image instanceof Uint8Array) || input.height <= 2_500 || primary.regions.length >= 4) {
+  // Mesmo quando o detector já encontrou algumas caixas, ainda pode ter
+  // perdido um balão estilizado. A recuperação continua limitada a imagens
+  // longas e a oito regiões para não reabrir o custo alto das páginas densas.
+  if (!(input.image instanceof Uint8Array) || input.height <= 2_500 || primary.regions.length >= 8) {
     return primary;
   }
 
