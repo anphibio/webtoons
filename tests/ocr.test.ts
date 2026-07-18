@@ -211,6 +211,45 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["I CAN'T BELIEVE IT...?!"]);
   });
 
+  it("remove variantes estilizadas de efeitos antes da tradução", () => {
+    const effects = [
+      "WHISPER", "SQUEAAL", "WNIGGLE", "REMBLE", "HICK .", "N PULL",
+      "GGUO o", "DRIP", "OCORI", "IWITCH", "LS.QUIRT", "SUCK",
+    ];
+    const result = normalizeOcrResult({
+      regions: [
+        ...effects.map((text, index) => ({
+          id: `effect-${index}`,
+          text,
+          confidence: 0.92,
+          bbox: { x: 0, y: index * 45, width: 180, height: 40 },
+          rotation: 0,
+        })),
+        {
+          id: "dialogue",
+          text: "I DIDN'T SEE THAT COMING AT ALL.",
+          confidence: 0.95,
+          bbox: { x: 200, y: 0, width: 300, height: 80 },
+          rotation: 0,
+        },
+      ],
+    }, { width: 600, height: 600 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["I DIDN'T SEE THAT COMING AT ALL."]);
+  });
+
+  it("remove sufixos de ruído sem apagar a fala reconhecida", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "yank", text: "THOSE LITTLE HOLES...?! YANK", confidence: 0.92, bbox: { x: 0, y: 0, width: 320, height: 60 }, rotation: 0 },
+        { id: "garbled", text: "YOU FUCKING ASSHOLE... Tou Tuerie rssrieLv... HAH...", confidence: 0.92, bbox: { x: 0, y: 70, width: 360, height: 60 }, rotation: 0 },
+        { id: "valid", text: "STOP THAT.", confidence: 0.92, bbox: { x: 0, y: 140, width: 180, height: 40 }, rotation: 0 },
+      ],
+    }, { width: 500, height: 300 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["THOSE LITTLE HOLES...?!", "YOU FUCKING ASSHOLE...", "STOP THAT."]);
+  });
+
   it("descarta regiões sem área antes de traduzir ou renderizar", () => {
     const result = normalizeOcrResult({
       regions: [

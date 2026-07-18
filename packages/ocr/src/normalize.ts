@@ -156,6 +156,8 @@ const OCR_SOUND_EFFECT_TOKENS = new Set<string>(["huff", "haah", "euggh", "euggh
 
 const ISOLATED_SOUND_EFFECT_TOKENS = new Set<string>([
   "fondle", "plump", "slurp", "splat", "squelch", "swish", "toss", "twitch", "twich",
+  "whisper", "squeaal", "wniggle", "remble", "hick", "npull", "gguoo", "drip", "ocori",
+  "iwitch", "lsquirt", "suck",
 ]);
 
 const OCR_HALLUCINATION_FRAGMENTS = new Set(["heughi", "waju", "heugho", "leuol", "heuth", "heyhl", "hmng", "hnng", "hng"]);
@@ -176,14 +178,18 @@ const MIXED_SOUND_EFFECT_MARKERS = new Set([
 ]);
 
 function removeMixedSoundEffects(text: string): string {
-  const words = text.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
+  const withoutObservedNoise = text
+    .replace(/\s+\bYANK\b[.!?…]*\s*$/i, "")
+    .replace(/\s+\bTou\s+Tuerie\s+rssrieLv\b.*$/i, "")
+    .trim();
+  const words = withoutObservedNoise.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
   const twitchCount = words.filter((word) => word === "twitch" || word === "twich").length;
   const hasTwitchNoise = twitchCount > 0
-    && !/\b(?:i|we|they)\s+(?:heard|saw|felt)\s+(?:a\s+)?twitch\b/i.test(text)
+    && !/\b(?:i|we|they)\s+(?:heard|saw|felt)\s+(?:a\s+)?twitch\b/i.test(withoutObservedNoise)
     && (twitchCount > 1 || words.length <= 3);
-  if (!words.some((word) => MIXED_SOUND_EFFECT_MARKERS.has(word)) && !hasTwitchNoise) return text;
+  if (!words.some((word) => MIXED_SOUND_EFFECT_MARKERS.has(word)) && !hasTwitchNoise) return withoutObservedNoise;
 
-  return text
+  return withoutObservedNoise
     .replace(/\b(?:lurp\s+o|fondle|plump|slurpr?|splat(?:er|ter|ri)?|squelch|sqvelch|swish|swoosh|toss|twitch|twich|(?:i|l)squirt|lick|lurp|flinch|rub|surp|wich|treble|tremble|tremer|trembue|haa+|hn+gh+|nngh?|st\s+m\s+i)\b/gi, " ")
     .replace(/\s+([,.!?…])/g, "$1")
     .replace(/([.!?…])\s*,\s*/g, "$1 ")

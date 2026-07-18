@@ -169,7 +169,8 @@ _COMMON_OCR_WORDS = {
 
 _ISOLATED_SOUND_EFFECTS = {
     "fondle", "plump", "slurp", "splat", "squelch", "swish", "toss",
-    "twitch", "twich",
+    "twitch", "twich", "whisper", "squeaal", "wniggle", "remble", "hick",
+    "npull", "gguoo", "drip", "ocori", "iwitch", "lsquirt", "suck",
 }
 
 _MIXED_SOUND_EFFECT_MARKERS = {
@@ -179,19 +180,23 @@ _MIXED_SOUND_EFFECT_MARKERS = {
 
 
 def _remove_mixed_sound_effects(text: str) -> str:
-    words = re.findall(r"[A-Za-z]+", text.lower())
+    without_observed_noise = re.sub(r"\s+\bYANK\b[.!?…]*\s*$", "", text, flags=re.IGNORECASE)
+    without_observed_noise = re.sub(
+        r"\s+\bTou\s+Tuerie\s+rssrieLv\b.*$", "", without_observed_noise, flags=re.IGNORECASE,
+    ).strip()
+    words = re.findall(r"[A-Za-z]+", without_observed_noise.lower())
     twitch_count = sum(word in {"twitch", "twich"} for word in words)
     has_twitch_noise = (
         twitch_count > 0
-        and not re.search(r"\b(?:i|we|they)\s+(?:heard|saw|felt)\s+(?:a\s+)?twitch\b", text, re.IGNORECASE)
+        and not re.search(r"\b(?:i|we|they)\s+(?:heard|saw|felt)\s+(?:a\s+)?twitch\b", without_observed_noise, re.IGNORECASE)
         and (twitch_count > 1 or len(words) <= 3)
     )
     if not any(word in _MIXED_SOUND_EFFECT_MARKERS for word in words) and not has_twitch_noise:
-        return text
+        return without_observed_noise
     cleaned = re.sub(
         r"\b(?:lurp\s+o|fondle|plump|slurpr?|splat(?:er|ter|ri)?|squelch|sqvelch|swish|swoosh|toss|twitch|twich|(?:i|l)squirt|lick|lurp|flinch|rub|surp|wich|treble|tremble|tremer|trembue|haa+|hn+gh+|nngh?|st\s+m\s+i)\b",
         " ",
-        text,
+        without_observed_noise,
         flags=re.IGNORECASE,
     )
     cleaned = re.sub(r"\s+([,.!?…])", r"\1", cleaned)
@@ -213,11 +218,12 @@ def _looks_like_isolated_glyph_hallucination(text: str) -> bool:
 
 def _is_known_ocr_false_positive(text: str) -> bool:
     normalized = re.sub(r"[^a-z0-9 ]", "", text.lower()).strip()
+    compact = normalized.replace(" ", "")
     if normalized in {
         "btop", "btor", "bror", "de de", "nunca sw", "rilh",
     }:
         return True
-    if normalized in _ISOLATED_SOUND_EFFECTS:
+    if normalized in _ISOLATED_SOUND_EFFECTS or compact in _ISOLATED_SOUND_EFFECTS:
         return True
     return any(word in {
         "botor", "loto", "tokor", "heughi", "waju", "heugho", "heuth",

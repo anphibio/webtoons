@@ -200,6 +200,45 @@ class OcrServiceTests(unittest.TestCase):
 
         self.assertEqual([region.text for region in regions], ["I CAN'T BELIEVE IT...?!"])
 
+    def test_removes_stylized_effect_variants_before_translation(self) -> None:
+        effects = [
+            "WHISPER", "SQUEAAL", "WNIGGLE", "REMBLE", "HICK .", "N PULL",
+            "GGUO o", "DRIP", "OCORI", "IWITCH", "LS.QUIRT", "SUCK",
+        ]
+        texts = effects + ["I DIDN'T SEE THAT COMING AT ALL."]
+        result = [SimpleNamespace(json={
+            "res": {
+                "rec_texts": texts,
+                "rec_scores": [0.9] * len(texts),
+                "rec_boxes": [[0, index * 45, 180, index * 45 + 40] for index in range(len(texts))],
+            },
+        })]
+
+        regions = parse_paddle_result(result)
+
+        self.assertEqual([region.text for region in regions], ["I DIDN'T SEE THAT COMING AT ALL."])
+
+    def test_removes_noise_suffixes_without_losing_dialogue(self) -> None:
+        texts = [
+            "THOSE LITTLE HOLES...?! YANK",
+            "YOU FUCKING ASSHOLE... Tou Tuerie rssrieLv... HAH...",
+            "STOP THAT.",
+        ]
+        result = [SimpleNamespace(json={
+            "res": {
+                "rec_texts": texts,
+                "rec_scores": [0.9] * len(texts),
+                "rec_boxes": [[0, index * 70, 360, index * 70 + 60] for index in range(len(texts))],
+            },
+        })]
+
+        regions = parse_paddle_result(result)
+
+        self.assertEqual(
+            [region.text for region in regions],
+            ["THOSE LITTLE HOLES...?!", "YOU FUCKING ASSHOLE...", "STOP THAT."],
+        )
+
     def test_removes_short_overlapping_false_positive_from_dialogue(self) -> None:
         lines = [
             OcrLine("NUNCA TE DISSE PARA", 0.96, 100, 300, 300, 70),

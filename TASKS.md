@@ -167,6 +167,8 @@
 - [x] Remover efeitos sonoros misturados ao diálogo (`SWISH`, `SLURP`, `TWITCH` e variantes) sem descartar a fala restante.
 - [x] Cobrir ruídos repetidos e variantes corrompidas observados em `Beautiful Days` (`TWITCH TWITCH`, `RUB TWITCH`, `SPLATER WICH`).
 - [x] Filtrar efeitos residuais (`FLINCH`, `SWOOSH`, `LURP` e variantes `NNGH`) sem remover o diálogo adjacente.
+- [x] Filtrar variantes estilizadas residuais de efeitos sonoros e sufixos corrompidos observados no `Beautiful Days` antes da tradução.
+- [x] Invalidar o cache OCR após ampliar o filtro de ruído do `Beautiful Days`.
 - [x] Tratamento de erros com mensagens amigáveis no popup e diagnóstico técnico preservado nos logs.
 - [x] Documentação de instalação.
 - [x] Checklist de teste E2E manual para página local.
