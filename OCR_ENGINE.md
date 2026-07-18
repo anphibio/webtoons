@@ -64,6 +64,14 @@ Testar combinações de:
 
 Não traduzir automaticamente textos abaixo do limite de confiança sem marcar o resultado como incerto.
 
+### Normalização de regiões
+
+- usar a mediana da altura das linhas da imagem como referência para identificar caixas verticalmente anormais;
+- limitar caixas superdimensionadas pela borda inferior, preservando o topo detectado do texto longo;
+- centralizar apenas regiões curtas quando a altura original estiver contaminada por um efeito gráfico;
+- remover efeitos sonoros anexados ao diálogo sem consumir a pontuação expressiva da fala;
+- versionar o cache de OCR sempre que a geometria ou a sanitização das regiões mudar.
+
 ## Execução
 
 - usar Web Worker;

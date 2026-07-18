@@ -79,6 +79,42 @@ describe("contrato de OCR", () => {
     expect(region?.bbox.height).toBeGreaterThan(100);
   });
 
+  it("reduz pela borda inferior uma caixa longa e larga superdimensionada", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "normal-1", text: "A NORMAL LINE", confidence: 0.98, bbox: { x: 100, y: 100, width: 300, height: 96 }, rotation: 0 },
+        { id: "normal-2", text: "ANOTHER NORMAL LINE", confidence: 0.98, bbox: { x: 100, y: 220, width: 360, height: 108 }, rotation: 0 },
+        {
+          id: "oversized",
+          text: "GETTING TO ENJOY THIS GORGEOUS ASS WITHOUT ANYTHING GETTING IN THE WAY...",
+          confidence: 0.99,
+          bbox: { x: 12, y: 442, width: 798, height: 606 },
+          rotation: 0,
+        },
+      ],
+    }, { width: 1000, height: 1600 });
+
+    const region = result.regions.find((item) => item.id === "oversized");
+    expect(region?.bbox.y).toBe(442);
+    expect(region?.bbox.height).toBeLessThan(400);
+  });
+
+  it("remove efeito e hífen órfão anexados ao final de uma fala", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "effect", text: "YOU FUCKING... PSYCHO... HNN.", confidence: 0.99, bbox: { x: 0, y: 0, width: 400, height: 80 }, rotation: 0 },
+        { id: "orphan-1", text: "GETTING TO ENJOY THIS WITHOUT ANYTHING GETTING IN THE WAY... ( -", confidence: 0.99, bbox: { x: 0, y: 100, width: 800, height: 300 }, rotation: 0 },
+        { id: "orphan-2", text: "FOR SOME REASON, IT'S TURNING ME ON EVEN MORE. -", confidence: 0.99, bbox: { x: 0, y: 400, width: 700, height: 200 }, rotation: 0 },
+      ],
+    }, { width: 1000, height: 1000 });
+
+    expect(result.regions.map((region) => region.text)).toEqual([
+      "YOU FUCKING... PSYCHO...",
+      "GETTING TO ENJOY THIS WITHOUT ANYTHING GETTING IN THE WAY...",
+      "FOR SOME REASON, IT'S TURNING ME ON EVEN MORE.",
+    ]);
+  });
+
   it("preserva o til usado como pontuação expressiva em diálogos", () => {
     const result = normalizeOcrResult({
       regions: [

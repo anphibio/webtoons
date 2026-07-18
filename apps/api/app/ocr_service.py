@@ -175,7 +175,7 @@ _ISOLATED_SOUND_EFFECTS = {
 
 _MIXED_SOUND_EFFECT_MARKERS = {
     "fondle", "plump", "slurp", "slurpr", "splat", "splater", "splatri", "squelch", "sqvelch",
-    "swish", "swoosh", "toss", "squirt", "isquirt", "lsquirt", "lick", "lurp", "flinch", "rub", "surp", "haa", "nngh", "hnngh", "treble", "tremble", "tremer", "trembue",
+    "swish", "swoosh", "toss", "squirt", "isquirt", "lsquirt", "lick", "lurp", "flinch", "rub", "surp", "haa", "hnn", "nngh", "hnngh", "treble", "tremble", "tremer", "trembue",
 }
 
 
@@ -183,6 +183,11 @@ def _remove_mixed_sound_effects(text: str) -> str:
     without_observed_noise = re.sub(r"\s+\bYANK\b[.!?…]*\s*$", "", text, flags=re.IGNORECASE)
     without_observed_noise = re.sub(
         r"\s+\bTou\s+Tuerie\s+rssrieLv\b.*$", "", without_observed_noise, flags=re.IGNORECASE,
+    ).strip()
+    without_observed_noise = re.sub(
+        r"(?<=[.!?…])\s*(?:\(\s*)?-\s*$",
+        "",
+        without_observed_noise,
     ).strip()
     words = re.findall(r"[A-Za-z]+", without_observed_noise.lower())
     twitch_count = sum(word in {"twitch", "twich"} for word in words)
@@ -194,8 +199,8 @@ def _remove_mixed_sound_effects(text: str) -> str:
     if not any(word in _MIXED_SOUND_EFFECT_MARKERS for word in words) and not has_twitch_noise:
         return without_observed_noise
     cleaned = re.sub(
-        r"\b(?:lurp\s+o|fondle|plump|slurpr?|splat(?:er|ter|ri)?|squelch|sqvelch|swish|swoosh|toss|twitch|twich|(?:i|l)squirt|lick|lurp|flinch|rub|surp|wich|treble|tremble|tremer|trembue|haa+|hn+gh+|nngh?|st\s+m\s+i)\b",
-        " ",
+        r"\b(?:lurp\s+o|fondle|plump|slurpr?|splat(?:er|ter|ri)?|squelch|sqvelch|swish|swoosh|toss|twitch|twich|(?:i|l)squirt|lick|lurp|flinch|rub|surp|wich|treble|tremble|tremer|trembue|haa+|hnn|hn+gh+|nngh?|st\s+m\s+i)\b([.!?…]*)",
+        lambda match: re.sub(r"[.…]", "", match.group(1)) + " ",
         without_observed_noise,
         flags=re.IGNORECASE,
     )
@@ -433,20 +438,21 @@ def _is_onomatopoeia(text: str) -> bool:
 def _normalize_short_tall_line(line: OcrLine, typical_height: float, limit: float) -> OcrLine:
     if line.height <= limit:
         return line
-    if len(_comparison_text(line.text)) >= 40 and line.height <= line.width * 1.15:
-        return line
     safe_typical_height = max(24, typical_height)
     characters_per_line = max(8, floor(line.width / (safe_typical_height * 0.56)))
     estimated_lines = max(1, ceil(len(re.sub(r"\s+", " ", line.text).strip()) / characters_per_line))
+    maximum_safe_height = max(160, round(safe_typical_height * 2.75))
     height = min(
         line.height,
+        maximum_safe_height,
         max(24, round(estimated_lines * safe_typical_height * 1.25 + 8)),
     )
+    is_long_text = len(_comparison_text(line.text)) >= 40
     return OcrLine(
         text=line.text,
         confidence=line.confidence,
         x=line.x,
-        y=line.y + round((line.height - height) / 2),
+        y=line.y if is_long_text else line.y + round((line.height - height) / 2),
         width=line.width,
         height=height,
     )

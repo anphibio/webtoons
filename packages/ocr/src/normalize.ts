@@ -56,13 +56,8 @@ function overlapRatio(left: BoundingBox, right: BoundingBox): number {
   return smallerArea > 0 ? intersection / smallerArea : 0;
 }
 
-function isAbnormallyTallShortRegion(text: string, height: number, limit: number): boolean {
-  const compact = text.replace(/\s/g, "");
-  return height > limit && compact.length < 40;
-}
-
-function isAbnormallyTallRegion(text: string, box: BoundingBox, limit: number): boolean {
-  return box.height > limit && (isAbnormallyTallShortRegion(text, box.height, limit) || box.height > box.width * 1.15);
+function isAbnormallyTallRegion(box: BoundingBox, limit: number): boolean {
+  return box.height > limit;
 }
 
 function hasPositiveArea(box: BoundingBox): boolean {
@@ -80,15 +75,18 @@ function normalizeShortTallBox(
   typicalHeight: number,
   limit: number,
 ): BoundingBox {
-  if (!isAbnormallyTallRegion(text, box, limit)) return box;
+  if (!isAbnormallyTallRegion(box, limit)) return box;
   const safeTypicalHeight = Math.max(24, typicalHeight);
   const charactersPerLine = Math.max(8, Math.floor(box.width / (safeTypicalHeight * 0.56)));
   const estimatedLines = Math.max(1, Math.ceil(text.replace(/\s+/g, " ").trim().length / charactersPerLine));
+  const maximumSafeHeight = Math.max(160, Math.round(safeTypicalHeight * 2.75));
   const height = Math.min(
     box.height,
+    maximumSafeHeight,
     Math.max(24, Math.round(estimatedLines * safeTypicalHeight * 1.25 + 8)),
   );
-  return { ...box, y: box.y + Math.round((box.height - height) / 2), height };
+  const isLongText = text.replace(/\s/g, "").length >= 40;
+  return { ...box, y: isLongText ? box.y : box.y + Math.round((box.height - height) / 2), height };
 }
 
 function isLikelyText(
@@ -181,13 +179,14 @@ function sanitizeOcrText(text: string): string {
 
 const MIXED_SOUND_EFFECT_MARKERS = new Set([
   "fondle", "plump", "slurp", "slurpr", "splat", "splater", "splatri", "squelch", "sqvelch",
-  "swish", "swoosh", "toss", "squirt", "isquirt", "lsquirt", "lick", "lurp", "flinch", "rub", "surp", "haa", "nngh", "hnngh", "treble", "tremble", "tremer", "trembue",
+  "swish", "swoosh", "toss", "squirt", "isquirt", "lsquirt", "lick", "lurp", "flinch", "rub", "surp", "haa", "hnn", "nngh", "hnngh", "treble", "tremble", "tremer", "trembue",
 ]);
 
 function removeMixedSoundEffects(text: string): string {
   const withoutObservedNoise = text
     .replace(/\s+\bYANK\b[.!?…]*\s*$/i, "")
     .replace(/\s+\bTou\s+Tuerie\s+rssrieLv\b.*$/i, "")
+    .replace(/(?<=[.!?…])\s*(?:\(\s*)?-\s*$/i, "")
     .trim();
   const words = withoutObservedNoise.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
   const twitchCount = words.filter((word) => word === "twitch" || word === "twich").length;
@@ -197,7 +196,10 @@ function removeMixedSoundEffects(text: string): string {
   if (!words.some((word) => MIXED_SOUND_EFFECT_MARKERS.has(word)) && !hasTwitchNoise) return withoutObservedNoise;
 
   return withoutObservedNoise
-    .replace(/\b(?:lurp\s+o|fondle|plump|slurpr?|splat(?:er|ter|ri)?|squelch|sqvelch|swish|swoosh|toss|twitch|twich|(?:i|l)squirt|lick|lurp|flinch|rub|surp|wich|treble|tremble|tremer|trembue|haa+|hn+gh+|nngh?|st\s+m\s+i)\b/gi, " ")
+    .replace(
+      /\b(?:lurp\s+o|fondle|plump|slurpr?|splat(?:er|ter|ri)?|squelch|sqvelch|swish|swoosh|toss|twitch|twich|(?:i|l)squirt|lick|lurp|flinch|rub|surp|wich|treble|tremble|tremer|trembue|haa+|hnn|hn+gh+|nngh?|st\s+m\s+i)\b([.!?…]*)/gi,
+      (_match, punctuation: string) => `${punctuation.replace(/[.…]/g, "")} `,
+    )
     .replace(/\s+([,.!?…])/g, "$1")
     .replace(/([.!?…])\s*,\s*/g, "$1 ")
     .replace(/^[,;:.!?…\s]+/, "")

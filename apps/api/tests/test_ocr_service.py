@@ -105,6 +105,52 @@ class OcrServiceTests(unittest.TestCase):
         self.assertEqual([region.text for region in regions], ["A KID LIKE YOU WHO DID IT WITHOUT", "Haah"])
         self.assertLess(regions[1].height, 560)
 
+    def test_trims_oversized_long_region_from_its_bottom_edge(self) -> None:
+        lines = [
+            OcrLine(
+                "GETTING TO ENJOY THIS GORGEOUS ASS WITHOUT ANYTHING GETTING IN THE WAY...",
+                0.99,
+                12,
+                442,
+                798,
+                606,
+            ),
+            OcrLine("A NORMAL LINE", 0.98, 100, 1_200, 300, 96),
+            OcrLine("ANOTHER NORMAL LINE", 0.98, 100, 1_400, 360, 108),
+        ]
+
+        region = next(
+            item for item in group_ocr_lines(lines)
+            if item.text.startswith("GETTING TO ENJOY")
+        )
+
+        self.assertEqual(region.y, 442)
+        self.assertLess(region.height, 400)
+
+    def test_removes_effect_and_orphan_dash_attached_to_dialogue(self) -> None:
+        result = [SimpleNamespace(json={
+            "res": {
+                "rec_texts": [
+                    "YOU FUCKING... PSYCHO... HNN.",
+                    "GETTING TO ENJOY THIS WITHOUT ANYTHING GETTING IN THE WAY... ( -",
+                    "FOR SOME REASON, IT'S TURNING ME ON EVEN MORE. -",
+                ],
+                "rec_scores": [0.99, 0.99, 0.99],
+                "rec_boxes": [[0, 0, 400, 80], [0, 100, 800, 300], [0, 400, 700, 600]],
+            },
+        })]
+
+        regions = parse_paddle_result(result)
+
+        self.assertEqual(
+            [region.text for region in regions],
+            [
+                "YOU FUCKING... PSYCHO...",
+                "GETTING TO ENJOY THIS WITHOUT ANYTHING GETTING IN THE WAY...",
+                "FOR SOME REASON, IT'S TURNING ME ON EVEN MORE.",
+            ],
+        )
+
     def test_rejects_gibberish_with_many_fragments_and_digits(self) -> None:
         result = FakePaddleResult()
         result.json = {

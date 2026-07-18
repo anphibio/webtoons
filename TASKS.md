@@ -172,6 +172,9 @@
 - [x] Não criar overlay quando a tradução preservar o mesmo conteúdo do OCR, evitando caixas sobre marcas e interjeições sem tradução.
 - [x] Rejeitar o falso `WITH` de baixa confiança recortado na borda observado no `Beautiful Days`, preservando ocorrências legítimas em frases.
 - [x] Invalidar o cache OCR após corrigir o falso positivo recortado na borda.
+- [x] Limitar pela borda inferior caixas OCR longas superdimensionadas, preservando a âncora superior do texto.
+- [x] Remover efeitos finais `HNN` e hífens órfãos sem apagar a pontuação expressiva do diálogo.
+- [x] Invalidar o cache OCR após corrigir geometria e resíduos observados no `Beautiful Days` ToonGod07.
 - [x] Tratamento de erros com mensagens amigáveis no popup e diagnóstico técnico preservado nos logs.
 - [x] Documentação de instalação.
 - [x] Checklist de teste E2E manual para página local.

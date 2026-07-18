@@ -181,7 +181,7 @@ async function createImageCacheKey(
   height: number,
 ): Promise<string> {
   const bytes = await imageBytes(image);
-  return createCacheKey("ocr-v20", candidate.sourceUrl, `${width}x${height}`, createBytesKey(bytes));
+  return createCacheKey("ocr-v21", candidate.sourceUrl, `${width}x${height}`, createBytesKey(bytes));
 }
 
 function hasMeaningfulTranslationChange(source: string, translated: string): boolean {
