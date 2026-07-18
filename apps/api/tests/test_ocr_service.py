@@ -160,6 +160,18 @@ class OcrServiceTests(unittest.TestCase):
 
         self.assertEqual([region.text for region in regions], ["A KID LIKE YOU WHO DID IT WITHOUT", "Haah..."])
 
+    def test_keeps_dialogue_separate_from_short_noise_below_the_bubble(self) -> None:
+        lines = [
+            OcrLine("So don't", 0.96, 180, 500, 160, 42),
+            OcrLine("stop...", 0.95, 190, 548, 150, 42),
+            OcrLine("Oo", 0.88, 230, 625, 100, 32),
+        ]
+
+        regions = group_ocr_lines(lines)
+
+        self.assertEqual([region.text for region in regions], ["So don't stop...", "Oo"])
+        self.assertEqual((regions[0].x, regions[0].y, regions[0].width, regions[0].height), (180, 500, 160, 90))
+
     def test_processes_long_images_in_bounded_overlapping_tiles(self) -> None:
         image = FakeImageArray(height=450, width=100)
         engine = FakeEngine()

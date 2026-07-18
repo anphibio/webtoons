@@ -320,7 +320,10 @@ def _can_join(previous: OcrLine, current: OcrLine, max_grouping_height: float) -
 
 def _is_onomatopoeia(text: str) -> bool:
     normalized = re.sub(r"[^a-z]", "", text.lower())
-    return normalized in {"ah", "ahh", "haah", "hmm", "mmm", "oh"}
+    return normalized in {
+        "ah", "ahh", "haah", "hmm", "mmm", "oh", "oo", "ooh",
+        "huff", "euggh", "eugghh", "ughh", "hmng", "hnng", "hng",
+    }
 
 
 def _normalize_short_tall_line(line: OcrLine, typical_height: float, limit: float) -> OcrLine:
