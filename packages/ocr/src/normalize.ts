@@ -118,7 +118,7 @@ function isLikelyGlyphHallucination(text: string, bbox: BoundingBox): boolean {
   const words: string[] = text.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
   const compact = words.join("");
   if (OCR_SOUND_EFFECT_TOKENS.has(compact) || (words.includes("huff") && words.every((word) => word.length <= 4))) return true;
-  if (/\bn\s*[º°o0]?\s*(?:sdo|ado)\b/i.test(text)) return true;
+  if (/\bn\s*[º°o0]?\.?\s*(?:sdo|ado)\b/i.test(text)) return true;
   if (/\b(?:stars?|staurs?)\s+club\b/i.test(text)) return true;
   if (text.trim().toLocaleLowerCase() === "hey guys" && bbox.width >= 300 && bbox.width / Math.max(1, bbox.height) >= 5) return true;
   if (words.some((word) => OCR_HALLUCINATION_TOKENS.has(word))) return true;
@@ -128,7 +128,7 @@ function isLikelyGlyphHallucination(text: string, bbox: BoundingBox): boolean {
 }
 
 const OCR_HALLUCINATION_TOKENS = new Set([
-  "botor", "loto", "tokor", "heugho", "heughh", "heugh", "heuth", "heyhl", "hmng", "hnng", "hng", "krot", "leuol", "pounds", "toro", "toror",
+  "botor", "loto", "tokor", "steips", "wighs", "heugho", "heughh", "heugh", "heuth", "heyhl", "hmng", "hnng", "hng", "krot", "leuol", "pounds", "toro", "toror",
 ]);
 
 const OCR_SOUND_EFFECT_TOKENS = new Set<string>(["huff", "haah", "euggh", "eugghh", "ughh"]);

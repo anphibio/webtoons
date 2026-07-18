@@ -54,7 +54,7 @@ function isUsefulRegion(region: OcrRegion): boolean {
   const text = region.text.trim();
   const words = text.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
   if (words.some((word) => OCR_HALLUCINATION_TOKENS.has(word))) return false;
-  if (/\bn\s*[°º]\b/i.test(text)) return false;
+  if (/\bn\s*[°º]\.?\b/i.test(text)) return false;
   if (/(?:www\.)?omegascans\s*\.\s*org/i.test(text)) return false;
   if (words.length >= 5 && /\d/.test(text) && words.filter((word) => word.length <= 1).length >= 3) return false;
   if (text.length < 5) return false;
@@ -72,7 +72,7 @@ function isPlausibleRegion(region: OcrRegion): boolean {
 }
 
 const OCR_HALLUCINATION_TOKENS = new Set([
-  "botor", "loto", "tokor", "heughi", "waju", "heugho", "heuth", "heyhl", "hmng", "hnng", "hng", "krot", "leuol", "pounds", "toro", "toror",
+  "botor", "loto", "tokor", "steips", "wighs", "heughi", "waju", "heugho", "heuth", "heyhl", "hmng", "hnng", "hng", "krot", "leuol", "pounds", "toro", "toror",
 ]);
 
 function intersectionOverUnion(first: OcrRegion, second: OcrRegion): number {

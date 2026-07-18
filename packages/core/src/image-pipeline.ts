@@ -177,7 +177,7 @@ async function createImageCacheKey(
   height: number,
 ): Promise<string> {
   const bytes = await imageBytes(image);
-  return createCacheKey("ocr-v16", candidate.sourceUrl, `${width}x${height}`, createBytesKey(bytes));
+  return createCacheKey("ocr-v17", candidate.sourceUrl, `${width}x${height}`, createBytesKey(bytes));
 }
 
 async function imageBytes(image: LoadedImage["image"]): Promise<Uint8Array> {

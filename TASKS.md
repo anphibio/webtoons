@@ -148,6 +148,8 @@
 - [x] Rejeitar variações compostas de efeitos sonoros e falsos positivos de texto em faixas gráficas largas.
 - [x] Filtrar novas variantes isoladas de efeitos sonoros reconhecidas como palavras inglesas.
 - [x] Invalidar automaticamente o cache OCR após ampliar novamente o filtro de ruídos.
+- [x] Filtrar variantes com pontuação e grafismos `Steips`/`Wighs` identificados no ToonGod20.
+- [x] Invalidar o cache OCR após corrigir variantes adicionais de ruído.
 - [x] Acionar recuperação OCR local em detecções escassas ou fracas e mesclar regiões sem perder resultados válidos.
 - [ ] Tratamento de erros.
 - [x] Documentação de instalação.
