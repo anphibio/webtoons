@@ -75,6 +75,26 @@ describe("overlay reversível", () => {
     expect(region?.style.bottom).toBe("");
   });
 
+  it("recorta caixas OCR que ultrapassam os limites da própria imagem", () => {
+    const image = document.createElement("img");
+    image.width = 800;
+    image.height = 1200;
+    document.body.append(image);
+    const manager = new OverlayManager(document);
+
+    manager.render(image, [{
+      id: "outside",
+      text: "Legenda recuperada",
+      bbox: { x: -80, y: 1160, width: 980, height: 180 },
+    }]);
+
+    const region = document.querySelector<HTMLElement>("[data-wtl-region]")!;
+    expect(Number.parseFloat(region.style.left)).toBe(0);
+    expect(Number.parseFloat(region.style.top)).toBeLessThanOrEqual(100);
+    expect(Number.parseFloat(region.style.width)).toBe(100);
+    expect(Number.parseFloat(region.style.height)).toBeLessThanOrEqual(100);
+  });
+
   it("centraliza a tradução na região e adapta a fonte ao espaço disponível", () => {
     const image = document.createElement("img");
     image.width = 800;

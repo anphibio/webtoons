@@ -74,20 +74,21 @@ export class OverlayManager {
     const displayWidth = image.clientWidth || image.width || width;
     const displayHeight = image.clientHeight || image.height || height;
     for (const region of regions) {
+      const box = constrainBox(region.bbox, width, height);
       const element = this.document.createElement("span");
       element.dataset.wtlRegion = region.id;
       element.textContent = region.text;
-      const boxWidth = (region.bbox.width / width) * displayWidth;
-      const boxHeight = (region.bbox.height / height) * displayHeight;
+      const boxWidth = (box.width / width) * displayWidth;
+      const boxHeight = (box.height / height) * displayHeight;
       const layout = fitTextLayout(region.text, boxWidth, boxHeight, this.preferences.fontSize);
-      const top = clamp((region.bbox.y / height) * displayHeight, 0, Math.max(0, displayHeight - boxHeight));
+      const top = clamp((box.y / height) * displayHeight, 0, Math.max(0, displayHeight - boxHeight));
       element.dataset.wtlBoxWidth = String(boxWidth);
       element.dataset.wtlBoxHeight = String(boxHeight);
       Object.assign(element.style, {
         position: "absolute",
-        left: `${(region.bbox.x / width) * 100}%`,
+        left: `${(box.x / width) * 100}%`,
         top: `${(top / displayHeight) * 100}%`,
-        width: `${(region.bbox.width / width) * 100}%`,
+        width: `${(box.width / width) * 100}%`,
         height: `${(boxHeight / displayHeight) * 100}%`,
         boxSizing: "border-box",
         padding: "2px 4px",
@@ -200,6 +201,14 @@ function positiveDimension(value: number | undefined): number | undefined {
 
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(maximum, Math.max(minimum, value));
+}
+
+function constrainBox(box: OverlayBoundingBox, width: number, height: number): OverlayBoundingBox {
+  const x = clamp(Number.isFinite(box.x) ? box.x : 0, 0, width);
+  const y = clamp(Number.isFinite(box.y) ? box.y : 0, 0, height);
+  const right = clamp((Number.isFinite(box.x) ? box.x : 0) + Math.max(0, Number.isFinite(box.width) ? box.width : 0), x, width);
+  const bottom = clamp((Number.isFinite(box.y) ? box.y : 0) + Math.max(0, Number.isFinite(box.height) ? box.height : 0), y, height);
+  return { x, y, width: right - x, height: bottom - y };
 }
 
 function fitTextLayout(text: string, width: number, height: number, preferred: number): { fontSize: number; height: number } {

@@ -143,6 +143,7 @@
 - [x] Benchmark de capítulos longos.
 - [x] Auditoria de memória do OCR local.
 - [x] Manter overlays ancorados no bounding box original para evitar deslocamento entre balões e imagens.
+- [x] Recortar caixas OCR que ultrapassam os limites da imagem antes de renderizar o overlay.
 - [x] Filtrar alucinações OCR recorrentes de efeitos sonoros sem descartar interjeições como “Haah”.
 - [x] Invalidar novamente os caches de OCR e tradução para reprocessar o capítulo 12 sem resultados antigos.
 - [x] Deduplicar regiões OCR com o mesmo texto e sobreposição forte, preservando falas iguais em balões distintos.
