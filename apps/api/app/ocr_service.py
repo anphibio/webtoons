@@ -174,21 +174,28 @@ _ISOLATED_SOUND_EFFECTS = {
 
 _MIXED_SOUND_EFFECT_MARKERS = {
     "fondle", "plump", "slurp", "slurpr", "splat", "splater", "splatri", "squelch", "sqvelch",
-    "swish", "toss", "squirt", "isquirt", "lsquirt", "lick", "treble", "tremble", "tremer", "trembue",
+    "swish", "toss", "squirt", "isquirt", "lsquirt", "lick", "rub", "surp", "haa", "treble", "tremble", "tremer", "trembue",
 }
 
 
 def _remove_mixed_sound_effects(text: str) -> str:
     words = re.findall(r"[A-Za-z]+", text.lower())
-    if not any(word in _MIXED_SOUND_EFFECT_MARKERS for word in words):
+    twitch_count = sum(word in {"twitch", "twich"} for word in words)
+    has_twitch_noise = (
+        twitch_count > 0
+        and not re.search(r"\b(?:i|we|they)\s+(?:heard|saw|felt)\s+(?:a\s+)?twitch\b", text, re.IGNORECASE)
+        and (twitch_count > 1 or len(words) <= 3)
+    )
+    if not any(word in _MIXED_SOUND_EFFECT_MARKERS for word in words) and not has_twitch_noise:
         return text
     cleaned = re.sub(
-        r"\b(?:fondle|plump|slurpr?|splat(?:ter|ri)?|squelch|sqvelch|swish|toss|twitch|twich|(?:i|l)squirt|lick|treble|tremble|tremer|trembue|haa+|nngh?)\b",
+        r"\b(?:fondle|plump|slurpr?|splat(?:er|ter|ri)?|squelch|sqvelch|swish|toss|twitch|twich|(?:i|l)squirt|lick|rub|surp|wich|treble|tremble|tremer|trembue|haa+|hn+gh+|nngh?)\b",
         " ",
         text,
         flags=re.IGNORECASE,
     )
     cleaned = re.sub(r"\s+([,.!?…])", r"\1", cleaned)
+    cleaned = re.sub(r"([.!?…])\s*,\s*", r"\1 ", cleaned)
     cleaned = re.sub(r"\s{2,}", " ", cleaned)
     return re.sub(r"^[,;:.!?…\s]+", "", cleaned).strip()
 

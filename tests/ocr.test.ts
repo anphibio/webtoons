@@ -183,6 +183,20 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["STOP THAT...", "I CAN'T STOP TWITCHING"]);
   });
 
+  it("remove variantes repetidas de ruído observadas em Beautiful Days", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "repeat", text: "TWITCH TWITCH", confidence: 0.92, bbox: { x: 0, y: 0, width: 180, height: 40 }, rotation: 0 },
+        { id: "rub", text: "RUB TWITCH", confidence: 0.92, bbox: { x: 0, y: 50, width: 180, height: 40 }, rotation: 0 },
+        { id: "mixed", text: "HAA..! STOP... SURP, STOP THAT...!!!", confidence: 0.92, bbox: { x: 0, y: 100, width: 300, height: 70 }, rotation: 0 },
+        { id: "gibberish", text: "SPLATER WICH", confidence: 0.92, bbox: { x: 0, y: 180, width: 180, height: 40 }, rotation: 0 },
+        { id: "valid", text: "I HEARD A TWITCH IN THE DARK.", confidence: 0.92, bbox: { x: 0, y: 230, width: 300, height: 60 }, rotation: 0 },
+      ],
+    }, { width: 400, height: 300 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["STOP... STOP THAT...!!!", "I HEARD A TWITCH IN THE DARK."]);
+  });
+
   it("descarta regiões sem área antes de traduzir ou renderizar", () => {
     const result = normalizeOcrResult({
       regions: [
