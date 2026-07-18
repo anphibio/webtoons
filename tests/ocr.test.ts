@@ -238,6 +238,17 @@ describe("contrato de OCR", () => {
     expect(result.regions.map((region) => region.text)).toEqual(["I DIDN'T SEE THAT COMING AT ALL."]);
   });
 
+  it("remove WITH de baixa confiança recortado na borda sem apagar a palavra legítima", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "edge-noise", text: "WITH", confidence: 0.7378, bbox: { x: 0, y: 818, width: 192, height: 94 }, rotation: 0 },
+        { id: "valid", text: "STAY WITH ME", confidence: 0.95, bbox: { x: 80, y: 950, width: 240, height: 60 }, rotation: 0 },
+      ],
+    }, { width: 720, height: 1200 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["STAY WITH ME"]);
+  });
+
   it("remove sufixos de ruído sem apagar a fala reconhecida", () => {
     const result = normalizeOcrResult({
       regions: [

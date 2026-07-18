@@ -169,6 +169,9 @@
 - [x] Filtrar efeitos residuais (`FLINCH`, `SWOOSH`, `LURP` e variantes `NNGH`) sem remover o diálogo adjacente.
 - [x] Filtrar variantes estilizadas residuais de efeitos sonoros e sufixos corrompidos observados no `Beautiful Days` antes da tradução.
 - [x] Invalidar o cache OCR após ampliar o filtro de ruído do `Beautiful Days`.
+- [x] Não criar overlay quando a tradução preservar o mesmo conteúdo do OCR, evitando caixas sobre marcas e interjeições sem tradução.
+- [x] Rejeitar o falso `WITH` de baixa confiança recortado na borda observado no `Beautiful Days`, preservando ocorrências legítimas em frases.
+- [x] Invalidar o cache OCR após corrigir o falso positivo recortado na borda.
 - [x] Tratamento de erros com mensagens amigáveis no popup e diagnóstico técnico preservado nos logs.
 - [x] Documentação de instalação.
 - [x] Checklist de teste E2E manual para página local.

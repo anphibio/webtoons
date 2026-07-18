@@ -97,6 +97,7 @@ function isLikelyText(
   bbox: BoundingBox,
 ): boolean {
   if (confidence < 0.5) return false;
+  if (isLowConfidenceEdgeGlyph(text, confidence, bbox)) return false;
   const compact = text.replace(/\s/g, "");
   if (compact.length < 3) return false;
   const letters = (compact.match(/[\p{L}]/gu) ?? []).length;
@@ -106,6 +107,12 @@ function isLikelyText(
   if (isShortNoise(text)) return false;
   if (isLikelyGlyphHallucination(text, bbox)) return false;
   return true;
+}
+
+function isLowConfidenceEdgeGlyph(text: string, confidence: number, bbox: BoundingBox): boolean {
+  return confidence < 0.8
+    && bbox.x <= 0
+    && /^with[.!?…]*$/i.test(text.trim());
 }
 
 const COMMON_SHORT_WORDS = new Set([

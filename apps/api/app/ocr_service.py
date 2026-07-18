@@ -286,7 +286,11 @@ def parse_paddle_result(results: Iterable[Any]) -> List[OcrLine]:
                 confidence = max(0.0, min(1.0, float(score_value)))
             except (TypeError, ValueError):
                 continue
-            if x_max <= x_min or y_max <= y_min:
+            if (
+                x_max <= x_min
+                or y_max <= y_min
+                or _looks_like_low_confidence_edge_glyph(text, confidence, x_min)
+            ):
                 continue
             regions.append(OcrLine(
                 text=text,
@@ -297,6 +301,11 @@ def parse_paddle_result(results: Iterable[Any]) -> List[OcrLine]:
                 height=y_max - y_min,
             ))
     return regions
+
+
+def _looks_like_low_confidence_edge_glyph(text: str, confidence: float, x_min: int) -> bool:
+    normalized = re.sub(r"[^a-z]", "", text.lower())
+    return normalized == "with" and confidence < 0.8 and x_min <= 0
 
 
 def group_ocr_lines(lines: Iterable[OcrLine]) -> List[OcrLine]:

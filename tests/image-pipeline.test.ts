@@ -56,6 +56,53 @@ describe("pipeline de imagem", () => {
     expect(stages).toEqual(["loading", "ocr", "translation", "overlay"]);
   });
 
+  it("não cria overlay quando a tradução mantém o mesmo conteúdo", async () => {
+    const render = vi.fn();
+    const imageCandidate = candidate();
+    const pipeline = new ImagePipeline({
+      load: { load: vi.fn().mockResolvedValue({ image: new Blob(["image"]), width: 1200, height: 1800 }) },
+      ocr: {
+        recognize: vi.fn().mockResolvedValue({
+          regions: [
+            {
+              id: "brand",
+              text: "NIKB",
+              confidence: 0.91,
+              bbox: { x: 10, y: 20, width: 100, height: 40 },
+              rotation: 0,
+            },
+            {
+              id: "dialogue",
+              text: "Hello!",
+              confidence: 0.96,
+              bbox: { x: 10, y: 80, width: 180, height: 50 },
+              rotation: 0,
+            },
+          ],
+        }),
+      },
+      translation: {
+        translate: vi.fn().mockResolvedValue({
+          segments: [
+            { id: "brand", sourceText: "NIKB", translatedText: "N.I.K.B." },
+            { id: "dialogue", sourceText: "Hello!", translatedText: "Olá!" },
+          ],
+        }),
+      },
+      overlay: { render },
+      sourceLanguage: "eng",
+      targetLanguage: "por",
+      timeoutMs: 5_000,
+    });
+
+    await expect(pipeline.process(imageCandidate)).resolves.toEqual({ status: "rendered", regionCount: 1 });
+    expect(render).toHaveBeenCalledWith(imageCandidate.element, [{
+      id: "dialogue",
+      text: "Olá!",
+      bbox: { x: 10, y: 80, width: 180, height: 50 },
+    }], { width: 1200, height: 1800 });
+  });
+
   it("não chama tradução nem overlay quando o OCR não encontra regiões", async () => {
     const translate = vi.fn();
     const render = vi.fn();

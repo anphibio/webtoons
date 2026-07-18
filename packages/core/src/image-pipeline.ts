@@ -153,12 +153,16 @@ export class ImagePipeline {
 
       const byId = new Map(translated.segments.map((segment) => [segment.id, segment.translatedText]));
       const regions = ocr.regions
-        .map((region) => ({
-          id: region.id,
-          text: byId.get(region.id) ?? "",
-          bbox: region.bbox,
-        }))
-        .filter((region) => region.text.trim().length > 0);
+        .map((region) => {
+          const text = byId.get(region.id) ?? "";
+          if (!hasMeaningfulTranslationChange(region.text, text)) return null;
+          return {
+            id: region.id,
+            text,
+            bbox: region.bbox,
+          };
+        })
+        .filter((region): region is OverlayRegion => region !== null);
 
       if (regions.length === 0) return { status: "empty", regionCount: 0 };
       this.options.onStage?.("overlay");
@@ -177,7 +181,20 @@ async function createImageCacheKey(
   height: number,
 ): Promise<string> {
   const bytes = await imageBytes(image);
-  return createCacheKey("ocr-v19", candidate.sourceUrl, `${width}x${height}`, createBytesKey(bytes));
+  return createCacheKey("ocr-v20", candidate.sourceUrl, `${width}x${height}`, createBytesKey(bytes));
+}
+
+function hasMeaningfulTranslationChange(source: string, translated: string): boolean {
+  const target = translated.trim();
+  if (!target) return false;
+  return comparableText(source) !== comparableText(target);
+}
+
+function comparableText(text: string): string {
+  return text
+    .normalize("NFKC")
+    .toLocaleLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, "");
 }
 
 async function imageBytes(image: LoadedImage["image"]): Promise<Uint8Array> {

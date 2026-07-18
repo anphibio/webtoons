@@ -161,6 +161,19 @@ class OcrServiceTests(unittest.TestCase):
 
         self.assertEqual([region.text for region in regions], ["A VALID DIALOGUE"])
 
+    def test_rejects_low_confidence_with_at_image_edge(self) -> None:
+        result = [SimpleNamespace(json={
+            "res": {
+                "rec_texts": ["WITH", "STAY WITH ME"],
+                "rec_scores": [0.7378, 0.95],
+                "rec_boxes": [[0, 818, 192, 912], [80, 950, 320, 1010]],
+            },
+        })]
+
+        regions = parse_paddle_result(result)
+
+        self.assertEqual([region.text for region in regions], ["STAY WITH ME"])
+
     def test_removes_mixed_sound_effects_without_losing_dialogue(self) -> None:
         result = [SimpleNamespace(json={
             "res": {

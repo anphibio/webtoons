@@ -42,6 +42,18 @@ Os logs ficam em:
 ~/Library/Application Support/WebtoonImageTranslator/logs/
 ```
 
+## Atualização do backend
+
+Quando o código Python do projeto for atualizado, reinicie o serviço para que
+o processo carregue a versão nova. Na raiz do projeto, execute novamente:
+
+```bash
+./scripts/macos-backend/install.sh
+```
+
+Não é necessário reinstalar dependências nem usar `sudo`. O instalador mantém
+o arquivo `backend.env` existente e reinicia somente o serviço do usuário.
+
 ## Remoção
 
 ```bash
