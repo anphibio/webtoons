@@ -1,6 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
+if [[ "${EUID:-$(id -u)}" -eq 0 ]]; then
+  echo "Não execute este instalador com sudo. O serviço precisa ser registrado na sua sessão do macOS, não na sessão do root." >&2
+  echo "Execute novamente sem sudo: ./scripts/macos-backend/install.sh" >&2
+  exit 1
+fi
+
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 PYTHON="$ROOT_DIR/apps/api/.venv-ocr/bin/python"
 LABEL="com.webtoon.image-translator.api"

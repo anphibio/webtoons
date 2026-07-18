@@ -21,6 +21,15 @@ Na primeira execução, o script cria:
 Edite esse arquivo e preencha `DEEPL_API_KEY`. Depois execute o instalador
 novamente. O arquivo recebe permissão `600` e não fica dentro do repositório.
 
+Não use `sudo`: o serviço precisa pertencer à sua sessão gráfica. Se a
+primeira tentativa tiver sido feita com `sudo` e aparecer `Permission denied`,
+corrija os dois arquivos criados e rode novamente sem `sudo`:
+
+```bash
+sudo chown "$USER":staff "$HOME/Library/Application Support/WebtoonImageTranslator/run-backend.sh" "$HOME/Library/LaunchAgents/com.webtoon.image-translator.api.plist"
+./scripts/macos-backend/install.sh
+```
+
 O serviço será registrado como:
 
 ```text

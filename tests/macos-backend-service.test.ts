@@ -16,6 +16,7 @@ describe("serviço automático do backend no macOS", () => {
     expect(content).toContain("DEEPL_API_KEY");
     expect(content).toContain("launchctl");
     expect(content).toContain("chmod 600");
+    expect(content).toContain("Não execute este instalador com sudo");
     expect(content).not.toContain("3187f144-d651-4bd8-b15a-375df4da5655");
   });
 
