@@ -163,6 +163,7 @@
 - [x] Acionar recuperação OCR local em detecções escassas ou fracas e mesclar regiões sem perder resultados válidos.
 - [x] Rejeitar regiões OCR sem área e novas variantes de grafismos (`KROH`, `SSIN`, `btok OTof`, `brop`) antes da tradução.
 - [x] Deduplicar diálogos OCR sobrepostos e rejeitar fragmentos falsos (`NUNCA SW.`, `btop`, `btor`, `bror`, `de de`) observados no capítulo 61.
+- [x] Filtrar efeitos sonoros isolados recorrentes e limitar regiões OCR verticalmente anormais observadas em `Beautiful Days`.
 - [x] Tratamento de erros com mensagens amigáveis no popup e diagnóstico técnico preservado nos logs.
 - [x] Documentação de instalação.
 - [x] Checklist de teste E2E manual para página local.

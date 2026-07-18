@@ -61,6 +61,10 @@ function isAbnormallyTallShortRegion(text: string, height: number, limit: number
   return height > limit && compact.length < 40;
 }
 
+function isAbnormallyTallRegion(text: string, box: BoundingBox, limit: number): boolean {
+  return box.height > limit && (isAbnormallyTallShortRegion(text, box.height, limit) || box.height > box.width * 1.15);
+}
+
 function hasPositiveArea(box: BoundingBox): boolean {
   return Number.isFinite(box.x)
     && Number.isFinite(box.y)
@@ -76,8 +80,14 @@ function normalizeShortTallBox(
   typicalHeight: number,
   limit: number,
 ): BoundingBox {
-  if (!isAbnormallyTallShortRegion(text, box.height, limit)) return box;
-  const height = Math.max(24, Math.round(typicalHeight * 1.8));
+  if (!isAbnormallyTallRegion(text, box, limit)) return box;
+  const safeTypicalHeight = Math.max(24, typicalHeight);
+  const charactersPerLine = Math.max(8, Math.floor(box.width / (safeTypicalHeight * 0.56)));
+  const estimatedLines = Math.max(1, Math.ceil(text.replace(/\s+/g, " ").trim().length / charactersPerLine));
+  const height = Math.min(
+    box.height,
+    Math.max(24, Math.round(estimatedLines * safeTypicalHeight * 1.25 + 8)),
+  );
   return { ...box, y: box.y + Math.round((box.height - height) / 2), height };
 }
 
@@ -127,6 +137,7 @@ function isShortNoise(text: string): boolean {
 function isLikelyGlyphHallucination(text: string, bbox: BoundingBox): boolean {
   const words: string[] = text.toLocaleLowerCase().match(/[a-z]+/g) ?? [];
   const compact = words.join("");
+  if (ISOLATED_SOUND_EFFECT_TOKENS.has(compact)) return true;
   if (OCR_SOUND_EFFECT_TOKENS.has(compact) || (words.includes("huff") && words.every((word) => word.length <= 4))) return true;
   if (/\bn\s*[º°o0]?\.?\s*(?:sdo|ado)\b/i.test(text)) return true;
   if (/\b(?:stars?|staurs?)\s+club\b/i.test(text)) return true;
@@ -142,6 +153,10 @@ const OCR_HALLUCINATION_TOKENS = new Set([
 ]);
 
 const OCR_SOUND_EFFECT_TOKENS = new Set<string>(["huff", "haah", "euggh", "eugghh", "ughh", "brop", "btok", "otof"]);
+
+const ISOLATED_SOUND_EFFECT_TOKENS = new Set<string>([
+  "fondle", "plump", "slurp", "splat", "squelch", "swish", "toss", "twitch", "twich",
+]);
 
 const OCR_HALLUCINATION_FRAGMENTS = new Set(["heughi", "waju", "heugho", "leuol", "heuth", "heyhl", "hmng", "hnng", "hng"]);
 

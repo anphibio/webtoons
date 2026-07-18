@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from io import BytesIO
+from math import ceil, floor
 import os
 import re
 from statistics import median
@@ -166,6 +167,11 @@ _COMMON_OCR_WORDS = {
     "that", "their", "there", "they", "this", "time", "turn", "want", "when", "where", "without", "world", "sorry", "would",
 }
 
+_ISOLATED_SOUND_EFFECTS = {
+    "fondle", "plump", "slurp", "splat", "squelch", "swish", "toss",
+    "twitch", "twich",
+}
+
 
 def _looks_like_isolated_glyph_hallucination(text: str) -> bool:
     words = re.findall(r"[A-Za-z]+", text.lower())
@@ -183,6 +189,8 @@ def _is_known_ocr_false_positive(text: str) -> bool:
     if normalized in {
         "btop", "btor", "bror", "de de", "nunca sw", "rilh",
     }:
+        return True
+    if normalized in _ISOLATED_SOUND_EFFECTS:
         return True
     return any(word in {
         "botor", "loto", "tokor", "heughi", "waju", "heugho", "heuth",
@@ -381,9 +389,17 @@ def _is_onomatopoeia(text: str) -> bool:
 
 
 def _normalize_short_tall_line(line: OcrLine, typical_height: float, limit: float) -> OcrLine:
-    if line.height <= limit or len(_comparison_text(line.text)) >= 40:
+    if line.height <= limit:
         return line
-    height = max(24, round(typical_height * 1.8))
+    if len(_comparison_text(line.text)) >= 40 and line.height <= line.width * 1.15:
+        return line
+    safe_typical_height = max(24, typical_height)
+    characters_per_line = max(8, floor(line.width / (safe_typical_height * 0.56)))
+    estimated_lines = max(1, ceil(len(re.sub(r"\s+", " ", line.text).strip()) / characters_per_line))
+    height = min(
+        line.height,
+        max(24, round(estimated_lines * safe_typical_height * 1.25 + 8)),
+    )
     return OcrLine(
         text=line.text,
         confidence=line.confidence,

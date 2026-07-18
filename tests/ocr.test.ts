@@ -59,6 +59,26 @@ describe("contrato de OCR", () => {
     expect(result.regions[1]?.bbox.height).toBeLessThan(560);
   });
 
+  it("limita regiões longas que misturam fala e ruído fora do balão", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "line", text: "THIS IS A NORMAL LINE.", confidence: 0.98, bbox: { x: 50, y: 100, width: 300, height: 40 }, rotation: 0 },
+        {
+          id: "merged-noise",
+          text: "PODER APROVEITAR ESSA BUNDA LINDA SEM NADA NO CAMINHO... NNGH ACARICIAR",
+          confidence: 0.9,
+          bbox: { x: 40, y: 500, width: 810, height: 946 },
+          rotation: 0,
+        },
+      ],
+    }, { width: 900, height: 1600 });
+
+    const region = result.regions.find((item) => item.id === "merged-noise");
+    expect(region).toBeDefined();
+    expect(region?.bbox.height).toBeLessThan(400);
+    expect(region?.bbox.height).toBeGreaterThan(100);
+  });
+
   it("preserva o til usado como pontuação expressiva em diálogos", () => {
     const result = normalizeOcrResult({
       regions: [
@@ -136,6 +156,19 @@ describe("contrato de OCR", () => {
     }, { width: 720, height: 1200 });
 
     expect(result.regions.map((region) => region.text)).toEqual(["I DIDN'T SEE THAT COMING AT ALL."]);
+  });
+
+  it("remove efeitos sonoros isolados recorrentes sem remover frases que os mencionam", () => {
+    const result = normalizeOcrResult({
+      regions: [
+        { id: "noise-1", text: "TWITCH", confidence: 0.92, bbox: { x: 0, y: 0, width: 180, height: 40 }, rotation: 0 },
+        { id: "noise-2", text: "SQUELCH", confidence: 0.92, bbox: { x: 0, y: 50, width: 180, height: 40 }, rotation: 0 },
+        { id: "noise-3", text: "SLURP", confidence: 0.92, bbox: { x: 0, y: 100, width: 180, height: 40 }, rotation: 0 },
+        { id: "valid", text: "I HEARD A TWITCH IN THE DARK.", confidence: 0.92, bbox: { x: 0, y: 150, width: 300, height: 60 }, rotation: 0 },
+      ],
+    }, { width: 400, height: 300 });
+
+    expect(result.regions.map((region) => region.text)).toEqual(["I HEARD A TWITCH IN THE DARK."]);
   });
 
   it("descarta regiões sem área antes de traduzir ou renderizar", () => {

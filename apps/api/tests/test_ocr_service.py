@@ -145,6 +145,22 @@ class OcrServiceTests(unittest.TestCase):
 
         self.assertEqual([region.text for region in regions], ["NUNCA TE DISSE PARA"])
 
+    def test_rejects_isolated_sound_effects_seen_in_beautiful_days(self) -> None:
+        result = [SimpleNamespace(json={
+            "res": {
+                "rec_texts": ["TWITCH", "SQUELCH", "SLURP", "TOSS", "A VALID DIALOGUE"],
+                "rec_scores": [0.9] * 5,
+                "rec_boxes": [
+                    [0, 0, 120, 40], [0, 50, 120, 90], [0, 100, 120, 140],
+                    [0, 150, 120, 190], [0, 220, 300, 270],
+                ],
+            },
+        })]
+
+        regions = parse_paddle_result(result)
+
+        self.assertEqual([region.text for region in regions], ["A VALID DIALOGUE"])
+
     def test_removes_short_overlapping_false_positive_from_dialogue(self) -> None:
         lines = [
             OcrLine("NUNCA TE DISSE PARA", 0.96, 100, 300, 300, 70),
