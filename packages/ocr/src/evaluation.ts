@@ -16,6 +16,39 @@ export function calculateWer(reference: string, prediction: string): number {
   return levenshtein(expected, actual) / expected.length;
 }
 
+export interface EvaluationSummary {
+  lot: string;
+  samples: number;
+  averageCer: number;
+  averageWer: number;
+}
+
+export function findEvaluationRegressions(
+  actual: readonly EvaluationSummary[],
+  baseline: readonly EvaluationSummary[],
+  tolerance = 0.02,
+): string[] {
+  const regressions: string[] = [];
+  for (const expected of baseline) {
+    const current = actual.find((item) => item.lot === expected.lot);
+    if (!current) {
+      regressions.push(`${expected.lot} não foi avaliado`);
+      continue;
+    }
+    if (current.averageCer > expected.averageCer + tolerance) {
+      regressions.push(`${expected.lot} CER subiu de ${formatPercent(expected.averageCer)} para ${formatPercent(current.averageCer)}`);
+    }
+    if (current.averageWer > expected.averageWer + tolerance) {
+      regressions.push(`${expected.lot} WER subiu de ${formatPercent(expected.averageWer)} para ${formatPercent(current.averageWer)}`);
+    }
+  }
+  return regressions;
+}
+
+function formatPercent(value: number): string {
+  return `${(value * 100).toFixed(1)}%`;
+}
+
 function words(text: string): string[] {
   const normalized = normalizeEvaluationText(text);
   return normalized.length === 0 ? [] : normalized.split(" ");

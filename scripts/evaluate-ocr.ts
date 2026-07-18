@@ -1,7 +1,12 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { createWorker, PSM } from "tesseract.js";
-import { calculateCer, calculateWer } from "../packages/ocr/src/evaluation";
+import {
+  calculateCer,
+  calculateWer,
+  findEvaluationRegressions,
+  type EvaluationSummary,
+} from "../packages/ocr/src/evaluation";
 
 interface DatasetItem {
   id: string;
@@ -22,6 +27,7 @@ const root = process.cwd();
 const lotFilter = process.argv.find((argument) => argument.startsWith("--lot="))?.split("=", 2)[1];
 const limitValue = process.argv.find((argument) => argument.startsWith("--limit="))?.split("=", 2)[1];
 const limit = limitValue ? Number.parseInt(limitValue, 10) : Number.POSITIVE_INFINITY;
+const checkRegression = process.argv.includes("--check");
 const worker = await createWorker("eng");
 await worker.setParameters({
   tessedit_pageseg_mode: PSM.SPARSE_TEXT,
@@ -76,7 +82,24 @@ await writeFile(outputPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
 console.log(`\nRelatório salvo em ${path.relative(root, outputPath)}`);
 console.table(report.summary);
 
-function summarize(items: EvaluationRow[]) {
+const BASELINE: EvaluationSummary[] = [
+  { lot: "webtoon_training_lote_01", samples: 22, averageCer: 0.2543580372680915, averageWer: 0.46336510711510714 },
+  { lot: "webtoon_training_lote_02", samples: 20, averageCer: 0.16625767278152984, averageWer: 0.31854964479964476 },
+  { lot: "webtoon_training_lote_03", samples: 24, averageCer: 0.3399792072198027, averageWer: 0.526140873015873 },
+];
+
+if (checkRegression) {
+  const regressions = findEvaluationRegressions(report.summary, BASELINE, 0.02);
+  if (regressions.length > 0) {
+    console.error("\nRegressão detectada na avaliação OCR:");
+    for (const regression of regressions) console.error(`- ${regression}`);
+    process.exitCode = 1;
+  } else {
+    console.log("\nLinha de base OCR preservada dentro da tolerância de 2 pontos percentuais.");
+  }
+}
+
+function summarize(items: EvaluationRow[]): EvaluationSummary[] {
   const grouped = new Map<string, EvaluationRow[]>();
   for (const item of items) grouped.set(item.lot, [...(grouped.get(item.lot) ?? []), item]);
   return [...grouped.entries()].map(([lot, lotRows]) => ({

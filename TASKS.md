@@ -61,6 +61,7 @@
 - [x] Filtrar regiões curtas de ruído OCR antes de enviá-las à tradução.
 - [x] Criar métricas locais de avaliação CER/WER.
 - [x] Criar avaliador dos três lotes de treinamento com relatório por amostra.
+- [x] Criar verificação automática de regressão da linha de base OCR para uso antes de releases.
 - [x] Comparar modos de segmentação do Tesseract nos recortes difíceis.
 - [x] Impedir que overlays próximos ao rodapé invadam a imagem seguinte.
 - [x] Detectar regiões de texto com PaddleOCR antes do reconhecimento.

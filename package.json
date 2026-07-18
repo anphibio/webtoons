@@ -15,6 +15,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "evaluate:ocr": "node scripts/run-evaluate-ocr.mjs",
+    "evaluate:ocr:check": "node scripts/run-evaluate-ocr.mjs --check",
     "benchmark:ocr": "node scripts/run-ocr-benchmark.mjs",
     "format": "prettier --write ."
   },

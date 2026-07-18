@@ -17,6 +17,15 @@ npm run evaluate:ocr -- --limit=10
 npm run evaluate:ocr -- --lot=webtoon_training_lote_03
 ```
 
+Para usar a avaliação como uma barreira de regressão antes de publicar mudanças:
+
+```bash
+npm run evaluate:ocr:check
+```
+
+O comando falha se o CER ou WER médio de algum lote subir mais de dois pontos
+percentuais em relação à linha de base registrada no avaliador.
+
 ## Métricas
 
 - CER: taxa de erro por caractere, após normalizar caixa e espaços.
