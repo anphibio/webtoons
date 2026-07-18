@@ -24,4 +24,26 @@ describe("recursos do worker OCR da extensão", () => {
     expect(resourceRule?.matches).toEqual(expect.arrayContaining(["https://*.toongod.org/*"]));
     expect(manifest.content_security_policy?.extension_pages).toContain("'wasm-unsafe-eval'");
   });
+
+  it("mantém permissões mínimas e hosts explicitamente autorizados", () => {
+    const manifest = JSON.parse(
+      readFileSync(resolve(process.cwd(), "apps/extension/public/manifest.json"), "utf8"),
+    ) as {
+      permissions?: string[];
+      host_permissions?: string[];
+      content_scripts?: Array<{ matches?: string[] }>;
+    };
+
+    expect(manifest.permissions).toEqual(expect.arrayContaining(["storage", "activeTab", "scripting"]));
+    expect(manifest.permissions).not.toContain("<all_urls>");
+    expect(manifest.permissions).not.toContain("webRequest");
+    expect(manifest.host_permissions).toEqual([
+      "https://i.tngcdn.com/*",
+      "http://127.0.0.1:8000/*",
+      "http://localhost:8000/*",
+    ]);
+    expect(manifest.content_scripts?.flatMap((script) => script.matches ?? [])).toEqual([
+      "https://*.toongod.org/*",
+    ]);
+  });
 });

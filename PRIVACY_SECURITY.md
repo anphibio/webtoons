@@ -63,6 +63,16 @@ Evitar permissões amplas.
 
 Permissões por host devem ser solicitadas sob demanda sempre que possível.
 
+### Auditoria atual
+
+O Manifest V3 mantém somente `storage`, `activeTab` e `scripting` como permissões
+de API. Os hosts são limitados ao site suportado, ao CDN de imagens autorizado e
+ao backend local em `localhost`/`127.0.0.1`. Não são usadas permissões como
+`<all_urls>`, `webRequest` ou acesso ao sistema de arquivos.
+
+Essa regra é protegida por teste automatizado do manifesto para evitar que uma
+futura integração amplie o acesso sem revisão explícita.
+
 ## Conteúdo remoto
 
 A extensão não pode:

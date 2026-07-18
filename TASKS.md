@@ -122,7 +122,7 @@
 
 ## Fase 6 — Segurança
 
-- [ ] Revisar permissões.
+- [x] Revisar permissões.
 - [x] Implementar consentimento remoto.
 - [ ] Proteger credenciais.
 - [x] Sanitizar mensagens.
