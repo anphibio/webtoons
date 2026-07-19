@@ -180,6 +180,12 @@
 - [x] Checklist de teste E2E manual para página local.
 - [x] Gerar pacote distribuível da extensão sem credenciais ou dados de teste.
 - [x] Preparar instalador do backend como serviço automático do macOS.
+- [x] Preservar a versão estável da extensão Chrome antes da expansão para iPad.
+- [x] Empacotar o backend OCR/DeepL em Docker para execução contínua no QNAP.
+- [x] Validar build ARM64 e healthcheck real do container do backend.
+- [x] Criar variante Safari/iPad isolada sem modificar o código-fonte da extensão Chrome.
+- [x] Remover permissões locais e configurar a origem explícita do QNAP no pacote iPad.
+- [x] Documentar instalação no Container Station e assinatura da Safari Web Extension pelo Xcode.
 
 ## Fase 8 — Evolução
 

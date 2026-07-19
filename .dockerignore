@@ -1,0 +1,16 @@
+.git
+.gitignore
+.DS_Store
+.env
+**/.env
+node_modules
+dist
+releases
+coverage
+SiteTeste
+Treinamento
+**/.venv
+**/.venv-ocr
+**/__pycache__
+**/.pytest_cache
+deploy/qnap-backend/.env

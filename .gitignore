@@ -8,3 +8,6 @@ __pycache__/
 .venv-ocr/
 SiteTeste/
 Treinamento/
+deploy/qnap-backend/.env
+apps/ipad-safari-extension/build/
+apps/ipad-safari-extension/xcode/

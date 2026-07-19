@@ -1,0 +1,47 @@
+name: webtoon-image-translator
+
+services:
+  api:
+    build:
+      context: ../..
+      dockerfile: deploy/qnap-backend/Dockerfile
+    image: webtoon-image-translator-api:0.1.0
+    restart: unless-stopped
+    init: true
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      DEEPL_API_KEY: ${DEEPL_API_KEY:?configure DEEPL_API_KEY no .env}
+      DEEPL_API_ENDPOINT: ${DEEPL_API_ENDPOINT:-https://api-free.deepl.com}
+      API_ACCESS_TOKEN: ${API_ACCESS_TOKEN:?configure API_ACCESS_TOKEN no .env}
+      CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:-https://www.toongod.org,https://toongod.org}
+      OCR_TILE_HEIGHT: ${OCR_TILE_HEIGHT:-1400}
+      OCR_TILE_OVERLAP: ${OCR_TILE_OVERLAP:-160}
+      OCR_DETECTION_MODEL: ${OCR_DETECTION_MODEL:-PP-OCRv5_mobile_det}
+    command:
+      - python
+      - -m
+      - uvicorn
+      - app.main:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --workers
+      - "1"
+    volumes:
+      - paddle-models:/home/app/.paddlex
+    mem_limit: ${BACKEND_MEMORY_LIMIT:-4g}
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+volumes:
+  paddle-models:

@@ -3,7 +3,15 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["dist", "node_modules", "coverage", "SiteTeste", "**/.venv*"],
+    ignores: [
+      "dist",
+      "node_modules",
+      "coverage",
+      "SiteTeste",
+      "**/.venv*",
+      "apps/ipad-safari-extension/build",
+      "apps/ipad-safari-extension/xcode",
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,

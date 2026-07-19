@@ -127,7 +127,7 @@ interface TranslationProvider {
   translate(
     segments: TranslationSegment[],
     context: TranslationContext,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ): Promise<TranslationResult>;
 }
 ```
@@ -200,3 +200,11 @@ Imagens que falham durante carregamento, OCR ou tradução não são marcadas co
 - debounce do MutationObserver;
 - IntersectionObserver para prioridade;
 - uma única instância ativa do content script por contexto da extensão.
+
+## Implantação no QNAP e variante para iPad
+
+O backend pode ser executado em um único container no QNAP, com reinício automático, limite de memória, verificação de saúde e volume persistente para os modelos do OCR. A chave do DeepL e o token de acesso permanecem somente no ambiente do container.
+
+A versão do Chrome continua sendo o artefato principal e não é alterada pela variante móvel. Para o iPad, um processo separado copia o build validado de `dist/`, remove as permissões de acesso ao backend local do Mac e inclui apenas a origem configurada para o QNAP. Essa cópia é empacotada como Safari Web Extension em um aplicativo iOS assinado pelo Xcode.
+
+O acesso doméstico pode usar o endereço do QNAP na rede local. Acesso externo deve usar VPN ou HTTPS confiável; a porta do container não deve ser publicada diretamente na internet.

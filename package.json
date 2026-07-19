@@ -10,6 +10,7 @@
   ],
   "scripts": {
     "build": "vite build && node scripts/build-content.mjs && node scripts/copy-ocr-assets.mjs",
+    "build:ipad": "npm run build && node apps/ipad-safari-extension/scripts/prepare.mjs --backend-origin \"$IPAD_BACKEND_ORIGIN\"",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",

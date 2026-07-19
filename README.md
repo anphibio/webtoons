@@ -31,6 +31,8 @@ Não faz parte do escopo inicial:
 - sincronização com reprodução;
 - aplicativos para Safari, Firefox ou dispositivos móveis.
 
+Após a estabilização do MVP Chrome, foi adicionada uma variante isolada para Safari no iPad. Ela é gerada a partir do artefato do Chrome sem alterar sua base de código; consulte [`apps/ipad-safari-extension/README.md`](apps/ipad-safari-extension/README.md). O backend pode permanecer ativo em um QNAP com Container Station seguindo [`deploy/qnap-backend/README.md`](deploy/qnap-backend/README.md).
+
 ## Arquitetura resumida
 
 A solução será dividida em:
